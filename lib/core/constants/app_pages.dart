@@ -9,6 +9,7 @@ import 'package:afisha_market/pages/main_container.dart';
 import 'package:afisha_market/pages/profile/profileScreen.dart';
 import 'package:afisha_market/pages/settings/editProfileScreen.dart';
 import 'package:afisha_market/pages/settings/settingsScreen.dart';
+import 'package:afisha_market/pages/splash/splash_screen.dart';
 import 'package:afisha_market/pages/userProfile/UserProfilePage.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,10 @@ abstract class AppPages {
         return MaterialPageRoute(
           builder: (_) => const SignInScreen(),
         );
+      case AppRoutes.splash:
+        return MaterialPageRoute(
+          builder: (_) => const SplashScreen(),
+        );
       case AppRoutes.signUp:
         return MaterialPageRoute(
           builder: (_) => const SignUpScreen(),
@@ -40,7 +45,7 @@ abstract class AppPages {
         );
       case AppRoutes.user:
         return MaterialPageRoute(
-          builder: (_) => const ProfileScreen(),
+          builder: (_) => ProfileScreen(),
         );
       case AppRoutes.forgotPassword:
         return MaterialPageRoute(

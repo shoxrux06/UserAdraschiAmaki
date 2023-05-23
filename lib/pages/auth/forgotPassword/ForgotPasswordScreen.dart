@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/bloc/auth/authBloc.dart';
-import '../../utils/const.dart';
-
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
@@ -23,10 +21,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         child: Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text(
-                'Забыл(а) пароль',
-                style: TextStyle(color: mainColor, fontWeight: FontWeight.w500),
-              ),
+              // title: Text(
+              //   'Забыл(а) пароль',
+              //   style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+              // ),
             ),
             body: const ForgotPasswordContainer()));
   }

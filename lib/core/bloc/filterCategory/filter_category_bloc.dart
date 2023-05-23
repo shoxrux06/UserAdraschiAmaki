@@ -1,7 +1,7 @@
 import 'package:afisha_market/core/data/repository/filter_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import '../../data/source/remote/response/ProductDetailResponse.dart';
+import '../../data/source/remote/response/GetProfileResponse.dart';
 import '../home/home_bloc.dart';
 
 part 'filter_category_event.dart';

@@ -2,9 +2,7 @@ import 'package:afisha_market/pages/settings/components/editList.dart';
 import 'package:afisha_market/pages/utils/circleImage.dart';
 import 'package:afisha_market/pages/utils/utils.dart';
 import 'package:flutter/material.dart';
-
-import '../utils/const.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({Key? key}) : super(key: key);
 
@@ -19,14 +17,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Настройки профиля',
+          AppLocalizations.of(context)?.profileSettings??'',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
         ),
       ),
-      body: Column(
-        children: const [
-         Expanded(child: EditList())
-        ],
+      body: Container(
+        color: Colors.lightBlueAccent.withOpacity(0.2),
+        child: Column(
+          children: const [
+           Expanded(child: EditList())
+          ],
+        ),
       ),
     );
   }

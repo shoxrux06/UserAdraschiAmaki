@@ -1,4 +1,4 @@
-package com.example.afisha_market
+package com.goodafishamarket.afisha_market
 
 import io.flutter.embedding.android.FlutterActivity
 

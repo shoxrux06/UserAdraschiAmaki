@@ -1,4 +1,3 @@
-
 class LogOutResponse {
   LogOutResponse({
     required this.message,

@@ -1,7 +1,8 @@
-import 'package:afisha_market/core/data/source/remote/response/ProductDetailResponse.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+import '../../core/data/source/remote/response/GetProfileResponse.dart';
 
 
 class FilterProductItem extends StatelessWidget {
@@ -64,7 +65,9 @@ class FilterProductItem extends StatelessWidget {
               width: double.infinity,
               child: Row(
                 children: [
-                  Text("${"views".tr()}", textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
+                  Icon(Icons.remove_red_eye, size: 16,),
+                  SizedBox(width: 8,),
+                  // Text("${"views".tr()}", textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
                   Text("${product.views}", textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
                 ],
               )),

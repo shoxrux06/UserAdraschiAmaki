@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/bloc/auth/authBloc.dart';
 
 class OTPScreen extends StatefulWidget {
-  const OTPScreen({Key? key}) : super(key: key);
+  final String? phoneNumber;
+
+  const OTPScreen({Key? key, this.phoneNumber}) : super(key: key);
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();
@@ -15,20 +17,23 @@ class OTPScreen extends StatefulWidget {
 class _OTPScreenState extends State<OTPScreen> {
   @override
   Widget build(BuildContext context) {
-    RouteSettings settings = ModalRoute.of(context)!.settings;
-    var phoneNumber = settings.arguments as String;
     return BlocProvider(
-        create: (_) => AuthBloc(authRepository),
-        child: Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: Text(
-                '',
-                style: TextStyle(color: mainColor, fontWeight: FontWeight.w500),
-              ),
-            ),
-            body: OTPContainer(
-              phone: phoneNumber,
-            )));
+      create: (_) => AuthBloc(authRepository),
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            '',
+            style: TextStyle(color: mainColor, fontWeight: FontWeight.w500),
+          ),
+        ),
+        body: Container(
+          color: Colors.lightBlueAccent.withOpacity(0.2),
+          child: OTPContainer(
+            phone: widget.phoneNumber ?? '',
+          ),
+        ),
+      ),
+    );
   }
 }

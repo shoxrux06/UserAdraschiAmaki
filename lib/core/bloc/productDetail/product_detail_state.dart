@@ -2,7 +2,7 @@ part of 'product_detail_bloc.dart';
 
 @immutable
 class ProductDetailState {
-  final List<ProductDetailResponse> product;
+  final List<ProductDetail> product;
   final Status status;
 
   const ProductDetailState({
@@ -11,7 +11,7 @@ class ProductDetailState {
   });
 
   ProductDetailState copyWith({
-    List<ProductDetailResponse>? product,
+    List<ProductDetail>? product,
     Status? status,
   }) {
     return ProductDetailState(

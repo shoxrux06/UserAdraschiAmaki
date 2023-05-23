@@ -38,8 +38,8 @@ class Region {
   factory Region.fromJson(Map<String, dynamic> json) => Region(
     id: json["id"]??0,
     name: json["name"]??'',
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
+    updatedAt: json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
   );
 
   Map<String, dynamic> toJson() => {

@@ -41,6 +41,8 @@ class NetworkExceptions with _$NetworkExceptions {
 
   const factory NetworkExceptions.unexpectedError() = UnexpectedError;
 
+  const factory NetworkExceptions.unProcessableContent() = UnProcessableContent;
+
   static NetworkExceptions getDioException(error) {
     if (error is Exception) {
       try {
@@ -79,6 +81,9 @@ class NetworkExceptions with _$NetworkExceptions {
                 case 408:
                   networkExceptions = const NetworkExceptions.requestTimeout();
                   break;
+                case 422:
+                  networkExceptions = const NetworkExceptions.unProcessableContent();
+                  break;
                 case 500:
                   networkExceptions = const NetworkExceptions.internalServerError();
                   break;
@@ -116,61 +121,4 @@ class NetworkExceptions with _$NetworkExceptions {
     }
   }
 
-  static String getErrorMessage(NetworkExceptions networkExceptions) {
-    var errorMessage = "";
-    networkExceptions.when(
-      notImplemented: () {
-        errorMessage = "Not Implemented";
-      },
-      requestCancelled: () {
-        errorMessage = "Request Cancelled";
-      },
-      internalServerError: () {
-        errorMessage = "Internal Server Error";
-      },
-      notFound: (String reason) {
-        errorMessage = reason;
-      },
-      serviceUnavailable: () {
-        errorMessage = "Service unavailable";
-      },
-      methodNotAllowed: () {
-        errorMessage = "Method Allowed";
-      },
-      badRequest: () {
-        errorMessage = "Bad request";
-      },
-      unauthorisedRequest: () {
-        errorMessage = "Unauthorised request";
-      },
-      unexpectedError: () {
-        errorMessage = "Unexpected error occurred";
-      },
-      requestTimeout: () {
-        errorMessage = "Connection request timeout";
-      },
-      noInternetConnection: () {
-        errorMessage = "No internet connection";
-      },
-      conflict: () {
-        errorMessage = "Error due to a conflict";
-      },
-      sendTimeout: () {
-        errorMessage = "Send timeout in connection with API server";
-      },
-      unableToProcess: () {
-        errorMessage = "Unable to process the data";
-      },
-      defaultError: (String error) {
-        errorMessage = error;
-      },
-      formatException: () {
-        errorMessage = "Unexpected error occurred";
-      },
-      notAcceptable: () {
-        errorMessage = "Not acceptable";
-      },
-    );
-    return errorMessage;
-  }
 }

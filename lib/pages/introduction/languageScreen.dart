@@ -1,10 +1,11 @@
 import 'package:afisha_market/core/bloc/language/language_bloc.dart';
-import 'package:afisha_market/core/data/models/language_model.dart';
+import 'package:afisha_market/core/utils/local_storage.dart';
 import 'package:afisha_market/pages/utils/const.dart';
 import 'package:afisha_market/pages/utils/utils.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/bloc/language/language_event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChooseLanguageScreen extends StatefulWidget {
   const ChooseLanguageScreen({Key? key}) : super(key: key);
@@ -14,18 +15,17 @@ class ChooseLanguageScreen extends StatefulWidget {
 }
 
 class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
-  final bloc = LanguageBloc();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: bloc,
-      child: BlocBuilder(builder: (context, state) {
-        return Scaffold(
-          body: Column(
+    return BlocBuilder<LanguageBloc, LanguageState>(builder: (context, state) {
+      return Scaffold(
+        body: Container(
+          color: Colors.lightBlueAccent.withOpacity(0.2),
+          child: Column(
             children: [
               const Spacer(),
               MyText(
-                "Добро пожаловать",
+                "${AppLocalizations.of(context)?.welcome}",
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 color: mainColor,
@@ -33,33 +33,25 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
               const Spacer(),
               MyButtonTwo(
                 "Русский",
-                onTap: () {
-                  bloc.add(
-                      ToggleLanguageEvent(Languages.languages[1]));
-                  Navigator.of(context).pop();
-                },
-              ),
-              MyButton(
-                "English",
-                onTap: () {
-                  bloc.add(
-                      ToggleLanguageEvent(Languages.languages[0]));
+                onTap: () async {
+                  context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'ru'));
+                  await LocalStorage.instance.setLanguage('ru');
                   Navigator.of(context).pop();
                 },
               ),
               MyButtonTwo(
                 'O\'zbek',
-                onTap: () {
-                  bloc.add(
-                      ToggleLanguageEvent(Languages.languages[2]));
+                onTap: () async{
+                  context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'uz'));
+                  await LocalStorage.instance.setLanguage('uz');
                   Navigator.of(context).pop();
                 },
               ),
               const Spacer(flex: 2,),
             ],
           ),
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 }

@@ -17,17 +17,18 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     on<UserProfileDataEvent>((event, emit) async {
       emit(state.copyWith(status: Status.loading));
       try {
-        var openOwnerProfile =
-            await _profileRepository.openOwnerProfile(event.userId);
+        var openOwnerProfile = await _profileRepository.openOwnerProfile(event.userId);
         openOwnerProfile.when(
           success: (data) {
-            final list = <ProductOwnerResponse>[];
-            list.add(data);
-            emit(state.copyWith(status: Status.success, list: list));
+            emit(state.copyWith(status: Status.success, list: data));
           },
-          failure: (failure) {},
+          failure: (failure) {
+            emit(state.copyWith(status: Status.fail));
+          },
         );
-      } catch (e) {}
+      } catch (e) {
+
+      }
     });
   }
 }

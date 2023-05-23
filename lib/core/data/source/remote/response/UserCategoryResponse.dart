@@ -1,42 +1,49 @@
-class UserCategoryResponse{
-  List<UserCategory> list;
+// To parse this JSON data, do
+//
+//     final userCategoryResponse = userCategoryResponseFromJson(jsonString);
 
-  UserCategoryResponse({required this.list});
+import 'dart:convert';
+
+UserCategoryResponse userCategoryResponseFromJson(String str) => UserCategoryResponse.fromJson(json.decode(str));
+
+String userCategoryResponseToJson(UserCategoryResponse data) => json.encode(data.toJson());
+
+class UserCategoryResponse {
+  bool status;
+  List<UserCategory> userCategories;
+
+  UserCategoryResponse({
+    required this.status,
+    required this.userCategories,
+  });
 
   factory UserCategoryResponse.fromJson(Map<String, dynamic> json) => UserCategoryResponse(
-    list: List<UserCategory>.from(json["data"].map((x) => UserCategory.fromJson(x))),
+    status: json["status"],
+    userCategories: List<UserCategory>.from(json["user_categories"].map((x) => UserCategory.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "data": List<UserCategory>.from(list.map((x) => x.toJson())),
+    "status": status,
+    "user_categories": List<dynamic>.from(userCategories.map((x) => x.toJson())),
   };
-
 }
 
 class UserCategory {
+  int id;
+  String name;
+
   UserCategory({
     required this.id,
     required this.name,
-    required this.createdAt,
-    required this.updatedAt,
   });
-
-  int id;
-  String name;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   factory UserCategory.fromJson(Map<String, dynamic> json) => UserCategory(
     id: json["id"],
     name: json["name"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
   };
 }

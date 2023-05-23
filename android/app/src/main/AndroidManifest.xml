@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.afisha_market">
+    package="com.goodafishamarket.afisha_market">
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="33" />
     <queries>
         <intent>
             <action android:name="android.intent.action.DIAL" />
@@ -9,7 +12,7 @@
         </intent>
     </queries>
     <application
-        android:label="afisha_market"
+        android:label="Afisha Market"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

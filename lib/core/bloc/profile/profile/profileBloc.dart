@@ -13,9 +13,35 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         final profileResponse = await _profileRepository.getProfile();
         profileResponse.when(
           success: (data) {
+            print('Data--> $data');
             emit(GetProfileState(profileResponse: data));
           },
-          failure: (failure) {},
+          failure: (failure) {
+            emit(ProfileErrorState());
+          },
+        );
+      } catch (_) {
+        emit(ProfileErrorState());
+      }
+    });
+
+    on<UpdateProfileEvent>((event, emit) async {
+      emit(ProfileLoadingState());
+      try {
+        final profileResponse = await _profileRepository.updateProfile(
+          event.context,
+          event.fullname,
+          event.password,
+          event.avatar,
+        );
+        profileResponse.when(
+          success: (data) {
+            print('Data--> $data');
+            emit(UpdateProfileState(updateProfileResponse: data));
+          },
+          failure: (failure) {
+            emit(ProfileErrorState());
+          },
         );
       } catch (_) {
         emit(ProfileErrorState());

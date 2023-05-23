@@ -1,17 +1,17 @@
 part of 'language_bloc.dart';
+class LanguageState extends Equatable {
+  const LanguageState({
+    Locale? locale,
+  }) : locale = locale ?? const Locale('uz');
 
-abstract class LanguageState {
-  const LanguageState();
-
-}
-
-class LanguageInitial extends LanguageState {
-  final String locale;
-
-  LanguageInitial(this.locale);
-}
-class LanguageLoaded extends LanguageState {
   final Locale locale;
 
-  LanguageLoaded(this.locale);
+  @override
+  List<Object> get props => [locale];
+
+  LanguageState copyWith({Locale? locale}) {
+    return LanguageState(
+      locale: locale,
+    );
+  }
 }

@@ -12,3 +12,10 @@ class HomeSearchEvent extends HomeEvent {
 
   HomeSearchEvent(this.text);
 }
+
+class HomeFilterEvent extends HomeEvent {
+  final int regionId;
+
+  HomeFilterEvent(this.regionId);
+}
+

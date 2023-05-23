@@ -7,8 +7,9 @@ import '../../core/bloc/filterRegion/filter_region_bloc.dart';
 import '../../core/bloc/home/home_bloc.dart';
 
 class FilterRegionPage extends StatefulWidget {
-  const FilterRegionPage({Key? key}) : super(key: key);
+  const FilterRegionPage({Key? key, this.regionId}) : super(key: key);
 
+  final int? regionId;
   @override
   State<FilterRegionPage> createState() => _FilterRegionPageState();
 }
@@ -19,9 +20,9 @@ class _FilterRegionPageState extends State<FilterRegionPage> {
   @override
   void initState() {
     Future(() {
-      final args = ModalRoute.of(context)!.settings.arguments as Region;
-      print("$args");
-      bloc.add(FilterRegionDataEvent(args.id));
+      // final args = ModalRoute.of(context)!.settings.arguments as Region;
+      // print("$args");
+      bloc.add(FilterRegionDataEvent(widget.regionId??0));
     });
     super.initState();
   }
@@ -42,7 +43,11 @@ class _FilterRegionPageState extends State<FilterRegionPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, crossAxisSpacing: 5, mainAxisSpacing: 5, childAspectRatio: 0.58),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      childAspectRatio: 0.58
+                  ),
                   itemCount: state.productList.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,

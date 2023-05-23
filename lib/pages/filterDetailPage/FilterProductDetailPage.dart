@@ -1,66 +1,88 @@
-import 'package:afisha_market/core/data/source/remote/response/ProductDetailResponse.dart';
 import 'package:afisha_market/core/di/dependency_manager.dart';
+import 'package:afisha_market/core/utils/local_storage.dart';
+import 'package:afisha_market/pages/add/add_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/bloc/home/home_bloc.dart';
 import '../../core/bloc/productDetail/product_detail_bloc.dart';
+import '../../core/data/source/remote/response/GetProfileResponse.dart';
 import '../product_detail/image_carousel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilterProductDetailPage extends StatefulWidget {
-  const FilterProductDetailPage({Key? key}) : super(key: key);
+  final ProductDetail? productDetail;
+
+  const FilterProductDetailPage({Key? key, this.productDetail})
+      : super(key: key);
 
   @override
-  State<FilterProductDetailPage> createState() => _FilterProductDetailPageState();
+  State<FilterProductDetailPage> createState() =>
+      _FilterProductDetailPageState();
 }
 
 class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
   final bloc = ProductDetailBloc(productRepository);
 
+  final userId = LocalStorage.instance.getUserId();
+
   @override
   void initState() {
     Future(() {
-      final args = ModalRoute.of(context)!.settings.arguments as ProductDetail;
-      // print("${args.id}");
-      bloc.add(ProductDetailDataEvent(args.id));
+      bloc.add(ProductDetailDataEvent(widget.productDetail?.id ?? 0));
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final ownerUserID = LocalStorage.instance.getUserId();
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          (widget.productDetail?.owner.id == ownerUserID)?IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddScreen(productDetail: widget.productDetail,)));
+            },
+            icon:  Icon(Icons.edit),
+          ): Container()
+        ],
+      ),
       body: BlocProvider.value(
         value: bloc,
         child: BlocConsumer<ProductDetailBloc, ProductDetailState>(
           listener: (context, state) {
-            // print("state: ${state.status}");
+            ///listener
           },
           builder: (context, state) {
             return BlocBuilder<ProductDetailBloc, ProductDetailState>(
               builder: (context, state) {
-                // print("builder state: ${state.status}");
-                if (state.status == Status.loading || state.status == Status.initial) {
+                if (state.status == Status.loading ||
+                    state.status == Status.initial) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return SingleChildScrollView(
                     child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                      child: ImageCarousel(imageList: state.product[0].data.photos),
+                      padding: const EdgeInsets.only(
+                          left: 15, right: 15, bottom: 15),
+                      child: ImageCarousel(
+                          imageList: state.product[0].photos),
                     ),
                     Text(
-                      "${state.product[0].data.price} ${"productPrice".tr()}",
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+                      "${state.product[0].price} ${l10n?.productPrice}",
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     Text(
-                      state.product[0].data.title,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                      state.product[0].title,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(
                       height: 10,
@@ -74,12 +96,16 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                         child: Column(
                           children: [
                             Text(
-                              "${state.product[0].data.views} ${"people".tr()}",
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              "${state.product[0].views} ${l10n?.people}",
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
                             ),
                             Text(
-                              "seenProduct".tr(),
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey),
+                              l10n?.seenProduct??'',
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey),
                             )
                           ],
                         ),
@@ -91,16 +117,18 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                     Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          state.product[0].data.body,
+                          state.product[0].body,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 12),
                         )),
                     const SizedBox(
                       height: 10,
                     ),
                     Text(
-                      "options".tr(),
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                      l10n?.options??'',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(
                       height: 10,
@@ -113,12 +141,12 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                             children: [
                               Expanded(
                                   child: Text(
-                                "color".tr(),
+                                    l10n?.color??'',
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(color: Colors.grey),
                               )),
                               const SizedBox(width: 20),
-                              Expanded(child: Text(state.product[0].data.color))
+                              Expanded(child: Text(state.product[0].color))
                             ],
                           ),
                           const SizedBox(
@@ -128,12 +156,14 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                             children: [
                               Expanded(
                                   child: Text(
-                                "compatibility".tr(),
+                                    l10n?.compatibility??'',
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(color: Colors.grey),
                               )),
                               const SizedBox(width: 20),
-                              Expanded(child: Text(state.product[0].data.compatibility))
+                              Expanded(
+                                  child:
+                                      Text(state.product[0].compatibility))
                             ],
                           ),
                           const SizedBox(
@@ -141,12 +171,20 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                           ),
                           Container(
                             padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.circular(12)),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(12)),
                             child: Column(
                               children: [
                                 Row(
                                   children: [
-                                    Text("seller".tr(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.grey)),
+                                    Text(
+                                        l10n?.seller??'',
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.grey)),
                                     const SizedBox(
                                       width: 5,
                                     ),
@@ -165,17 +203,31 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                                     Container(
                                       height: 70,
                                       width: 70,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), border: Border.all(color: Colors.grey)),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          border:
+                                              Border.all(color: Colors.grey)),
                                       child: Builder(builder: (context) {
-                                        // print("profile avatar: ${state.product[0].data.owner.avatar}");
-                                        if (state.product[0].data.owner.avatar!.isNotEmpty) {
+                                        // print("profile avatar: ${state.product[0].owner.avatar}");
+                                        if (state.product[0].owner.avatar!
+                                            .isNotEmpty) {
                                           return ClipRRect(
-                                              borderRadius: BorderRadius.circular(50),
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
                                               child: FadeInImage.assetNetwork(
-                                                  placeholder: "assets/images/profile_placeholder.jpg", image: state.product[0].data.owner.avatar!, fit: BoxFit.cover,));
+                                                placeholder:
+                                                    "assets/images/profile_placeholder.jpg",
+                                                image: state.product[0]
+                                                    .owner.avatar!,
+                                                fit: BoxFit.cover,
+                                              ));
                                         } else {
                                           return ClipRRect(
-                                              borderRadius: BorderRadius.circular(50), child: Image.asset("assets/images/profile_placeholder.jpg"));
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              child: Image.asset(
+                                                  "assets/images/profile_placeholder.jpg"));
                                         }
                                       }),
                                     ),
@@ -183,15 +235,22 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                                       width: 10,
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          state.product[0].data.owner.fullname,
-                                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                                          state.product[0].owner.fullname,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14),
                                           textAlign: TextAlign.start,
                                         ),
-                                        Text("${"accountCreated".tr()}${DateFormat("yyyy").format(state.product[0].data.owner.createdAt)}",
-                                            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: Colors.grey)),
+                                        Text(
+                                            "${l10n?.accountCreated}${DateFormat("yyyy").format(state.product[0].owner.createdAt)}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 12,
+                                                color: Colors.grey)),
                                       ],
                                     )
                                   ],
@@ -202,22 +261,29 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                                 SizedBox(
                                   width: double.infinity,
                                   height: 50,
-                                  child:
-                                  ElevatedButton(
+                                  child: ElevatedButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context, "/userProfile", arguments: state.product[0].data.owner.id);
+                                        print('OwnerId *****${state.product[0].owner.id}*****');
+                                        if(state.product[0].owner.id == userId){
+                                          Navigator.of(context).pop();
+                                        }else{
+                                          Navigator.pushNamed(
+                                              context, "/userProfile",
+                                              arguments: state.product[0].owner.id
+                                          );
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.orangeAccent,
                                           shadowColor: Colors.deepOrangeAccent,
                                           elevation: 2,
                                           shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12)
-                                          )
-                                      ),
+                                              borderRadius:
+                                                  BorderRadius.circular(12))),
                                       child: Text(
-                                        "allProducts".tr(),
-                                        style: const TextStyle(color: Colors.white),
+                                        l10n?.allProducts??'',
+                                        style: const TextStyle(
+                                            color: Colors.white),
                                       )),
                                 ),
                                 const SizedBox(height: 20)
@@ -227,11 +293,14 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                           const SizedBox(
                             height: 30,
                           ),
-                          Text("address".tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                          Text(l10n?.address??'',
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w700)),
                           const SizedBox(
                             height: 10,
                           ),
-                          Text(state.product[0].data.region, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                          Text(state.product[0].region??'',
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                         ],
                       ),
                     ),

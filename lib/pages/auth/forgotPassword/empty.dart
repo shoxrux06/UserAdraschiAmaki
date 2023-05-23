@@ -1,5 +1,6 @@
 import 'package:afisha_market/core/bloc/auth/authBloc.dart';
 import 'package:afisha_market/core/bloc/auth/authState.dart';
+import 'package:afisha_market/pages/auth/otp/otp_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,31 +16,23 @@ class ForgotEmpty extends StatefulWidget {
   @override
   State<ForgotEmpty> createState() => _ForgotEmptyState();
 }
-/*
-  void _submitForm(Bloc bloc) {
-    var phoneNumber = _phoneController.text;
-    bloc.add(ForgotPasswordEventWithRequest(
-        ForgotPasswordRequest(phone: phoneNumber)));
-    Navigator.pushNamed(context, '/otp', arguments: phoneNumber);
-  }
- */
 
 class _ForgotEmptyState extends State<ForgotEmpty> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthErrorState) {
+        if (state.isErrorOccurred) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: MyText(
             "Something went wrong",
           )));
         }
+        if (state.isAuthenticated) {
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => OTPContainer(phone: widget.phoneNumber)));
+        }
       },
       builder: (context, state) {
-        if (state is AuthSuccessState) {
-          Navigator.pushNamed(context, '/otp', arguments: widget.phoneNumber);
-        }
         return const SizedBox();
       },
     );

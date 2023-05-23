@@ -1,8 +1,15 @@
+import 'dart:io';
+import 'package:afisha_market/core/bloc/profile/profile/profileBloc.dart';
+import 'package:afisha_market/core/bloc/profile/profile/profileEvent.dart';
+import 'package:afisha_market/core/bloc/profile/profile/profileState.dart';
+import 'package:afisha_market/pages/main_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../utils/circleImage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../utils/const.dart';
 import '../../utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditList extends StatefulWidget {
   const EditList({Key? key}) : super(key: key);
@@ -13,106 +20,173 @@ class EditList extends StatefulWidget {
 
 class _EditListState extends State<EditList> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _userNameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _pass1Controller = TextEditingController();
-  final _pass2Controller = TextEditingController();
+  File? avatarFile;
+  final _fullnameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _userNameController.dispose();
-    _phoneController.dispose();
-    _pass1Controller.dispose();
-    _pass2Controller.dispose();
+    _fullnameController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   void _submitForm() {
-    var name = _nameController.text;
-    var userName = _userNameController.text;
-    var phoneNumber = _phoneController.text;
-    var pass1 = _pass1Controller.text;
-    var pass2 = _pass2Controller.text;
-    if (pass1.isEmpty && pass1 != pass2) {
+    var fullname = _fullnameController.text;
+    var password = _passwordController.text;
+    if (fullname.isEmpty && password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Malumotlarni toldiring')));
     } else {
-      // bloc.add(SignUpEventWithRequest(SignUpRequest(
-      //     fullname: name,
-      //     username: userName,
-      //     phone: phoneNumber,
-      //     password: pass1,
-      //     passwordConfirmation: pass2)));
-      Navigator.pushNamed(context, '/otp2', arguments: phoneNumber);
+      context.read<ProfileBloc>().add(UpdateProfileEvent(context, fullname, password, avatarFile));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const CircleImage(),
-            GestureDetector(
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Изменить фото',
-                  style: TextStyle(
-                    color: Colors.blue,
+    final l10n = AppLocalizations.of(context);
+    return BlocConsumer<ProfileBloc, ProfileState>(
+      listener: (context, state) {
+        if(state is UpdateProfileState){
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => MainContainer()));
+        }
+      },
+      builder: (context, state) {
+        return Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: LayoutBuilder(builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: mainColor, width: 2),
+                                      borderRadius: BorderRadius.circular(120),
+                                    ),
+                                    width: 120,
+                                    height: 120,
+                                    child: Center(
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(120),
+                                        child: avatarFile != null
+                                            ? Image.file(
+                                                avatarFile ?? File('path'),
+                                                fit: BoxFit.cover,
+                                                width: 120,
+                                                height: 120,
+                                              )
+                                            : Image.asset(
+                                                'assets/images/afisha_logo.png',
+                                                fit: BoxFit.cover,
+                                                width: 120,
+                                                height: 120,
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 12,
+                                    right: 0,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        final picker = ImagePicker();
+                                        final pickedFile =
+                                            await picker.pickImage(
+                                                source: ImageSource.gallery);
+                                        if (pickedFile != null) {
+                                          setState(() {
+                                            avatarFile = File(pickedFile.path);
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                            color: mainColor),
+                                        child: const Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )),
+                          onTap: () async {
+                            final picker = ImagePicker();
+                            final pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
+
+                            if (pickedFile != null) {
+                              setState(() {
+                                avatarFile = File(pickedFile.path);
+                              });
+                            }
+                          }, //gallerydan rasm tanlashga otishi kere
+                        ),
+                        MyTextFormField2(
+                          l10n?.fullName2 ?? '',
+                          const Icon(CupertinoIcons.person),
+                          _fullnameController,
+                          validator: (val) {
+                            if (val!.length < 3) {
+                              return 'Name must be at least 3 characters';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        MyTextFormField2(
+                          l10n?.password ?? '',
+                          const Icon(CupertinoIcons.person),
+                          _passwordController,
+                          validator: (val) {
+                            if (val!.length < 3) {
+                              return 'UserName must be at least 3 characters';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 48,
+                        ),
+                        Spacer(),
+                        MyBigButton(
+                          '${l10n?.save ?? ''}',
+                          onTap: () {
+                            setState(() {
+                              if (_formKey.currentState!.validate()) {
+                                _submitForm();
+                              }
+                            });
+                          },
+                        )
+                      ],
+                    ),
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              ),
-              onTap: () {
-
-              }, //gallerydan rasm tanlashga otishi kere
-            ),
-            MyTextFormField2(
-              'Полное имя',
-              const Icon(CupertinoIcons.person),
-              _nameController,
-              validator: (val) {
-                if (val!.length < 3)
-                  return 'Name must be at least 3 characters';
-                return null;
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            MyTextFormField2(
-              'Имя пользователя',
-              const Icon(CupertinoIcons.person),
-              _userNameController,
-              validator: (val) {
-                if (val!.length < 3)
-                  return 'UserName must be at least 3 characters';
-                return null;
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-
-            const Spacer(),
-            MyBigButton(
-              'Сохранить',
-              onTap: () {
-                setState(() {
-                  if (_formKey.currentState!.validate()) {
-                    _submitForm();
-                  }
-                });
-              },
-            )
-          ],
-        ),
-      ),
+              );
+            }),
+          ),
+        );
+      },
     );
   }
 }

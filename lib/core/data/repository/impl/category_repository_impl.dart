@@ -6,11 +6,12 @@ import 'package:afisha_market/core/handlers/api_result.dart';
 import 'package:afisha_market/core/handlers/http_service.dart';
 import 'package:afisha_market/core/handlers/network_exceptions.dart';
 
+import '../../source/remote/response/filtered_product_category_response.dart';
+
 class CategoryRepositoryImpl extends CategoryRepository{
   @override
   Future<ApiResult<ProductCategoryResponse>> getProductCategoryList()async {
     try {
-      await Future.delayed(Duration(seconds: 10));
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.get(
         '/categories',
@@ -25,11 +26,24 @@ class CategoryRepositoryImpl extends CategoryRepository{
   @override
   Future<ApiResult<UserCategoryResponse>> getUserCategoryList() async{
     try {
-      final client = inject<HttpService>().client(requireAuth: true);
+      final client = inject<HttpService>().client(requireAuth: false);
       final response = await client.get(
         '/users-categories',
       );
       return ApiResult.success(data: UserCategoryResponse.fromJson(response.data));
+    } catch (e) {
+      print('==> users-categories failure: $e');
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+  @override
+  Future<ApiResult<FilteredProductCategoryResponse>> getSelectedProductCategoryList() async{
+    try {
+      final client = inject<HttpService>().client(requireAuth: true);
+      final response = await client.get(
+        '/product-categories',
+      );
+      return ApiResult.success(data: FilteredProductCategoryResponse.fromJson(response.data));
     } catch (e) {
       print('==> users-categories failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));

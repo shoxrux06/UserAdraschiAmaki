@@ -1,15 +1,25 @@
+// To parse this JSON data, do
+//
+//     final verifyResponse = verifyResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+VerifyResponse verifyResponseFromJson(String str) => VerifyResponse.fromJson(json.decode(str));
+
+String verifyResponseToJson(VerifyResponse data) => json.encode(data.toJson());
+
 class VerifyResponse {
+  bool status;
+  String message;
+  String token;
+  User user;
+
   VerifyResponse({
     required this.status,
     required this.message,
     required this.token,
     required this.user,
   });
-
-  bool status;
-  String message;
-  String token;
-  User user;
 
   factory VerifyResponse.fromJson(Map<String, dynamic> json) => VerifyResponse(
     status: json["status"],
@@ -27,41 +37,59 @@ class VerifyResponse {
 }
 
 class User {
+  int id;
+  String fullname;
+  String username;
+  String phone;
+  String status;
+  String viloyat;
+  String tuman;
+  int productNumber;
+  DateTime phoneVerifiedAt;
+  int role;
+  String adminUserCategory;
+  DateTime createdAt;
+  DateTime updatedAt;
+  String avatar;
+  int views;
+  String blocked;
+
   User({
     required this.id,
     required this.fullname,
     required this.username,
     required this.phone,
-    this.address,
+    required this.status,
+    required this.viloyat,
+    required this.tuman,
+    required this.productNumber,
     required this.phoneVerifiedAt,
     required this.role,
-    this.adminUserCategoryId,
+    required this.adminUserCategory,
     required this.createdAt,
     required this.updatedAt,
+    required this.avatar,
+    required this.views,
+    required this.blocked,
   });
-
-  int id;
-  String fullname;
-  String username;
-  String phone;
-  dynamic address;
-  DateTime phoneVerifiedAt;
-  int role;
-  dynamic adminUserCategoryId;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json["id"],
     fullname: json["fullname"],
     username: json["username"],
     phone: json["phone"],
-    address: json["address"],
+    status: json["status"],
+    viloyat: json["viloyat"],
+    tuman: json["tuman"],
+    productNumber: json["product_number"],
     phoneVerifiedAt: DateTime.parse(json["phone_verified_at"]),
     role: json["role"],
-    adminUserCategoryId: json["admin_user_category_id"],
+    adminUserCategory: json["admin_user_category"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    avatar: json["avatar"],
+    views: json["views"],
+    blocked: json["blocked"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -69,11 +97,17 @@ class User {
     "fullname": fullname,
     "username": username,
     "phone": phone,
-    "address": address,
+    "status": status,
+    "viloyat": viloyat,
+    "tuman": tuman,
+    "product_number": productNumber,
     "phone_verified_at": phoneVerifiedAt.toIso8601String(),
     "role": role,
-    "admin_user_category_id": adminUserCategoryId,
+    "admin_user_category": adminUserCategory,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "avatar": avatar,
+    "views": views,
+    "blocked": blocked,
   };
 }

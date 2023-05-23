@@ -30,5 +30,39 @@ class LocalStorage{
 
   String getToken() => _preferences?.getString(AppConstants.keyToken) ?? '';
 
+  Future<void> setUserId(int? userId) async {
+    if (_preferences != null) {
+      await _preferences!.setInt(AppConstants.keyUserId, userId ?? 0);
+    }
+  }
+  Future<void> setUserName(String? username) async {
+    if (_preferences != null) {
+      await _preferences!.setString(AppConstants.keyUserName, username ?? '');
+    }
+  }
+  Future<void> setUserPhone(String? phone) async {
+    if (_preferences != null) {
+      await _preferences!.setString(AppConstants.keyUserPhone, phone ?? '');
+    }
+  }
+
+  int getUserId() => _preferences?.getInt(AppConstants.keyUserId) ??0;
+
+  String getUserName() => _preferences?.getString(AppConstants.keyUserName) ??'';
+
+  String getUserPhone() => _preferences?.getString(AppConstants.keyUserPhone) ??'';
+
   void deleteToken() => _preferences?.remove(AppConstants.keyToken);
+
+  void deleteUserId() => _preferences?.remove(AppConstants.keyUserId);
+  void deleteUsername() => _preferences?.remove(AppConstants.keyUserName);
+  void deleteUserPhone() => _preferences?.remove(AppConstants.keyUserPhone);
+
+  Future<void> setLanguage(String? lang) async {
+    if (_preferences != null) {
+      await _preferences!.setString(AppConstants.keyLang, lang ?? '');
+    }
+  }
+
+  String getLanguage() => _preferences?.getString(AppConstants.keyLang) ?? '';
 }

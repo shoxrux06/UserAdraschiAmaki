@@ -1,10 +1,16 @@
 import 'package:afisha_market/core/bloc/auth/authBloc.dart';
-import 'package:afisha_market/core/di/dependency_manager.dart';
-import 'package:afisha_market/pages/auth/signIn/button.dart';
+import 'package:afisha_market/core/bloc/auth/authState.dart';
+import 'package:afisha_market/pages/main_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../core/bloc/auth/authEvent.dart';
+import '../../../core/data/source/remote/request/SignInRequest.dart';
 import '../../utils/const.dart';
+import '../../utils/custom_button.dart';
+import '../../utils/utils.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -14,19 +20,107 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _phoneController = TextEditingController();
+  final _passController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => AuthBloc(authRepository),
-        child: Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: Text(
-                'Войти',
-                style: TextStyle(color: mainColor, fontWeight: FontWeight.w500),
+    final l10n = AppLocalizations.of(context);
+
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            AppLocalizations.of(context)?.signIn ?? '',
+            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+          ),
+        ),
+        body: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            print('isAuthenticating --> ${state.isAuthenticating}');
+            if (state.isErrorOccurred) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: MyText(
+                    "Something went wrong",
+                  ),
+                ),
+              );
+            }
+            if (state.isAuthenticated && (state.isErrorOccurred == false)) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer()));
+            }
+          },
+          builder: (context, state) {
+            return Container(
+              color: Colors.lightBlueAccent.withOpacity(0.2),
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24, vertical: 16),
+                  child: Column(
+                    children: [
+                      MyTextFormField2(
+                        l10n?.usernameOrPhoneNumber ?? '',
+                        const Icon(CupertinoIcons.person),
+                        _phoneController,
+                        validator: (val) {
+                          if (val!.length < 3) return 'UserName must be at least 3 characters';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      MyTextFormField2(
+                        l10n?.password ?? '',
+                        const Icon(CupertinoIcons.lock),
+                        _passController,
+                        validator: (val) {
+                          if (val!.length < 5) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
+                        isPassword: true,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/forgotPassword');
+                          },
+                          child: MyText(
+                            l10n?.forgotPassword ?? '',
+                            color: mainColor,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      CustomButton(
+                        l10n?.signIn ?? '',
+                        isLoading: state.isAuthenticating,
+                        onTap: () {
+                          context.read<AuthBloc>().add(
+                            SignInEvent(
+                              SignInRequest(
+                                login: _phoneController.text,
+                                password: _passController.text,),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-            body: const SignInButton())
+            );
+          },
+        )
     );
   }
 }

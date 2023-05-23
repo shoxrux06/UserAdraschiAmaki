@@ -1,6 +1,6 @@
 import 'package:afisha_market/core/bloc/home/home_bloc.dart';
 import 'package:afisha_market/core/data/repository/product_repository.dart';
-import 'package:afisha_market/core/data/source/remote/response/ProductDetailResponse.dart';
+import 'package:afisha_market/core/data/source/remote/response/GetProfileResponse.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 part 'product_detail_event.dart';
@@ -13,14 +13,13 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   ProductDetailBloc(this._productRepository)
       : super(const ProductDetailState()) {
     on<ProductDetailInitEvent>((event, emit) => {});
-
     on<ProductDetailDataEvent>((event, emit) async {
       emit(state.copyWith(status: Status.loading));
       try {
         final response = await _productRepository.getProduct(event.id);
         response.when(
           success: (data) {
-            var list = <ProductDetailResponse>[];
+            var list = <ProductDetail>[];
             list.add(data);
             emit(state.copyWith(status: Status.success, product: list));
           },

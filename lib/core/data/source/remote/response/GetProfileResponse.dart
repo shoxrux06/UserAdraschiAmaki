@@ -1,87 +1,185 @@
+// To parse this JSON data, do
+//
+//     final getProfileResponse = getProfileResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+GetProfileResponse getProfileResponseFromJson(String str) => GetProfileResponse.fromJson(json.decode(str));
+
+String getProfileResponseToJson(GetProfileResponse data) => json.encode(data.toJson());
+
 class GetProfileResponse {
-  bool? status;
-  User? user;
+  bool status;
+  User user;
+  List<ProductDetail> products;
 
   GetProfileResponse({
-    this.status,
-    this.user,
+    required this.status,
+    required this.user,
+    required this.products,
   });
 
-  GetProfileResponse.fromJson(Map<String, dynamic> json) {
-    status = json['status'] as bool?;
-    user = (json['user'] as Map<String,dynamic>?) != null ? User.fromJson(json['user'] as Map<String,dynamic>) : null;
-  }
+  factory GetProfileResponse.fromJson(Map<String, dynamic> json) => GetProfileResponse(
+    status: json["status"],
+    user: User.fromJson(json["user"]),
+    products: List<ProductDetail>.from(json["products"].map((x) => ProductDetail.fromJson(x))),
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['status'] = status;
-    json['user'] = user?.toJson();
-    return json;
-  }
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "user": user.toJson(),
+    "products": List<dynamic>.from(products.map((x) => x.toJson())),
+  };
+}
+
+class ProductDetail {
+  int id;
+  String title;
+  int price;
+  String body;
+  String category;
+  dynamic region;
+  String color;
+  String compatibility;
+  String user;
+  int views;
+  dynamic longitude;
+  dynamic latitude;
+  DateTime createdAt;
+  DateTime updatedAt;
+  List<String> photos;
+  User owner;
+
+  ProductDetail({
+    required this.id,
+    required this.title,
+    required this.price,
+    required this.body,
+    required this.category,
+    this.region,
+    required this.color,
+    required this.compatibility,
+    required this.user,
+    required this.views,
+    this.longitude,
+    this.latitude,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.photos,
+    required this.owner,
+  });
+
+  factory ProductDetail.fromJson(Map<String, dynamic> json) => ProductDetail(
+    id: json["id"]??0,
+    title: json["title"]??'',
+    price: json["price"]??0,
+    body: json["body"]??'',
+    category: json["category"]??'',
+    region: json["region"],
+    color: json["color"]??'',
+    compatibility: json["compatibility"]??'',
+    user: json["user"]??'',
+    views: json["views"]??0,
+    longitude: json["longitude"],
+    latitude: json["latitude"],
+    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
+    updatedAt:json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
+    photos: List<String>.from(json["photos"].map((x) => x)),
+    owner: User.fromJson(json["owner"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "title": title,
+    "price": price,
+    "body": body,
+    "category": category,
+    "region": region,
+    "color": color,
+    "compatibility": compatibility,
+    "user": user,
+    "views": views,
+    "longitude": longitude,
+    "latitude": latitude,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "photos": List<dynamic>.from(photos.map((x) => x)),
+    "owner": owner.toJson(),
+  };
 }
 
 class User {
-  int? id;
-  String? fullname;
-  String? username;
-  String? phone;
-  String? status;
-  String? address;
-  String? phoneVerifiedAt;
-  int? role;
-  String? adminUserCategory;
-  String? createdAt;
-  String? updatedAt;
-  dynamic avatar;
-  int? views;
+  int id;
+  String fullname;
+  String username;
+  String phone;
+  String status;
+  String viloyat;
+  String tuman;
+  int productNumber;
+  DateTime phoneVerifiedAt;
+  int role;
+  String adminUserCategory;
+  DateTime createdAt;
+  DateTime updatedAt;
+  String avatar;
+  int views;
+  String blocked;
 
   User({
-    this.id,
-    this.fullname,
-    this.username,
-    this.phone,
-    this.status,
-    this.address,
-    this.phoneVerifiedAt,
-    this.role,
-    this.adminUserCategory,
-    this.createdAt,
-    this.updatedAt,
-    this.avatar,
-    this.views,
+    required this.id,
+    required this.fullname,
+    required this.username,
+    required this.phone,
+    required this.status,
+    required this.viloyat,
+    required this.tuman,
+    required this.productNumber,
+    required this.phoneVerifiedAt,
+    required this.role,
+    required this.adminUserCategory,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.avatar,
+    required this.views,
+    required this.blocked,
   });
 
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'] as int?;
-    fullname = json['fullname'] as String?;
-    username = json['username'] as String?;
-    phone = json['phone'] as String?;
-    status = json['status'] as String?;
-    address = json['address'] as String?;
-    phoneVerifiedAt = json['phone_verified_at'] as String?;
-    role = json['role'] as int?;
-    adminUserCategory = json['admin_user_category'] as String?;
-    createdAt = json['created_at'] as String?;
-    updatedAt = json['updated_at'] as String?;
-    avatar = json['avatar'];
-    views = json['views'] as int?;
-  }
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"]??0,
+    fullname: json["fullname"]??'',
+    username: json["username"]??'',
+    phone: json["phone"]??'',
+    status: json["status"]??'',
+    viloyat: json["viloyat"]??'',
+    tuman: json["tuman"]??'',
+    productNumber: json["product_number"]??0,
+    phoneVerifiedAt:json["phone_verified_at"] != null? DateTime.parse(json["phone_verified_at"]): DateTime.now(),
+    role: json["role"]??0,
+    adminUserCategory: json["admin_user_category"]??'',
+    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
+    updatedAt:json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
+    avatar: json["avatar"]??'',
+    views: json["views"]??0,
+    blocked: json["blocked"]??'',
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['id'] = id;
-    json['fullname'] = fullname;
-    json['username'] = username;
-    json['phone'] = phone;
-    json['status'] = status;
-    json['address'] = address;
-    json['phone_verified_at'] = phoneVerifiedAt;
-    json['role'] = role;
-    json['admin_user_category'] = adminUserCategory;
-    json['created_at'] = createdAt;
-    json['updated_at'] = updatedAt;
-    json['avatar'] = avatar;
-    json['views'] = views;
-    return json;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "fullname": fullname,
+    "username": username,
+    "phone": phone,
+    "status": status,
+    "viloyat": viloyat,
+    "tuman": tuman,
+    "product_number": productNumber,
+    "phone_verified_at": phoneVerifiedAt.toIso8601String(),
+    "role": role,
+    "admin_user_category": adminUserCategory,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "avatar": avatar,
+    "views": views,
+    "blocked": blocked,
+  };
 }

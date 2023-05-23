@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:afisha_market/core/constants/app_constants.dart';
 import 'package:afisha_market/core/handlers/token_interceptor.dart';
+import 'package:afisha_market/core/utils/local_storage.dart';
 import 'package:dio/dio.dart';
 
 
@@ -16,7 +17,7 @@ class HttpService {
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
-        'Accept-Language': 'ru',
+        'Accept-Language': LocalStorage.instance.getLanguage(),
       },
     ),
   )

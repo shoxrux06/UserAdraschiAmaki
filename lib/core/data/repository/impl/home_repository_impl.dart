@@ -1,5 +1,6 @@
 import 'package:afisha_market/core/data/repository/home_repository.dart';
 import 'package:afisha_market/core/data/source/remote/response/AdvertisementResponse.dart';
+import 'package:afisha_market/core/data/source/remote/response/GetProfileResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/RegionResponse.dart';
 import 'package:afisha_market/core/di/inject.dart';
@@ -10,6 +11,7 @@ import 'package:afisha_market/core/handlers/network_exceptions.dart';
 class HomeRepositoryImpl extends HomeRepository{
   @override
   Future<ApiResult<ProductResponse>> getProductList({int page = 1, String search = ""}) async {
+    Future.delayed(Duration(seconds: 10));
     try {
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.get(
@@ -22,13 +24,13 @@ class HomeRepositoryImpl extends HomeRepository{
     }
   }
   @override
-  Future<ApiResult<List<AdvertisementItem>>> getAds() async{
+  Future<ApiResult<AdvertisementResponse>> getAds() async{
     try {
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.get(
         '/reklama',
       );
-      return ApiResult.success(data: List<AdvertisementItem>.from(response.data["data"].map((e) => AdvertisementItem.fromJson(e))) );
+      return ApiResult.success(data: AdvertisementResponse.fromJson(response.data));
     } catch (e) {
       print('==> reklama failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
@@ -61,6 +63,12 @@ class HomeRepositoryImpl extends HomeRepository{
       print('==> regions failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
+  }
+
+  @override
+  Future<ApiResult<List<ProductDetail>>> getProductByRegion(int id) {
+    // TODO: implement getProductByRegion
+    throw UnimplementedError();
   }
 
 }

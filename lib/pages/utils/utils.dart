@@ -227,14 +227,12 @@ class _MyTextFormField2State extends State<MyTextFormField2> {
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: widget.keyboardType,
-      scrollPadding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom),
+      scrollPadding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       inputFormatters: widget.inputFormatters,
       validator: widget.validator,
       decoration: InputDecoration(
-          hintText: widget.labelText.tr(),
-          hintStyle:
-              TextStyle(color: disableColor, fontWeight: FontWeight.normal),
+          hintText: widget.labelText,
+          hintStyle: TextStyle(color: disableColor, fontWeight: FontWeight.normal),
           prefixIcon: widget.prefixIcon,
           fillColor: helperColor,
           filled: true,

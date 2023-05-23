@@ -1,4 +1,4 @@
-import 'package:afisha_market/core/data/source/remote/response/ProductDetailResponse.dart';
+import 'GetProfileResponse.dart';
 
 class ProductOwnerResponse {
   ProductOwnerResponse({
@@ -32,6 +32,7 @@ class User {
     required this.phone,
     required this.status,
     required this.address,
+    required this.additionalAddress,
     required this.productNumber,
     required this.phoneVerifiedAt,
     required this.role,
@@ -49,6 +50,7 @@ class User {
   String phone;
   String status;
   String? address;
+  String? additionalAddress;
   int productNumber;
   DateTime phoneVerifiedAt;
   int role;
@@ -66,6 +68,7 @@ class User {
         phone: json["phone"],
         status: json["status"],
         address: json["address"] ?? "",
+        additionalAddress: json["additionalAddress"] ?? "",
         productNumber: json["product_number"],
         phoneVerifiedAt: DateTime.parse(json["phone_verified_at"]),
         role: json["role"],
@@ -84,6 +87,7 @@ class User {
         "phone": phone,
         "status": status,
         "address": address,
+        "additionalAddress": additionalAddress,
         "product_number": productNumber,
         "phone_verified_at": phoneVerifiedAt.toIso8601String(),
         "role": role,

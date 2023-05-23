@@ -3,19 +3,19 @@ import 'package:afisha_market/core/data/source/remote/request/ResetPasswordReque
 import 'package:afisha_market/core/data/source/remote/request/SignInRequest.dart';
 import 'package:afisha_market/core/data/source/remote/request/SignUpRequest.dart';
 import 'package:afisha_market/core/data/source/remote/request/VerifyRequest.dart';
-import 'package:afisha_market/core/data/source/remote/response/ForgotPasswordResponse.dart';
-import 'package:afisha_market/core/data/source/remote/response/ResetPasswordResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/SignInResponse.dart';
-import 'package:afisha_market/core/data/source/remote/response/SignUpResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/VerifyResponse.dart';
-import 'package:afisha_market/core/data/source/remote/response/delete_account_response.dart';
 import 'package:afisha_market/core/handlers/api_result.dart';
+import 'package:flutter/cupertino.dart';
 
-abstract class AuthRepository{
+import '../source/remote/response/status_and_message_response.dart';
+
+abstract class AuthRepository {
   Future<ApiResult<SignInResponse>> signIn(SignInRequest request);
-  Future<ApiResult<SignUpResponse>> signUp(SignUpRequest request);
-  Future<ApiResult<DeleteAccountResponse>> deleteAccount(String token);
-  Future<ApiResult<VerifyResponse>> verify(VerifyRequest request);
-  Future<ApiResult<ForgotPasswordResponse>> forgotPassword(ForgotPasswordRequest request);
-  Future<ApiResult<ResetPasswordResponse>> newPassword(ResetPasswordRequest request);
+  Future<ApiResult<VerifyResponse>> verify(BuildContext context,VerifyRequest request);
+  Future<ApiResult<StatusAndMessageResponse>> signUp(BuildContext context,SignUpRequest request);
+  Future<ApiResult<StatusAndMessageResponse>> deleteAccount(String token);
+  Future<ApiResult<StatusAndMessageResponse>> forgotPassword(BuildContext context,ForgotPasswordRequest request);
+  Future<ApiResult<StatusAndMessageResponse>> reSendOTP(BuildContext context,String phone);
+  Future<ApiResult<StatusAndMessageResponse>> newPassword(ResetPasswordRequest request);
 }

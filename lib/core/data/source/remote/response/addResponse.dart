@@ -1,16 +1,17 @@
+// To parse this JSON data, do
+//
+//     final createResponse = createResponseFromJson(jsonString);
 
 import 'dart:convert';
-import 'dart:io';
 
 CreateResponse createResponseFromJson(String str) => CreateResponse.fromJson(json.decode(str));
 
 String createResponseToJson(CreateResponse data) => json.encode(data.toJson());
 
-
 class CreateResponse {
   bool? status;
   String? message;
-  Data? data;
+  CreateAndUpdateProduct? data;
 
   CreateResponse({
     this.status,
@@ -18,165 +19,167 @@ class CreateResponse {
     this.data,
   });
 
-  CreateResponse.fromJson(Map<String, dynamic> json) {
-    status = json['status'] as bool?;
-    message = json['message'] as String?;
-    data = (json['data'] as Map<String,dynamic>?) != null ? Data.fromJson(json['data'] as Map<String,dynamic>) : null;
-  }
+  factory CreateResponse.fromJson(Map<String, dynamic> json) => CreateResponse(
+    status: json["status"],
+    message: json["message"],
+    data: json["data"] != null?CreateAndUpdateProduct.fromJson(json["data"]): null,
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['status'] = status;
-    json['message'] = message;
-    json['data'] = data?.toJson();
-    return json;
-  }
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "message": message,
+    "data": data?.toJson(),
+  };
 }
 
-class Data {
-  int? id;
-  String? title;
-  int? price;
-  String? body;
-  String? category;
-  String? region;
-  String? color;
-  String? compatibility;
-  String? user;
-  int? views;
-  double? longitude;
-  double? latitude;
-  String? createdAt;
-  String? updatedAt;
-  List<File>? photos;
-  Owner? owner;
+class CreateAndUpdateProduct {
+  int id;
+  String title;
+  int price;
+  String body;
+  String category;
+  String region;
+  String color;
+  String compatibility;
+  String user;
+  int views;
+  dynamic longitude;
+  dynamic latitude;
+  DateTime createdAt;
+  DateTime updatedAt;
+  List<String> photos;
+  Owner owner;
 
-  Data({
-    this.id,
-    this.title,
-    this.price,
-    this.body,
-    this.category,
-    this.region,
-    this.color,
-    this.compatibility,
-    this.user,
-    this.views,
+  CreateAndUpdateProduct({
+    required this.id,
+    required this.title,
+    required this.price,
+    required this.body,
+    required this.category,
+    required this.region,
+    required this.color,
+    required this.compatibility,
+    required this.user,
+    required this.views,
     this.longitude,
     this.latitude,
-    this.createdAt,
-    this.updatedAt,
-    this.photos,
-    this.owner,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.photos,
+    required this.owner,
   });
 
-  Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'] as int?;
-    title = json['title'] as String?;
-    price = json['price'] as int?;
-    body = json['body'] as String?;
-    category = json['category'] as String?;
-    region = json['region'] as String?;
-    color = json['color'] as String?;
-    compatibility = json['compatibility'] as String?;
-    user = json['user'] as String?;
-    views = json['views'] as int?;
-    longitude = json['longitude'] as double?;
-    latitude = json['latitude'] as double?;
-    createdAt = json['created_at'] as String?;
-    updatedAt = json['updated_at'] as String?;
-    photos = (json['photos'] as List?)?.map((dynamic e) => e as File).toList();
-    owner = (json['owner'] as Map<String,dynamic>?) != null ? Owner.fromJson(json['owner'] as Map<String,dynamic>) : null;
-  }
+  factory CreateAndUpdateProduct.fromJson(Map<String, dynamic> json) => CreateAndUpdateProduct(
+    id: json["id"]??0,
+    title: json["title"]??'',
+    price: json["price"]??0,
+    body: json["body"]??'',
+    category: json["category"]??'',
+    region: json["region"]??'',
+    color: json["color"]??'',
+    compatibility: json["compatibility"]??'',
+    user: json["user"]??'',
+    views: json["views"]??0,
+    longitude: json["longitude"],
+    latitude: json["latitude"],
+    createdAt: json["created_at"] != null?DateTime.parse(json["created_at"]): DateTime.now(),
+    updatedAt:json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
+    photos: List<String>.from(json["photos"].map((x) => x)),
+    owner: Owner.fromJson(json["owner"])
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['id'] = id;
-    json['title'] = title;
-    json['price'] = price;
-    json['body'] = body;
-    json['category'] = category;
-    json['region'] = region;
-    json['color'] = color;
-    json['compatibility'] = compatibility;
-    json['user'] = user;
-    json['views'] = views;
-    json['longitude'] = longitude;
-    json['latitude'] = latitude;
-    json['created_at'] = createdAt;
-    json['updated_at'] = updatedAt;
-    json['photos'] = photos;
-    json['owner'] = owner?.toJson();
-    return json;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "title": title,
+    "price": price,
+    "body": body,
+    "category": category,
+    "region": region,
+    "color": color,
+    "compatibility": compatibility,
+    "user": user,
+    "views": views,
+    "longitude": longitude,
+    "latitude": latitude,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "photos": List<dynamic>.from(photos.map((x) => x)),
+    "owner": owner.toJson(),
+  };
 }
 
 class Owner {
-  int? id;
-  String? fullname;
-  String? username;
-  String? phone;
-  String? address;
-  String? phoneVerifiedAt;
-  int? role;
-  String? adminUserCategoryId;
-  String? createdAt;
-  String? updatedAt;
-  String? avatar;
-  int? views;
-  int? productNumber;
-  int? blocked;
+  int id;
+  String fullname;
+  String username;
+  String phone;
+  String status;
+  String viloyat;
+  String tuman;
+  int productNumber;
+  DateTime phoneVerifiedAt;
+  int role;
+  String adminUserCategory;
+  DateTime createdAt;
+  DateTime updatedAt;
+  String avatar;
+  int views;
+  String blocked;
 
   Owner({
-    this.id,
-    this.fullname,
-    this.username,
-    this.phone,
-    this.address,
-    this.phoneVerifiedAt,
-    this.role,
-    this.adminUserCategoryId,
-    this.createdAt,
-    this.updatedAt,
-    this.avatar,
-    this.views,
-    this.productNumber,
-    this.blocked,
+    required this.id,
+    required this.fullname,
+    required this.username,
+    required this.phone,
+    required this.status,
+    required this.viloyat,
+    required this.tuman,
+    required this.productNumber,
+    required this.phoneVerifiedAt,
+    required this.role,
+    required this.adminUserCategory,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.avatar,
+    required this.views,
+    required this.blocked,
   });
 
-  Owner.fromJson(Map<String, dynamic> json) {
-    id = json['id'] as int?;
-    fullname = json['fullname'] as String?;
-    username = json['username'] as String?;
-    phone = json['phone'] as String?;
-    address = json['address'] as String?;
-    phoneVerifiedAt = json['phone_verified_at'] as String?;
-    role = json['role'] as int?;
-    adminUserCategoryId = json['admin_user_category_id'] as String?;
-    createdAt = json['created_at'] as String?;
-    updatedAt = json['updated_at'] as String?;
-    avatar = json['avatar'] as String?;
-    views = json['views'] as int?;
-    productNumber = json['product_number'] as int?;
-    blocked = json['blocked'] as int?;
-  }
+  factory Owner.fromJson(Map<String, dynamic> json) => Owner(
+    id: json["id"],
+    fullname: json["fullname"],
+    username: json["username"],
+    phone: json["phone"],
+    status: json["status"],
+    viloyat: json["viloyat"],
+    tuman: json["tuman"],
+    productNumber: json["product_number"],
+    phoneVerifiedAt: DateTime.parse(json["phone_verified_at"]),
+    role: json["role"],
+    adminUserCategory: json["admin_user_category"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+    avatar: json["avatar"],
+    views: json["views"],
+    blocked: json["blocked"],
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    json['id'] = id;
-    json['fullname'] = fullname;
-    json['username'] = username;
-    json['phone'] = phone;
-    json['address'] = address;
-    json['phone_verified_at'] = phoneVerifiedAt;
-    json['role'] = role;
-    json['admin_user_category_id'] = adminUserCategoryId;
-    json['created_at'] = createdAt;
-    json['updated_at'] = updatedAt;
-    json['avatar'] = avatar;
-    json['views'] = views;
-    json['product_number'] = productNumber;
-    json['blocked'] = blocked;
-    return json;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "fullname": fullname,
+    "username": username,
+    "phone": phone,
+    "status": status,
+    "viloyat": viloyat,
+    "tuman": tuman,
+    "product_number": productNumber,
+    "phone_verified_at": phoneVerifiedAt.toIso8601String(),
+    "role": role,
+    "admin_user_category": adminUserCategory,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "avatar": avatar,
+    "views": views,
+    "blocked": blocked,
+  };
 }

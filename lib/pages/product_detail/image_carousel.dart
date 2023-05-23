@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 import '../home/widget/dots_indicator.dart';
 
@@ -20,20 +22,25 @@ class _ImageCarouselState extends State<ImageCarousel> {
     print("1");
     if (widget.imageList.isEmpty) {
       return Container(
-        child: Image.asset("assets/images/placeholder_image.png", fit: BoxFit.cover),
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.circular(12)),
+        child: Image.asset("assets/images/placeholder_image.png",
+            fit: BoxFit.cover),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 1),
+            borderRadius: BorderRadius.circular(12)),
       );
     } else {
       return Column(
         children: [
           Container(
-            decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 1),
+                borderRadius: BorderRadius.circular(12)),
             child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12),
               child: CarouselSlider.builder(
                 itemCount: widget.imageList.length,
                 options: CarouselOptions(
-                  viewportFraction: 1,
+                  viewportFraction: 1.4,
                   initialPage: 0,
                   aspectRatio: 1 / 1,
                   enableInfiniteScroll: false,
@@ -50,9 +57,18 @@ class _ImageCarouselState extends State<ImageCarousel> {
                 ),
                 itemBuilder: (BuildContext context, int index, int realIndex) {
                   return SizedBox(
-                      width: double.infinity,
-                      child: FadeInImage.assetNetwork(
-                          placeholder: "assets/images/placeholder_image.png", image: widget.imageList[index], fit: BoxFit.cover));
+                    width: double.infinity,
+                    child: CachedNetworkImage(
+                      placeholder:(context,url) => Image.asset("assets/images/placeholder_image.png"),
+                      imageUrl: widget.imageList[index],
+                      imageBuilder: (context, imageProvider) => PhotoView(
+                        minScale: 0.4,
+                        maxScale: 2.0,
+                        imageProvider: imageProvider,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  );
                 },
               ),
             ),
@@ -63,7 +79,9 @@ class _ImageCarouselState extends State<ImageCarousel> {
                 return Column(
                   children: [
                     SizedBox(height: 10),
-                    CarouselDotsIndicator(dotsLength: widget.imageList.length, currentDot: pageIndex),
+                    CarouselDotsIndicator(
+                        dotsLength: widget.imageList.length,
+                        currentDot: pageIndex),
                   ],
                 );
               }

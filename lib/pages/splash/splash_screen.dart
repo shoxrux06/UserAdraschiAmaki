@@ -1,8 +1,16 @@
 import 'dart:async';
 import 'package:afisha_market/pages/main_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+
+import '../../core/bloc/language/language_bloc.dart';
+import '../../core/bloc/language/language_event.dart';
+import '../../core/utils/local_storage.dart';
+import '../utils/const.dart';
+import '../utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -13,38 +21,42 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
-    super.initState();
-    Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const MainContainer()));
-        // Navigator.of(context).pushReplacement(fade(page:isRegistred ? const HomeScreen() : const Onboarding()));
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: FittedBox(
-                fit: BoxFit.cover,
-                child: Image.asset('assets/images/screenImage.png')),
+    return BlocBuilder<LanguageBloc, LanguageState>(builder: (context, state) {
+      return Scaffold(
+        body: Container(
+          color: Colors.lightBlueAccent.withOpacity(0.2),
+          child: Column(
+            children: [
+              const Spacer(),
+              MyText(
+                "${AppLocalizations.of(context)?.welcome}",
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: mainColor,
+              ),
+              const Spacer(),
+              MyButtonTwo(
+                "Русский",
+                onTap: () async {
+                  context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'ru'));
+                  await LocalStorage.instance.setLanguage('ru');
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer()));
+                },
+              ),
+              MyButtonTwo(
+                'O\'zbek',
+                onTap: () async{
+                  context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'uz'));
+                  await LocalStorage.instance.setLanguage('uz');
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer()));
+                },
+              ),
+              const Spacer(flex: 2,),
+            ],
           ),
-          Lottie.asset(
-            'assets/images/loading.json',
-            width: 64,
-            height: 64,
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 }

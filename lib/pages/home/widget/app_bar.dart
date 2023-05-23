@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -39,7 +39,7 @@ class _SearchBarState extends State<SearchBar> {
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(color: Colors.grey, width: 1),
           ),
-          hintText: "search".tr(),
+          hintText: AppLocalizations.of(context)?.search??'',
           hintStyle: TextStyle(fontSize: 15)
         ),
       ),

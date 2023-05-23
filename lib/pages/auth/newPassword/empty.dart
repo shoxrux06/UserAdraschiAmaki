@@ -27,15 +27,18 @@ class _NewPasswordEmptyState extends State<NewPasswordEmpty> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        if (state.isErrorOccurred) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
               content: MyText(
-            "Something went wrong",
-          )));
+                "Something went wrong",
+              ),
+            ),
+          );
         }
       },
       builder: (context, state) {
-        if (state is AuthSuccessState) {
+        if (state.isAuthenticated) {
           Navigator.pushNamed(context, '/user');
         }
         return const SizedBox();

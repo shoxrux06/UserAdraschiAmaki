@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'dots_indicator.dart';
 
 class CustomCarouselSlider extends StatefulWidget {
-  final AdvertisementItem carouselItems;
+  final List<AdvItem> carouselItems;
 
   const CustomCarouselSlider({Key? key, required this.carouselItems}) : super(key: key);
 
@@ -16,6 +16,18 @@ class CustomCarouselSlider extends StatefulWidget {
 class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
   int pageIndex = 0;
 
+  List<String> list = [];
+
+  @override
+  void initState() {
+    for (var element in widget.carouselItems) {
+      for (var element in element.images) {
+        list.add(element);
+      }
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -23,7 +35,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
         Container(
           padding: const EdgeInsets.all(10),
           child: CarouselSlider.builder(
-            itemCount: widget.carouselItems.images.length,
+            itemCount: list.length,
             options: CarouselOptions(
               height: 200,
               aspectRatio: 16 / 9,
@@ -50,11 +62,11 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(11),
                       child: FadeInImage.assetNetwork(
-                          placeholder: "assets/images/placeholder_image.png", image: widget.carouselItems.images[index], fit: BoxFit.cover)));
+                          placeholder: "assets/images/placeholder_image.png", image: list.isNotEmpty?list[index] :'', fit: BoxFit.cover)));
             },
           ),
         ),
-        CarouselDotsIndicator(dotsLength: widget.carouselItems.images.length, currentDot: pageIndex),
+        CarouselDotsIndicator(dotsLength: list.length, currentDot: pageIndex),
       ],
     );
   }

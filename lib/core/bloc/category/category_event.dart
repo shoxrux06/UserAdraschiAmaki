@@ -4,3 +4,4 @@ part of 'category_bloc.dart';
 abstract class CategoryEvent {}
 
 class CategoryInitEvent extends CategoryEvent {}
+class CategoryFilteredEvent extends CategoryEvent {}
