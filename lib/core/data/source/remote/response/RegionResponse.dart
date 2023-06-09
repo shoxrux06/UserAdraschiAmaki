@@ -1,13 +1,23 @@
+// To parse this JSON data, do
+//
+//     final regionResponse = regionResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+RegionResponse regionResponseFromJson(String str) => RegionResponse.fromJson(json.decode(str));
+
+String regionResponseToJson(RegionResponse data) => json.encode(data.toJson());
+
 class RegionResponse {
+  bool status;
+  String message;
+  List<Region> data;
+
   RegionResponse({
     required this.status,
     required this.message,
     required this.data,
   });
-
-  bool status;
-  String message;
-  List<Region> data;
 
   factory RegionResponse.fromJson(Map<String, dynamic> json) => RegionResponse(
     status: json["status"],
@@ -23,29 +33,45 @@ class RegionResponse {
 }
 
 class Region {
+  int id;
+  String name;
+  List<District> districts;
+
   Region({
     required this.id,
     required this.name,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.districts,
   });
 
-  int id;
-  String name;
-  DateTime createdAt;
-  DateTime updatedAt;
-
   factory Region.fromJson(Map<String, dynamic> json) => Region(
-    id: json["id"]??0,
-    name: json["name"]??'',
-    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
-    updatedAt: json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
+    id: json["id"],
+    name: json["name"],
+    districts: List<District>.from(json["districts"].map((x) => District.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "districts": List<dynamic>.from(districts.map((x) => x.toJson())),
+  };
+}
+
+class District {
+  int id;
+  String name;
+
+  District({
+    required this.id,
+    required this.name,
+  });
+
+  factory District.fromJson(Map<String, dynamic> json) => District(
+    id: json["id"],
+    name: json["name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
   };
 }

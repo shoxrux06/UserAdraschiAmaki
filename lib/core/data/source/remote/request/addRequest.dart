@@ -8,46 +8,56 @@ String productResponseToJson(CreateRequest data) => json.encode(data.toJson());
 
 class CreateRequest {
   String? title;
-  int? categoryId;
   int? price;
   String? body;
-  String? compatibility;
-  String? color;
+  int? categoryId;
   int? regionId;
+  int? districtId;
+  dynamic latitude;
+  dynamic longitude;
+  String? color;
+  String? compatibility;
   List<File>? photos;
-
 
   CreateRequest({
     this.title,
-    this.categoryId,
     this.price,
     this.body,
-    this.compatibility,
-    this.color,
+    this.categoryId,
     this.regionId,
+    this.districtId,
+    this.latitude,
+    this.longitude,
+    this.color,
+    this.compatibility,
     this.photos,
   });
 
   CreateRequest.fromJson(Map<String, dynamic> json) {
     title = json['title'] as String?;
-    categoryId = json['category_id'] as int?;
     price = json['price'] as int?;
     body = json['body'] as String?;
-    compatibility = json['compatibility'] as String?;
-    color = json['color'] as String?;
+    categoryId = json['category_id'] as int?;
     regionId = json['region_id'] as int?;
+    latitude = json['latitude'] != null? json['latitude'] as double:null;
+    longitude = json['longitude'] != null? json['longitude'] as double:null;
+    districtId = json['district_id'] as int?;
+    color = json['color'] as String?;
+    compatibility = json['compatibility'] as String?;
     photos = (json['photos'] as List?)?.map((dynamic e) => e as File).toList();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = <String, dynamic>{};
     json['title'] = title;
-    json['category_id'] = categoryId;
     json['price'] = price;
     json['body'] = body;
-    json['compatibility'] = compatibility;
+    json['category_id'] = categoryId;
+    json['district_id'] = districtId;
+    json['latitude'] = latitude;
+    json['longitude'] = longitude;
     json['color'] = color;
-    json['region_id'] = regionId;
+    json['compatibility'] = compatibility;
     json['photos'] = photos;
     return json;
   }

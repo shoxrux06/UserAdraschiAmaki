@@ -7,6 +7,7 @@ import '../../core/bloc/home/home_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../filterDetailPage/FilterProductDetailPage.dart';
+import '../utils/const.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({Key? key, this.userId}) : super(key: key);
@@ -44,7 +45,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Builder(builder: (context) {
                   var user = state.list?.products[0].owner;
                   return Container(
-                    margin: const EdgeInsets.only(top: 40),
                     child: Card(
                       color: Colors.white,
                       shape: const RoundedRectangleBorder(
@@ -52,45 +52,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       child: Column(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(30),
+                            padding: const EdgeInsets.all(24),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 120,
-                                      height: 120,
-                                      child: Builder(builder: (context) {
-                                        if (user!.avatar!.isNotEmpty) {
-                                          return ClipRRect(
-                                              borderRadius: BorderRadius.circular(70),
-                                              child: FadeInImage.assetNetwork(
-                                                placeholder: "assets/images/profile_placeholder.jpg",
-                                                image: user.avatar!,
-                                                fit: BoxFit.cover,
-                                              ));
-                                        } else {
-                                          return ClipRRect(
-                                              borderRadius: BorderRadius.circular(70),
-                                              child: Image.asset("assets/images/profile_placeholder.jpg"));
-                                        }
-                                      }),
+                                Center(
+                                  child: CircleAvatar(
+                                    radius: 65,
+                                    backgroundColor: mainColor,
+                                    child: ClipOval(
+                                      child: FadeInImage(
+                                        placeholder: const AssetImage('assets/images/afisha_logo.png'),
+                                        image: NetworkImage(user?.avatar??''),
+                                        imageErrorBuilder: (context, error, stackTrace) {
+                                          return Image.asset('assets/images/afisha_logo.png', fit: BoxFit.fitWidth);
+                                        },
+                                        width: 120,
+                                        height: 120,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                                 const SizedBox(height: 20),
                                 Text(user?.fullname??'', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
                                 const SizedBox(height: 8),
                                 Row(
-                                  children: [
-                                    Text("${l10n?.enterpriseCategory}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                                    Text(state.list?.user.adminUserCategory??'', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text("${l10n?.accountStatus}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                                     Text("${state.list?.user.status}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
@@ -98,13 +86,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 ),
                                 const SizedBox(height: 8),
                                 Row(
-                                  children: [
-                                    Text("${l10n?.address}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                                    Text(": ${user?.viloyat} ${user?.tuman}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text("${l10n?.profileViews}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey)),
                                     Text(" ${user?.views}", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey)),
@@ -112,6 +94,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 ),
                                 const SizedBox(height: 8),
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text("${l10n?.contacts}:", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                                     InkWell(

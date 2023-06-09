@@ -36,4 +36,18 @@ class FilterRepositoryImpl extends FilterRepository{
     }
   }
 
+  @override
+  Future<ApiResult<List<Product>>> getProductByDistrict(int id) async{
+    try {
+      final client = inject<HttpService>().client(requireAuth: true);
+      final response = await client.get(
+        '/districts/$id',
+      );
+      return ApiResult.success(data: List<Product>.from(response.data["data"]["item"].map((e) => Product.fromJson(e))));
+    } catch (e) {
+      print('==> districts failure: $e');
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
 }

@@ -35,54 +35,57 @@ class _NewPasswordContainerState extends State<NewPasswordContainer> {
     final AuthBloc _bloc = BlocProvider.of<AuthBloc>(context);
     return Form(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(children: [
-            MyTextFormField2(
-              'Новый пароль',
-              const Icon(CupertinoIcons.lock),
-              _pass1Controller,
-              validator: (val) {
-                if (val!.length < 5)
-                  return 'Password must be at least 6 characters';
-                return null;
-              },
-              isPassword: true,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            MyTextFormField2(
-              'Подтвердите пароль',
-              const Icon(CupertinoIcons.lock),
-              _pass2Controller,
-              validator: (val) {
-                if (val!.length < 5)
-                  return 'Password must be at least 6 characters';
-                return null;
-              },
-              isPassword: true,
-            ),
-            NewPasswordEmpty(
-              phoneNumber: verifyRequest.phone,
-              pass1: _pass1Controller.text,
-              pass2: _pass2Controller.text,
-              code: verifyRequest.code,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            MyBigButton(
-              'Регистрация',
-              onTap: () {
-                _bloc.add(NewPasswordEvent(ResetPasswordRequest(
-                    phone: verifyRequest.phone,
-                    password: _pass1Controller.text,
-                    passwordConfirmation: _pass2Controller.text,
-                    code: verifyRequest.code)));
-              },
-            )
-          ]),
+        child: Container(
+          color: Colors.lightBlueAccent.withOpacity(0.2),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(children: [
+              MyTextFormField2(
+                'Новый пароль',
+                const Icon(CupertinoIcons.lock),
+                _pass1Controller,
+                validator: (val) {
+                  if (val!.length < 5)
+                    return 'Password must be at least 6 characters';
+                  return null;
+                },
+                isPassword: true,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              MyTextFormField2(
+                'Подтвердите пароль',
+                const Icon(CupertinoIcons.lock),
+                _pass2Controller,
+                validator: (val) {
+                  if (val!.length < 5)
+                    return 'Password must be at least 6 characters';
+                  return null;
+                },
+                isPassword: true,
+              ),
+              NewPasswordEmpty(
+                phoneNumber: verifyRequest.phone,
+                pass1: _pass1Controller.text,
+                pass2: _pass2Controller.text,
+                code: verifyRequest.code,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              MyBigButton(
+                'Регистрация',
+                onTap: () {
+                  _bloc.add(NewPasswordEvent(ResetPasswordRequest(
+                      phone: verifyRequest.phone,
+                      password: _pass1Controller.text,
+                      passwordConfirmation: _pass2Controller.text,
+                      code: verifyRequest.code)));
+                },
+              )
+            ]),
+          ),
         ));
   }
 }

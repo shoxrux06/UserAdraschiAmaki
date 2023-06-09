@@ -38,7 +38,8 @@ class ProductDetail {
   int price;
   String body;
   String category;
-  dynamic region;
+  String region;
+  String district;
   String color;
   String compatibility;
   String user;
@@ -56,7 +57,8 @@ class ProductDetail {
     required this.price,
     required this.body,
     required this.category,
-    this.region,
+    required this.region,
+    required this.district,
     required this.color,
     required this.compatibility,
     required this.user,
@@ -75,7 +77,8 @@ class ProductDetail {
     price: json["price"]??0,
     body: json["body"]??'',
     category: json["category"]??'',
-    region: json["region"],
+    region: json["region"]??'',
+    district: json["district"]??'',
     color: json["color"]??'',
     compatibility: json["compatibility"]??'',
     user: json["user"]??'',
@@ -95,6 +98,7 @@ class ProductDetail {
     "body": body,
     "category": category,
     "region": region,
+    "district": district,
     "color": color,
     "compatibility": compatibility,
     "user": user,
@@ -114,12 +118,9 @@ class User {
   String username;
   String phone;
   String status;
-  String viloyat;
-  String tuman;
   int productNumber;
   DateTime phoneVerifiedAt;
   int role;
-  String adminUserCategory;
   DateTime createdAt;
   DateTime updatedAt;
   String avatar;
@@ -132,12 +133,9 @@ class User {
     required this.username,
     required this.phone,
     required this.status,
-    required this.viloyat,
-    required this.tuman,
     required this.productNumber,
     required this.phoneVerifiedAt,
     required this.role,
-    required this.adminUserCategory,
     required this.createdAt,
     required this.updatedAt,
     required this.avatar,
@@ -151,12 +149,9 @@ class User {
     username: json["username"]??'',
     phone: json["phone"]??'',
     status: json["status"]??'',
-    viloyat: json["viloyat"]??'',
-    tuman: json["tuman"]??'',
     productNumber: json["product_number"]??0,
     phoneVerifiedAt:json["phone_verified_at"] != null? DateTime.parse(json["phone_verified_at"]): DateTime.now(),
     role: json["role"]??0,
-    adminUserCategory: json["admin_user_category"]??'',
     createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
     updatedAt:json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
     avatar: json["avatar"]??'',
@@ -170,12 +165,9 @@ class User {
     "username": username,
     "phone": phone,
     "status": status,
-    "viloyat": viloyat,
-    "tuman": tuman,
     "product_number": productNumber,
     "phone_verified_at": phoneVerifiedAt.toIso8601String(),
     "role": role,
-    "admin_user_category": adminUserCategory,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
     "avatar": avatar,

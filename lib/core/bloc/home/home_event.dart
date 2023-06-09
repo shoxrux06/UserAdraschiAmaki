@@ -19,3 +19,9 @@ class HomeFilterEvent extends HomeEvent {
   HomeFilterEvent(this.regionId);
 }
 
+class HomeFilterByDistrictEvent extends HomeEvent {
+  final int districtId;
+
+  HomeFilterByDistrictEvent(this.districtId);
+}
+

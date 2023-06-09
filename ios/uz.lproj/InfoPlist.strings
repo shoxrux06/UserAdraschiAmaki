@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by PRO on 07/06/23.
+  
+*/
+"NSPhotoLibraryUsageDescription" = "Galereyaga avatar rasmingizni o'zgartirishga ruxsat berishingiz kerak";
+"NSCameraUsageDescription" = "Avatar tasviringizni o'zgartirish uchun kameraga ruxsat berishingiz kerak";
+"NSMicrophoneUsageDescription" = "Bu video tavsifi uchun video olish uchun kerak";
+"NSLocationWhenInUseUsageDescription" = "Joylashuvingiz mahsulotni qayerdan qo'shganingizni aniqlash uchun ishlatiladi";
+"NSLocationAlwaysUsageDescription" = "Joylashuvingiz mahsulotni qayerdan qo'shganingizni aniqlash uchun ishlatiladi";

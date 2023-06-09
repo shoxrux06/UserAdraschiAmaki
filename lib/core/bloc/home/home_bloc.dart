@@ -128,6 +128,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
+    on<HomeFilterByDistrictEvent>((event, emit) async {
+      emit(state.copyWith(status: Status.loading, isFetchingFilteredProducts: true));
+      try {
+        final response = await _filterRepository.getProductByDistrict(event.districtId);
+        response.when(success: (data) {
+          emit(state.copyWith(
+            status: Status.success,
+            isFetchingFilteredProducts: false,
+            productList: data,
+            adList: state.adList,
+            currentPage: 0,
+            lastPage: 1,
+          ));
+        }, failure: (failure) {
+          emit(state.copyWith(status: Status.fail,isFetchingFilteredProducts: false,));
+        });
+      } catch (e) {
+        emit(state.copyWith(
+          status: Status.fail,
+          isFetchingFilteredProducts: false,
+        ));
+      }
+    });
+
     on<HomeSearchEvent>((event, emit) async {
       emit(state.copyWith(status: Status.loading, search: event.text));
       try {

@@ -22,6 +22,11 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
   final picker = ImagePicker();
 
   @override
+  void initState() {
+    context.read<ProfileBloc>().add(GetProfileEvent());
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return BlocConsumer<ProfileBloc, ProfileState>(
@@ -39,20 +44,17 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                 children: [
                   Center(
                     child: CircleAvatar(
-                      radius: 80,
+                      radius: 65,
                       backgroundColor: mainColor,
                       child: ClipOval(
                         child: FadeInImage(
-                          placeholder:
-                              const AssetImage('assets/images/afisha_logo.png'),
-                          image: NetworkImage(
-                              state.profileResponse.user!.avatar),
+                          placeholder: const AssetImage('assets/images/afisha_logo.png'),
+                          image: NetworkImage(state.profileResponse.user.avatar),
                           imageErrorBuilder: (context, error, stackTrace) {
-                            return Image.asset('assets/images/afisha_logo.png',
-                                fit: BoxFit.fitWidth);
+                            return Image.asset('assets/images/afisha_logo.png', fit: BoxFit.fitWidth);
                           },
-                          width: 156,
-                          height: 156,
+                          width: 120,
+                          height: 120,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -62,7 +64,7 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                     height: 8,
                   ),
                   MyText(
-                    state.profileResponse.user!.fullname.toString(),
+                    state.profileResponse.user.fullname.toString(),
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
                     fontSize: 18,
@@ -70,30 +72,13 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Row(
-                      children: [
-                        MyText(
-                          '${l10n?.category}: ',
-                          color: Colors.black,
-                          fontSize: 14,
-                        ),
-                        MyText(
-                          state.profileResponse.user!.adminUserCategory
-                              .toString(),
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ],
-                    ),
-                  ),
                   const SizedBox(
                     height: 8,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         MyText(
                           '${l10n?.accountStatus} ',
@@ -101,7 +86,7 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                           fontSize: 14,
                         ),
                         MyText(
-                          state.profileResponse.user!.status.toString(),
+                          state.profileResponse.user.status.toString(),
                           color: Colors.green,
                           fontSize: 14,
                         ),
@@ -111,38 +96,11 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Row(
-                      children: [
-                        FittedBox(
-                          child: MyText(
-                            '${l10n?.address}: ',
-                            color: Colors.black,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Expanded(
-                          child: FittedBox(
-                            child: MyText(
-                              ' ${state.profileResponse.user!.viloyat} ${state.profileResponse.user!.tuman}',
-                              color: Colors.blue,
-                              fontSize: 14,
-                              maxLines: 3,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
                   MyText(
-                    "${l10n?.profileViews} ${state.profileResponse.user!.views.toString()} ${l10n?.people}",
+                    "${l10n?.profileViews} ${state.profileResponse.user.views.toString()} ${l10n?.people}",
                     color: Colors.grey,
                     fontWeight: FontWeight.w400,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                   Container(
                     child: isButton
@@ -157,10 +115,9 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                             },
                           )
                         : MyWrappedText(
-                            state.profileResponse.user!.phone.toString(),
+                            state.profileResponse.user.phone.toString(),
                             onTap: () async {
-                              final url = Uri.parse(
-                                  'tel:${state.profileResponse.user!.phone.toString()}');
+                              final url = Uri.parse('tel:${state.profileResponse.user.phone.toString()}');
                               if (await canLaunchUrl(url)) {
                                 launchUrl(url);
                                 Future.delayed(Duration(seconds: 1), () {
@@ -193,6 +150,7 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
               InkWell(
                 onTap: () {
                   context.read<ProfileBloc>().add(GetProfileEvent());
+                  print('Hi ');
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width / 2,

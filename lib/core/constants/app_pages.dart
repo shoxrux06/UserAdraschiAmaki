@@ -1,3 +1,4 @@
+import 'package:afisha_market/pages/add/select_from_map_page.dart';
 import 'package:afisha_market/pages/auth/newPassword/NewPasswordScreen.dart';
 import 'package:afisha_market/pages/auth/noAccount/NoAccountScreen.dart';
 import 'package:afisha_market/pages/auth/signUp/SignUpScreen.dart';
@@ -66,6 +67,10 @@ abstract class AppPages {
       case AppRoutes.main:
         return MaterialPageRoute(
           builder: (_) => const MainContainer(),
+        );
+      case AppRoutes.selectFromMap:
+        return MaterialPageRoute(
+          builder: (_) =>  SelectFromMapPage(),
         );
       case AppRoutes.filterRegion:
         return MaterialPageRoute(

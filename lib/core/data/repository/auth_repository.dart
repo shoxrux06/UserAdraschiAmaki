@@ -11,11 +11,13 @@ import 'package:flutter/cupertino.dart';
 import '../source/remote/response/status_and_message_response.dart';
 
 abstract class AuthRepository {
-  Future<ApiResult<SignInResponse>> signIn(SignInRequest request);
+  Future<ApiResult<SignInResponse>> signIn(BuildContext context,SignInRequest request);
   Future<ApiResult<VerifyResponse>> verify(BuildContext context,VerifyRequest request);
   Future<ApiResult<StatusAndMessageResponse>> signUp(BuildContext context,SignUpRequest request);
-  Future<ApiResult<StatusAndMessageResponse>> deleteAccount(String token);
+  Future<ApiResult<StatusAndMessageResponse>> deleteAccount(BuildContext context,String phone);
+  Future<ApiResult<StatusAndMessageResponse>> deleteAccountVerify(BuildContext context,String phone, String otp);
   Future<ApiResult<StatusAndMessageResponse>> forgotPassword(BuildContext context,ForgotPasswordRequest request);
+  Future<ApiResult<StatusAndMessageResponse>> resetPassword(BuildContext context,ResetPasswordRequest resetPasswordRequest);
   Future<ApiResult<StatusAndMessageResponse>> reSendOTP(BuildContext context,String phone);
   Future<ApiResult<StatusAndMessageResponse>> newPassword(ResetPasswordRequest request);
 }

@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by PRO on 07/06/23.
+  
+*/
+"NSPhotoLibraryUsageDescription" = "Вы должны дать галерее разрешение на изменение изображения аватара.";
+"NSCameraUsageDescription" = "Вы должны дать разрешение камере для изменения изображения аватара";
+"NSMicrophoneUsageDescription" = "Это нужно для того, чтобы снять видео для описания видео";
+"NSLocationWhenInUseUsageDescription" = "Ваше местоположение используется для определения того, откуда вы добавили продукт";
+"NSLocationAlwaysUsageDescription" = "Ваше местоположение используется для определения того, откуда вы добавили продукт";

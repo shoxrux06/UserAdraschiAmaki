@@ -48,19 +48,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const Divider(
               height: 2,
             ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.lock,
-                color: mainColor,
-              ),
-              title: Text(l10n?.confidentiality??''),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConfidentalityScreen()));
-              },
-            ),
-            const Divider(
-              height: 2,
-            ),
           ],
         ),
       ),

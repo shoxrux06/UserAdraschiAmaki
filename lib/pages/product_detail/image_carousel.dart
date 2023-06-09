@@ -1,8 +1,8 @@
+import 'package:afisha_market/pages/product_detail/video_palyer_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-
 import '../home/widget/dots_indicator.dart';
 
 class ImageCarousel extends StatefulWidget {
@@ -16,17 +16,15 @@ class ImageCarousel extends StatefulWidget {
 
 class _ImageCarouselState extends State<ImageCarousel> {
   int pageIndex = 0;
-
   @override
-  Widget build(BuildContext context) {
-    print("1");
+  Widget build(BuildContext context){
     if (widget.imageList.isEmpty) {
       return Container(
-        child: Image.asset("assets/images/placeholder_image.png",
-            fit: BoxFit.cover),
         decoration: BoxDecoration(
             border: Border.all(color: Colors.grey, width: 1),
             borderRadius: BorderRadius.circular(12)),
+        child: Image.asset("assets/images/placeholder_image.png",
+            fit: BoxFit.cover),
       );
     } else {
       return Column(
@@ -46,7 +44,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                   enableInfiniteScroll: false,
                   reverse: false,
                   autoPlay: false,
-                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayInterval: const Duration(seconds: 10),
                   autoPlayAnimationDuration: const Duration(milliseconds: 800),
                   autoPlayCurve: Curves.fastOutSlowIn,
                   onPageChanged: (index, reason) {
@@ -56,19 +54,34 @@ class _ImageCarouselState extends State<ImageCarousel> {
                   scrollDirection: Axis.horizontal,
                 ),
                 itemBuilder: (BuildContext context, int index, int realIndex) {
-                  return SizedBox(
-                    width: double.infinity,
-                    child: CachedNetworkImage(
-                      placeholder:(context,url) => Image.asset("assets/images/placeholder_image.png"),
-                      imageUrl: widget.imageList[index],
-                      imageBuilder: (context, imageProvider) => PhotoView(
-                        minScale: 0.4,
-                        maxScale: 2.0,
-                        imageProvider: imageProvider,
+                  if(widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'jpeg'
+                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'png'
+                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'jpg'
+                  ){
+                    return  SizedBox(
+                      width: double.infinity,
+                      child: CachedNetworkImage(
+                        placeholder:(context,url) => Image.asset("assets/images/placeholder_image.png"),
+                        imageUrl: widget.imageList[index],
+                        imageBuilder: (context, imageProvider) => PhotoView(
+                          minScale: 0.4,
+                          maxScale: 2.0,
+                          imageProvider: imageProvider,
+                        ),
+                        fit: BoxFit.cover,
                       ),
-                      fit: BoxFit.cover,
-                    ),
-                  );
+                    );
+                  }else if(
+                  widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'gif'||
+                   widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'mp4'
+                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'avi'
+                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'mov'
+                  ){
+                    return VideoPlayerNetworkImage(widget.imageList[index]);
+                  }else{
+                    return SizedBox();
+                  }
+
                 },
               ),
             ),

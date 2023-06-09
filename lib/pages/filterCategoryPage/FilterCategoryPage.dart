@@ -23,8 +23,6 @@ class _FilterCategoryPageState extends State<FilterCategoryPage> {
   @override
   void initState() {
     Future(() {
-      // final args = ModalRoute.of(context)!.settings.arguments as Category;
-      // print("$args");
       bloc.add(FilterCategoryDataEvent(widget.categoryId ?? 0));
     });
     super.initState();
@@ -45,6 +43,7 @@ class _FilterCategoryPageState extends State<FilterCategoryPage> {
             }
             if (state.productList.isNotEmpty) {
               return Container(
+                color: Colors.lightBlueAccent.withOpacity(0.2),
                 padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -57,17 +56,15 @@ class _FilterCategoryPageState extends State<FilterCategoryPage> {
                   itemBuilder: (context, i) {
                     return GestureDetector(
                         onTap: () {
-                          // Navigator.of(context).push(MaterialPageRoute(builder: (_) => FilterProductDetailPage(productDetail: state.productList[i],)));
-                          // Navigator.pushNamed(context, "/filterProductDetail", arguments: state.productList[i]);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => FilterProductDetailPage(productDetail: state.productList[i],)));
                         },
-                        child: GestureDetector(
-                            child: FilterProductItem(
-                                product: state.productList[i])));
+                        child: GestureDetector(child: FilterProductItem(product: state.productList[i])));
                   },
                 ),
               );
             } else {
               return Container(
+                color: Colors.lightBlueAccent.withOpacity(0.2),
                 padding:  EdgeInsets.all(24),
                 child: Center(
                   child: Column(

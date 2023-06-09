@@ -52,7 +52,6 @@ class _OTPContainerState extends State<OTPContainer> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    print('PHONE -->${widget.phone}');
     final AuthBloc bloc = BlocProvider.of<AuthBloc>(context);
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
@@ -66,36 +65,10 @@ class _OTPContainerState extends State<OTPContainer> {
           );
         }
         if (state.isVerified) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => MainContainer()));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const MainContainer()));
         }
       },
       builder: (context, state) {
-        if (state.isAuthenticated) {
-          Container(
-            color: Colors.lightBlueAccent.withOpacity(0.2),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Lottie.asset('assets/images/success.json',
-                      width: 180, height: 180),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: MyBigButton(
-                      'OK',
-                      onTap: () {
-                        Navigator.popUntil(context,
-                            ModalRoute.withName(Navigator.defaultRouteName));
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        }
         return Material(
           child: Container(
             color: Colors.lightBlueAccent.withOpacity(0.2),
@@ -160,10 +133,7 @@ class _OTPContainerState extends State<OTPContainer> {
                     isLoading: state.isVerifying,
                     onTap: () {
                       var code = controller.text;
-                      bloc.add(VerifyEvent(
-                          context,
-                          VerifyRequest(
-                              phone: AppConst.pHONENUMBER, code: code)));
+                      bloc.add(VerifyEvent(context, VerifyRequest(phone: AppConst.pHONENUMBER, code: code)));
                     },
                   ),
                 ],

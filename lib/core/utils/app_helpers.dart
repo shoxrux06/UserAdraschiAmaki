@@ -6,6 +6,8 @@ import '../../pages/utils/const.dart';
 class AppHelpers {
   const AppHelpers._();
 
+  static showSnackBar(BuildContext context,String message) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+
   static translate(BuildContext context) => AppLocalizations.of(context);
 
   static showCheckFlash(BuildContext context, String text) {
@@ -49,7 +51,7 @@ class AppHelpers {
         fillColor: helperColor,
         filled: true,
         hintText: isHintText?text: null,
-        hintStyle: TextStyle(color: disableColor, fontWeight: FontWeight.normal),
+        hintStyle: TextStyle(color: disableColor, fontWeight: FontWeight.normal, fontSize: 16),
         // prefixIcon: const Icon(Icons.not_listed_location_outlined),
         border: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(16)),

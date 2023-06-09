@@ -20,8 +20,6 @@ class _FilterRegionPageState extends State<FilterRegionPage> {
   @override
   void initState() {
     Future(() {
-      // final args = ModalRoute.of(context)!.settings.arguments as Region;
-      // print("$args");
       bloc.add(FilterRegionDataEvent(widget.regionId??0));
     });
     super.initState();

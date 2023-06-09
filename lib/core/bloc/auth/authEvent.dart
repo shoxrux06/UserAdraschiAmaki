@@ -11,9 +11,10 @@ import '../../data/source/remote/request/SignInRequest.dart';
 abstract class AuthEvent {}
 
 class SignInEvent extends AuthEvent {
+  final BuildContext context;
   final SignInRequest signInRequest;
 
-  SignInEvent(this.signInRequest);
+  SignInEvent(this.context,this.signInRequest);
 }
 
 class SignUpEvent extends AuthEvent {
@@ -43,16 +44,25 @@ class VerifyEvent extends AuthEvent {
   VerifyEvent(this.context,this.verifyRequest);
 }
 
-class DeleteAccountEvent extends AuthEvent {
-  final String token;
+class ResetPasswordEvent extends AuthEvent {
+  final BuildContext context;
+  final ResetPasswordRequest resetPasswordRequest;
 
-  DeleteAccountEvent(this.token);
+  ResetPasswordEvent(this.context,this.resetPasswordRequest);
 }
 
-class AuthImagePickedEvent extends AuthEvent {
-  final File avatar;
+class DeleteAccountEvent extends AuthEvent {
+  final BuildContext context;
+  final String phone;
 
-  AuthImagePickedEvent(this.avatar);
+  DeleteAccountEvent(this.context,this.phone);
+}
+class DeleteAccountVerifyEvent extends AuthEvent {
+  final BuildContext context;
+  final String phone;
+  final String otp;
+
+  DeleteAccountVerifyEvent(this.context,this.phone, this.otp);
 }
 class ResendCodeEvent extends AuthEvent{
   final BuildContext context;

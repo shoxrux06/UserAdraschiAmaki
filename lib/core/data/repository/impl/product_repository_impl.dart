@@ -37,6 +37,24 @@ class ProductRepositoryImpl extends ProductRepository {
         'compatibility': request.compatibility,
         'color': request.color,
         'region_id': request.regionId,
+        'district_id': request.districtId,
+        'photos[]': await Future.wait(
+          request.photos!.map((photo) async {
+            return await MultipartFile.fromFile(photo.path);
+          }),
+        )
+      });
+      final formData2 = FormData.fromMap({
+        'title': request.title,
+        'category_id': request.categoryId,
+        'price': request.price,
+        'body': request.body,
+        'compatibility': request.compatibility,
+        'color': request.color,
+        'region_id': request.regionId,
+        'district_id': request.districtId,
+        'latitude': request.latitude,
+        'longitude': request.longitude,
         'photos[]': await Future.wait(
           request.photos!.map((photo) async {
             return await MultipartFile.fromFile(photo.path);
@@ -46,7 +64,7 @@ class ProductRepositoryImpl extends ProductRepository {
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.post(
         '/products',
-        data: formData
+        data: (request.latitude ==  null || request.longitude == null)?formData: formData2
       );
       return ApiResult.success(data: CreateResponse.fromJson(response.data));
     } on DioError catch(e){
@@ -90,6 +108,7 @@ class ProductRepositoryImpl extends ProductRepository {
         'compatibility': request.compatibility,
         'color': request.color,
         'region_id': request.regionId,
+        'district_id': request.districtId,
         'photos[]': await Future.wait(
           request.photos!.map((photo) async {
             return await MultipartFile.fromFile(photo.path);

@@ -39,7 +39,7 @@ class _AddScreenState extends State<AddScreen> {
                     );
                   }else{
                     return Container(
-                      padding: EdgeInsets.all(24),
+                      margin: EdgeInsets.all(24),
                       color: Colors.lightBlueAccent.withOpacity(0.2),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,

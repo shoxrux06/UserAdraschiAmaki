@@ -39,6 +39,7 @@ class CreateAndUpdateProduct {
   String body;
   String category;
   String region;
+  String district;
   String color;
   String compatibility;
   String user;
@@ -57,6 +58,7 @@ class CreateAndUpdateProduct {
     required this.body,
     required this.category,
     required this.region,
+    required this.district,
     required this.color,
     required this.compatibility,
     required this.user,
@@ -76,16 +78,17 @@ class CreateAndUpdateProduct {
     body: json["body"]??'',
     category: json["category"]??'',
     region: json["region"]??'',
+    district: json["district"]??'',
     color: json["color"]??'',
-    compatibility: json["compatibility"]??'',
+    compatibility: json["compatibility"],
     user: json["user"]??'',
     views: json["views"]??0,
     longitude: json["longitude"],
     latitude: json["latitude"],
-    createdAt: json["created_at"] != null?DateTime.parse(json["created_at"]): DateTime.now(),
+    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
     updatedAt:json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
     photos: List<String>.from(json["photos"].map((x) => x)),
-    owner: Owner.fromJson(json["owner"])
+    owner: Owner.fromJson(json["owner"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -95,6 +98,7 @@ class CreateAndUpdateProduct {
     "body": body,
     "category": category,
     "region": region,
+    "district": district,
     "color": color,
     "compatibility": compatibility,
     "user": user,
@@ -114,12 +118,9 @@ class Owner {
   String username;
   String phone;
   String status;
-  String viloyat;
-  String tuman;
   int productNumber;
   DateTime phoneVerifiedAt;
   int role;
-  String adminUserCategory;
   DateTime createdAt;
   DateTime updatedAt;
   String avatar;
@@ -132,12 +133,9 @@ class Owner {
     required this.username,
     required this.phone,
     required this.status,
-    required this.viloyat,
-    required this.tuman,
     required this.productNumber,
     required this.phoneVerifiedAt,
     required this.role,
-    required this.adminUserCategory,
     required this.createdAt,
     required this.updatedAt,
     required this.avatar,
@@ -146,22 +144,19 @@ class Owner {
   });
 
   factory Owner.fromJson(Map<String, dynamic> json) => Owner(
-    id: json["id"],
-    fullname: json["fullname"],
-    username: json["username"],
-    phone: json["phone"],
-    status: json["status"],
-    viloyat: json["viloyat"],
-    tuman: json["tuman"],
-    productNumber: json["product_number"],
-    phoneVerifiedAt: DateTime.parse(json["phone_verified_at"]),
-    role: json["role"],
-    adminUserCategory: json["admin_user_category"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    avatar: json["avatar"],
-    views: json["views"],
-    blocked: json["blocked"],
+    id: json["id"]??0,
+    fullname: json["fullname"]??'',
+    username: json["username"]??'',
+    phone: json["phone"]??'',
+    status: json["status"]??'',
+    productNumber: json["product_number"]??0,
+    phoneVerifiedAt:json["phone_verified_at"] != null? DateTime.parse(json["phone_verified_at"]): DateTime.now(),
+    role: json["role"]??0,
+    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]):  DateTime.now(),
+    updatedAt:json["updated_at"]!= null? DateTime.parse(json["updated_at"]): DateTime.now(),
+    avatar: json["avatar"]??'',
+    views: json["views"]??0,
+    blocked: json["blocked"]??'',
   );
 
   Map<String, dynamic> toJson() => {
@@ -170,12 +165,9 @@ class Owner {
     "username": username,
     "phone": phone,
     "status": status,
-    "viloyat": viloyat,
-    "tuman": tuman,
     "product_number": productNumber,
     "phone_verified_at": phoneVerifiedAt.toIso8601String(),
     "role": role,
-    "admin_user_category": adminUserCategory,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
     "avatar": avatar,

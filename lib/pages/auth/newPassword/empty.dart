@@ -41,7 +41,7 @@ class _NewPasswordEmptyState extends State<NewPasswordEmpty> {
         if (state.isAuthenticated) {
           Navigator.pushNamed(context, '/user');
         }
-        return const SizedBox();
+        return Container();
       },
     );
   }

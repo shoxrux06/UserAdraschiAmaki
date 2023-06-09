@@ -33,92 +33,90 @@ class _SignInScreenState extends State<SignInScreen> {
           centerTitle: true,
           title: Text(
             AppLocalizations.of(context)?.signIn ?? '',
-            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
           ),
         ),
         body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            print('isAuthenticating --> ${state.isAuthenticating}');
-            if (state.isErrorOccurred) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: MyText(
-                    "Something went wrong",
-                  ),
-                ),
-              );
-            }
             if (state.isAuthenticated && (state.isErrorOccurred == false)) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer()));
             }
           },
           builder: (context, state) {
-            return Container(
-              color: Colors.lightBlueAccent.withOpacity(0.2),
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 16),
-                  child: Column(
-                    children: [
-                      MyTextFormField2(
-                        l10n?.usernameOrPhoneNumber ?? '',
-                        const Icon(CupertinoIcons.person),
-                        _phoneController,
-                        validator: (val) {
-                          if (val!.length < 3) return 'UserName must be at least 3 characters';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      MyTextFormField2(
-                        l10n?.password ?? '',
-                        const Icon(CupertinoIcons.lock),
-                        _passController,
-                        validator: (val) {
-                          if (val!.length < 5) {
-                            return 'Password must be at least 6 characters';
-                          }
-                          return null;
-                        },
-                        isPassword: true,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/forgotPassword');
-                          },
-                          child: MyText(
-                            l10n?.forgotPassword ?? '',
-                            color: mainColor,
+            return LayoutBuilder(builder: (context, constraints){
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Container(
+                      color: Colors.lightBlueAccent.withOpacity(0.2),
+                      child: Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          child: Column(
+                            children: [
+                              MyTextFormField2(
+                                l10n?.usernameOrPhoneNumber ?? '',
+                                const Icon(CupertinoIcons.person),
+                                _phoneController,
+                                validator: (val) {
+                                  if (val!.length < 3) return 'UserName must be at least 3 characters';
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              MyTextFormField2(
+                                l10n?.password ?? '',
+                                const Icon(CupertinoIcons.lock),
+                                _passController,
+                                validator: (val) {
+                                  if (val!.length < 5) {
+                                    return 'Password must be at least 6 characters';
+                                  }
+                                  return null;
+                                },
+                                isPassword: true,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/forgotPassword');
+                                  },
+                                  child: MyText(
+                                    l10n?.forgotPassword ?? '',
+                                    color: mainColor,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              CustomButton(
+                                l10n?.signIn ?? '',
+                                isLoading: state.isAuthenticating,
+                                onTap: () {
+                                  context.read<AuthBloc>().add(
+                                    SignInEvent(
+                                      context,
+                                      SignInRequest(
+                                        login: _phoneController.text,
+                                        password: _passController.text,),
+                                    ),
+                                  );
+                                },
+                              )
+                            ],
                           ),
                         ),
                       ),
-                      const Spacer(),
-                      CustomButton(
-                        l10n?.signIn ?? '',
-                        isLoading: state.isAuthenticating,
-                        onTap: () {
-                          context.read<AuthBloc>().add(
-                            SignInEvent(
-                              SignInRequest(
-                                login: _phoneController.text,
-                                password: _passController.text,),
-                            ),
-                          );
-                        },
-                      )
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            );
+              );
+            });
           },
         )
     );

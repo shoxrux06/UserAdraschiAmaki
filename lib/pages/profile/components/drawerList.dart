@@ -3,6 +3,7 @@ import 'package:afisha_market/pages/auth/noAccount/NoAccountScreen.dart';
 import 'package:afisha_market/pages/main_container.dart';
 import 'package:afisha_market/pages/profile/about_us_page.dart';
 import 'package:afisha_market/pages/profile/contact_with_us.dart';
+import 'package:afisha_market/pages/profile/delete_account_page.dart';
 import 'package:afisha_market/pages/profile/share_screen.dart';
 import 'package:afisha_market/pages/utils/const.dart';
 import 'package:flutter/cupertino.dart';
@@ -67,13 +68,6 @@ class _DrawerListState extends State<DrawerList> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.info_outline, color: mainColor),
-            title: Text(l10n?.aboutUs ?? ''),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => AboutUsPage()));
-            },
-          ),
-          ListTile(
             leading: Image.asset('assets/icons/exit.png', color: mainColor),
             title: Text(l10n?.logOut ?? ''),
             onTap: () {
@@ -84,8 +78,7 @@ class _DrawerListState extends State<DrawerList> {
             leading: Icon(Icons.delete, color: mainColor),
             title: Text(l10n?.deleteAccount ?? ''),
             onTap: () {
-              final token = LocalStorage.instance.getToken();
-              _delete(context, token);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const DeleteAccountPage()));
             },
           ),
         ],
@@ -106,7 +99,7 @@ class _DrawerListState extends State<DrawerList> {
             // The "Yes" button
             TextButton(
               onPressed: () {
-                context.read<AuthBloc>().add(DeleteAccountEvent(token));
+                // context.read<AuthBloc>().add(DeleteAccountEvent(token));
                 LocalStorage.instance.deleteToken();
                 LocalStorage.instance.deleteUserId();
                 LocalStorage.instance.deleteUsername();

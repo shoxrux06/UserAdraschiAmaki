@@ -29,7 +29,9 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>For Location</string>
+    <string>Your location is used to determine where you purchased the product from</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location is used to determine where you purchased the product from.</string>
     <key>CFBundleLocalizations</key>
     <array>
     	<string>en</string>
@@ -55,12 +57,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+    <string>You must give camera permission for changing your avatar image</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>This app requires access to the photo library.</string>
+    <string>You must give gallery permission for changing your avatar image</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>This app does not require access to the microphone.</string>
-    <key>NSCameraUsageDescription</key>
-    <string>This app requires access to the camera.</string>
+    <string>This is need for take a video for video description</string>
     <key>LSApplicationQueriesSchemes</key>
      <array>
          <string>instagram</string>

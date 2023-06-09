@@ -33,7 +33,7 @@ class _ForgotEmptyState extends State<ForgotEmpty> {
         }
       },
       builder: (context, state) {
-        return const SizedBox();
+        return Container();
       },
     );
   }

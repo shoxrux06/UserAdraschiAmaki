@@ -7,5 +7,5 @@ class AppConstants{
   static const String keyUserName = 'keyUserName';
   static const String keyUserPhone = 'keyUserPhone';
   ///api
-  static const String baseUrl = 'https://afishauz-backend.uz/api/mobile';
+  static const String baseUrl = 'http://95.130.227.128/api/mobile';
 }

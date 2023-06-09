@@ -74,7 +74,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       });
                     },
                     child: Container(
-                      width: 120,
+                      width: 100,
                       height: 100,
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -102,7 +102,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       });
                     },
                     child: Container(
-                      width: 120,
+                      width: 100,
                       height: 100,
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -127,7 +127,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       });
                     },
                     child: Container(
-                      width: 120,
+                      width: 100,
                       height: 100,
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(

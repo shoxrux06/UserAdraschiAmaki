@@ -27,10 +27,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 
 class SignUpContainer extends StatefulWidget {
-  const SignUpContainer({Key? key, this.userCategoryResponse})
+  const SignUpContainer({Key? key,})
       : super(key: key);
-
-  final UserCategoryResponse? userCategoryResponse;
 
   @override
   State<SignUpContainer> createState() => _SignUpContainerState();
@@ -46,38 +44,10 @@ class _SignUpContainerState extends State<SignUpContainer> {
     mask: '+000 (00) 000-00-00',
   );
 
-  final List<Map<String, dynamic>>? region = myData['REGION'];
-  final List<Map<String, dynamic>>? district = myData['DISTRICT'];
-
-  final langCode = LocalStorage.instance.getLanguage();
-
-  String? selectedRegionName;
-  String? selectedDistrictName;
-
-  String? selectedRegionCode;
-
-  List<Map<String, dynamic>>? sortedRegionList = [];
-  List<Map<String, dynamic>>? sortedDistrictList = [];
-
-  late Map<String, List<Map<String, dynamic>>>? dataset = {
-    'REGION': region!,
-    'DISTRICT': district!,
-  };
-
-  UserCategoryResponse? userCategoryResponse;
-
   List<String> regions = [];
-
-  String dropdownCategoryValue = '';
-  late String dropdownValue = (regions.isNotEmpty) ? regions.first : 'Toshkent';
 
   @override
   void initState() {
-    print('LANG APP --> ${langCode}');
-    userCategoryResponse = widget.userCategoryResponse;
-    dropdownCategoryValue = userCategoryResponse?.userCategories[0].name ?? '';
-    print('object $dropdownCategoryValue');
-    print('object2 ${userCategoryResponse}');
     _phoneController.text = '+998';
     final val = TextSelection.collapsed(offset: _phoneController.text.length);
     _phoneController.selection = val;
@@ -98,7 +68,6 @@ class _SignUpContainerState extends State<SignUpContainer> {
 
   @override
   Widget build(BuildContext context) {
-    print('userCategoryResponse --> ${widget.userCategoryResponse}');
     final l10n = AppLocalizations.of(context);
     final AuthBloc _bloc = BlocProvider.of<AuthBloc>(context);
     String regionsString = AppLocalizations.of(context)!.regions;
@@ -137,13 +106,6 @@ class _SignUpContainerState extends State<SignUpContainer> {
         }
       },
       builder: (context, state) {
-        print('phone from sign up empty ${AppConst.pHONENUMBER}');
-        if (state.isAuthenticated) {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            Navigator.pushNamed(context, '/otp',
-                arguments: _phoneController.text);
-          });
-        }
         return Form(
           key: _formKey,
           child: Padding(
@@ -260,140 +222,6 @@ class _SignUpContainerState extends State<SignUpContainer> {
                       const SizedBox(
                         height: 20,
                       ),
-                      DropdownButtonFormField(
-                          value: selectedRegionName,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          elevation: 16,
-                          dropdownColor: helperColor,
-                          decoration: AppHelpers.decoration(
-                              isHintText: true, text: '${l10n?.region}'),
-                          items: dataset?['REGION']?.map((e) {
-                            return DropdownMenuItem<String?>(
-                              value: e['name'],
-                              child: Text(
-                                (langCode == 'ru')
-                                    ? e['rus'].toString().toCapitalized()
-                                    : e['uzl'].toString().toCapitalized(),
-                                style: TextStyle(fontWeight: FontWeight.normal),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            if (value != selectedRegionName) {
-                              selectedDistrictName = null;
-                            }
-                            setState(() {
-                              var l = dataset?['REGION']!.length.toInt() ?? 0;
-                              for (int i = 0; i < l; i++) {
-                                if (dataset?['REGION']?[i]['name'] == value) {
-                                  selectedRegionCode =
-                                      dataset?['REGION']?[i]['code'];
-                                }
-                              }
-                              selectedRegionName = value!;
-                              sortedDistrictList = dataset?['DISTRICT']
-                                  ?.where((element) =>
-                                      element['region'] == selectedRegionCode)
-                                  .toList();
-                            });
-                          }),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      DropdownButtonFormField(
-                          value: (selectedDistrictName?.isNotEmpty ?? false)
-                              ? selectedDistrictName
-                              : null,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          elevation: 16,
-                          dropdownColor: helperColor,
-                          decoration: AppHelpers.decoration(
-                              isHintText: true, text: '${l10n?.district}'),
-                          items: (sortedDistrictList ?? []).map((e) {
-                            return DropdownMenuItem<String?>(
-                              value: e['name'],
-                              child: Text(
-                                (langCode == 'ru')
-                                    ? e['rus'].toString().toCapitalized()
-                                    : e['uzl'].toString().toCapitalized(),
-                                style: TextStyle(fontWeight: FontWeight.normal),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              var l = dataset?['DISTRICT']!.length.toInt() ?? 0;
-                              for (int i = 0; i < l; i++) {
-                                if (dataset?['DISTRICT']?[i]['name'] == val) {
-                                  selectedRegionCode =
-                                      dataset?['DISTRICT']?[i]['code'];
-                                }
-                              }
-                              selectedDistrictName = val!;
-                            });
-                          }),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      BlocBuilder<CategoryBloc, CategoryState>(
-                          builder: (context, state) {
-                        userCategoryResponse = state.userCategoryResponse;
-                        String? item =
-                            userCategoryResponse?.userCategories.first.name ??
-                                '';
-                        return DropdownButtonFormField(
-                          value: item,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          elevation: 16,
-                          isExpanded: true,
-                          dropdownColor: helperColor,
-                          decoration: AppHelpers.decoration(),
-                          items: userCategoryResponse?.userCategories.map<DropdownMenuItem<String>>((UserCategory category) {
-                            return DropdownMenuItem<String>(
-                              value: category.name,
-                              child: Expanded(
-                                child: Text(
-                                  category.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            setState(() {
-                              dropdownCategoryValue = value!;
-                            });
-                          },
-                        );
-                      }),
-                      // DropdownButtonFormField(
-                      //   value: dropdownCategoryValue,
-                      //   icon: const Icon(Icons.arrow_drop_down),
-                      //   elevation: 16,
-                      //   dropdownColor: helperColor,
-                      //   decoration: AppHelpers.decoration(),
-                      //   items: userCategoryResponse?.userCategories.map<DropdownMenuItem<String>>((UserCategory category) {
-                      //     return DropdownMenuItem<String>(
-                      //       value: category.name,
-                      //       child: Text(category.name,
-                      //         style: TextStyle(fontWeight: FontWeight.normal),
-                      //       ),
-                      //     );
-                      //   }).toList(),
-                      //   onChanged: (String? value) {
-                      //     setState(() {
-                      //       dropdownCategoryValue = value!;
-                      //     });
-                      //   },
-                      // ),
-                      const SizedBox(
-                        height: 20,
-                      ),
                       MyTextFormField2(
                         l10n?.password ?? '',
                         const Icon(CupertinoIcons.lock),
@@ -436,57 +264,10 @@ class _SignUpContainerState extends State<SignUpContainer> {
                           .replaceAll(')', '')
                           .replaceAll('-', '');
                       print('MyPHOne --> $phone');
-                      print('dropdownValue --> $dropdownValue');
-                      print('object $dropdownCategoryValue');
 
                       var fullName = _nameController.text;
                       var userName = _userNameController.text;
-                      var categoryId = 0;
 
-                      String selectedRegionUz = '';
-                      String selectedRegionRus = '';
-                      String selectedDistrictUz = '';
-                      String selectedDistrictRus = '';
-
-                      int l = userCategoryResponse?.userCategories.length ?? 0;
-                      for (int i = 0; i < l; i++) {
-                        if (dropdownCategoryValue ==
-                            userCategoryResponse?.userCategories[i].name) {
-                          categoryId =
-                              userCategoryResponse?.userCategories[i].id ?? 0;
-                        }
-                      }
-
-                      var lenDis = dataset?['DISTRICT']!.length.toInt() ?? 0;
-                      var lenREG = dataset?['REGION']!.length.toInt() ?? 0;
-
-                      for (int i = 0; i < lenREG; i++) {
-                        if (selectedRegionName ==
-                            dataset?['REGION']![i]['name']) {
-                          selectedRegionRus = dataset?['REGION']![i]['rus']
-                                  .toString()
-                                  .toCapitalized() ??
-                              '';
-                          selectedRegionUz = dataset?['REGION']![i]['uzl']
-                                  .toString()
-                                  .toCapitalized() ??
-                              '';
-                        }
-                      }
-
-                      for (int i = 0; i < lenDis; i++) {
-                        if (selectedDistrictName ==
-                            dataset?['DISTRICT']![i]['name']) {
-                          selectedDistrictRus = dataset?['DISTRICT']![i]['rus']
-                                  .toString()
-                                  .toCapitalized() ??
-                              '';
-                          selectedDistrictUz = dataset?['DISTRICT']![i]['uzl']
-                                  .toString()
-                                  .toCapitalized() ??
-                              '';
-                        }
-                      }
                       var pass1 = _pass1Controller.text;
                       var pass2 = _pass2Controller.text;
 
@@ -501,16 +282,9 @@ class _SignUpContainerState extends State<SignUpContainer> {
                                 fullname: fullName,
                                 username: userName,
                                 phone: phone,
-                                viloyat: selectedRegionUz,
-                                rusViloyat: selectedRegionRus,
-                                tuman: selectedDistrictUz,
-                                rusTuman: selectedDistrictRus,
-                                adminUserCategoryId: categoryId.toString(),
-                                avatar: avatarFile ??
-                                    await getImageFileFromAssets(
-                                        'images/afisha_logo.png'),
                                 password: pass1,
                                 passwordConfirmation: pass2,
+                                avatar: avatarFile ?? await getImageFileFromAssets('images/afisha_logo.png'),
                               ),
                               context),
                         );

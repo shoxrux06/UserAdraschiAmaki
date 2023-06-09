@@ -1,6 +1,7 @@
 import 'package:afisha_market/pages/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_plus/share_plus.dart';
 class ShareScreen extends StatefulWidget {
   const ShareScreen({Key? key}) : super(key: key);
 
@@ -24,10 +25,12 @@ class _ShareScreenState extends State<ShareScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             children: [
-              item(l10n?.telegram??'', context),
-              SizedBox(height: 12,),
-              item(l10n?.instagram??'', context),
-              SizedBox(height: 12,),
+              GestureDetector(
+                  onTap: (){
+                    Share.share('Эй, проверьте это замечательное приложение по адресу: https://play.google.com/store/apps/details?id=com.goodafishamarket.afisha_market');
+                  },
+                  child: item(l10n?.share??'', context)),
+              const SizedBox(height: 12,),
               item(l10n?.qrCode??'', context),
             ],
           ),

@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       leading: null,
                       backgroundColor: Colors.white,
                       pinned: false,
-                      expandedHeight: 500,
+                      expandedHeight: 350,
                       elevation: 1,
                       flexibleSpace: FlexibleSpaceBar(
                         background: FlexibleContainer(),
@@ -56,7 +56,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SliverPadding(
                       padding: EdgeInsets.symmetric(vertical: 4),
                     ),
-                    // (state is ProfileErrorState)? SliverPadding(padding: EdgeInsets.only(right: 12), sliver: Text('tttttt'),): SliverPadding(padding: EdgeInsets.only(right: 12)),
                     (state is ProfileLoadingState)? const SliverProductGridListShimmer(): const SliverPadding(padding: EdgeInsets.only(right: 12)),
                     (state is GetProfileState)?Builder(builder: (context) {
                       return SliverGrid(

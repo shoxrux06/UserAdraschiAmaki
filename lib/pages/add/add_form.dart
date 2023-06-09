@@ -6,16 +6,19 @@ import 'package:afisha_market/core/bloc/add/create_state.dart';
 import 'package:afisha_market/core/bloc/home/home_bloc.dart';
 import 'package:afisha_market/core/data/source/remote/request/addRequest.dart';
 import 'package:afisha_market/core/data/source/remote/response/RegionResponse.dart';
-import 'package:afisha_market/core/data/source/remote/response/filtered_product_category_response.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
+import 'package:afisha_market/pages/add/select_from_map_page.dart';
+import 'package:afisha_market/pages/add/video_widget.dart';
 import 'package:afisha_market/pages/utils/const.dart';
+import 'package:afisha_market/pages/utils/custom_button_two.dart';
 import 'package:afisha_market/pages/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../core/data/models/region.dart';
+import '../../core/data/source/remote/response/CategoryResponse.dart';
 import '../../core/data/source/remote/response/GetProfileResponse.dart';
 import '../main_container.dart';
 import '../utils/custom_border_button.dart';
@@ -34,8 +37,9 @@ class AddScreenForm extends StatefulWidget {
 class _AddScreenFormState extends State<AddScreenForm> {
   late CreateBloc _createBloc;
   List<File> selectedImages = [];
-  List<FilteredCategory> categoryList = [];
-  List<Region> regionList = [];
+  List<District> districtList = [];
+  List<SubCategory> subCategoryList = [];
+
   final picker = ImagePicker();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final _nameController =
@@ -46,8 +50,8 @@ class _AddScreenFormState extends State<AddScreenForm> {
       TextEditingController(text: widget.productDetail?.body);
   late final _colorController =
       TextEditingController(text: widget.productDetail?.color);
-  late final _compatibilityController =
-      TextEditingController(text: widget.productDetail?.compatibility);
+  late final _compatibilityController = TextEditingController(text: widget.productDetail?.compatibility);
+  late final locationController = TextEditingController(text: widget.productDetail?.district);
 
   Future<List<File>> urlToFile() async {
     final List<File> tempList = [];
@@ -63,11 +67,24 @@ class _AddScreenFormState extends State<AddScreenForm> {
     }
     return tempList;
   }
+
+  Map<String,dynamic> myMap = {};
+  LatLng? coordinates;
+
+  void moveToSecondPage() async{
+    myMap = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => SelectFromMapPage()));
+    coordinates = myMap['coordinates'];
+    locationController.text = myMap['lane'].toString();
+    print('Coordinates -- > $coordinates');
+    print('Lane -- > ${locationController.text}');
+  }
+
   getImages2()async{
     selectedImages = await urlToFile();
     setState(() {});
     print('SEL IMAGES --> $selectedImages');
   }
+
   @override
   void initState() {
     context.read<HomeBloc>().add(HomeInitEvent());
@@ -87,15 +104,24 @@ class _AddScreenFormState extends State<AddScreenForm> {
     _aboutController.dispose();
     _colorController.dispose();
     _compatibilityController.dispose();
+    locationController.dispose();
     super.dispose();
   }
-  String dropdownValueCategory = '';
-  String dropdownValueRegion = '';
 
+  String? dropdownValueCategory;
+  String? dropdownValueSubCategory;
+  String? dropdownValueRegion;
+  String? dropdownValueDistrict;
+
+  int? categoryId;
   int? selectedRegionId;
+  int? selectedDistrictId;
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     final l10n = AppLocalizations.of(context);
     String categoryString = AppLocalizations.of(context)!.categories;
     List<String> categories = categoryString.split(':');
@@ -123,345 +149,219 @@ class _AddScreenFormState extends State<AddScreenForm> {
               }, builder: (context, state) {
                 return Form(
                   key: _formKey,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 200,
-                          child: Column(
-                            children: [
-                              InkWell(
-                                onTap: selectedImages.length >= 4
-                                    ? () {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Rasmlar soni 4 tadan oshmasligi kerak')));
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: height / 3,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    onTap: selectedImages.length >= 8
+                                        ? () {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Rasmlar soni 8 tadan oshmasligi kerak')));
+                                    } : () {
+                                      if (selectedImages.length >= 8) {
+                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Rasmlar soni 8 tadan oshmasligi kerak')));
                                       }
-                                    : () {
-                                        if (selectedImages.length >= 4) {
-                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Rasmlar soni 4 tadan oshmasligi kerak')));
-                                        }
-                                        getImages();
-                                      },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: const Color(0xFFd7dadd),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          color: Color(0xFFd7dadd), width: 2)),
-                                  child: Center(
-                                    child: FittedBox(
-                                      child: Text(
-                                        l10n?.selectImageFromGallery??'',
-                                        style: TextStyle(color: mainColor),
+                                      showModalBottomSheet(
+                                          context: context, builder: (context) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              CustomButtonTwo('${l10n?.image}',onTap: (){ getImages();},),
+                                              CustomButtonTwo('${l10n?.video}',onTap: (){ getVideos();},),
+                                            ],
+                                          ),
+                                        );
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          color: const Color(0xFFd7dadd),
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(
+                                              color: Color(0xFFd7dadd),
+                                              width: 2)),
+                                      child: Center(
+                                        child: FittedBox(
+                                          child: Text(
+                                            l10n?.selectImageFromGallery ?? '',
+                                            style: TextStyle(color: mainColor),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Row(
-                                  mainAxisAlignment:
+
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceEvenly,
+                                      children: [
+                                        customImageContainer(0, 1),
+                                        customImageContainer(1, 2),
+                                        customImageContainer(2, 3),
+                                        customImageContainer(3, 4),
+                                      ],
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Row(
+                                      mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                      width: width / 5.5,
-                                      height: 100,
-                                      margin: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.black12, width: 2),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: (selectedImages.length >= 1)
-                                          ? Stack(
-                                              children: [
-                                                Positioned(
-                                                  top: 0,
-                                                  bottom: 0,
-                                                  left: 0,
-                                                  right: 0,
-                                                  child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(8),
-                                                      child: Image.file(
-                                                        File(
-                                                          selectedImages[0].path,
-                                                        ),
-                                                        fit: BoxFit.fill,
-                                                      )),
-                                                ),
-                                                Positioned(
-                                                    right: -5,
-                                                    top: -10,
-                                                    child: IconButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            selectedImages.removeAt(0);
-                                                          });
-                                                        },
-                                                        icon: const Icon(
-                                                          Icons.cancel,
-                                                          color: Colors.white,
-                                                        ))
-                                                )
-                                              ],
-                                            )
-                                          : Container(),
+                                      children: [
+                                        customImageContainer(4, 5),
+                                        customImageContainer(5, 6),
+                                        customImageContainer(6, 7),
+                                        customImageContainer(7, 8),
+                                      ],
                                     ),
-                                    Container(
-                                      width: width / 5.5,
-                                      height: 100,
-                                      margin: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: Colors.black12, width: 2)),
-                                      child: (selectedImages.length >= 2)
-                                          ? Stack(children: [
-                                              Positioned(
-                                                top: 0,
-                                                bottom: 0,
-                                                left: 0,
-                                                right: 0,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  child: Image.file(
-                                                    File(
-                                                      selectedImages[1].path,
-                                                    ),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                  right: -5,
-                                                  top: -10,
-                                                  child: IconButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          selectedImages.removeAt(1);
-                                                        });
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.cancel,
-                                                        color: Colors.white,
-                                                      )))
-                                            ])
-                                          : Container(),
-                                    ),
-                                    Container(
-                                      width: width / 5.5,
-                                      height: 100,
-                                      margin: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        // color: Colors.black,
-                                        border: Border.all(
-                                            color: Colors.black12, width: 2),
-                                        borderRadius:
-                                            BorderRadius.circular(8),
-                                      ),
-                                      child: (selectedImages.length >= 3)
-                                          ? Stack(
-                                              children: [
-                                                Positioned(
-                                                  top: 0,
-                                                  bottom: 0,
-                                                  right: 0,
-                                                  left: 0,
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    child: Image.file(
-                                                      File(
-                                                        selectedImages[2]
-                                                            .path,
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                    right: -5,
-                                                    top: -10,
-                                                    child: IconButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            selectedImages
-                                                                .removeAt(2);
-                                                          });
-                                                        },
-                                                        icon: Icon(
-                                                          Icons.cancel,
-                                                          color: Colors.white,
-                                                        )))
-                                              ],
-                                            )
-                                          : Container(),
-                                    ),
-                                    Container(
-                                      width: width / 5.5,
-                                      height: 100,
-                                      margin: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          border: Border.all(
-                                              color: Colors.black12,
-                                              width: 2)),
-                                      child: (selectedImages.length >= 4)
-                                          ? Stack(
-                                              children: [
-                                                Positioned(
-                                                  top: 0,
-                                                  bottom: 0,
-                                                  right: 0,
-                                                  left: 0,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    child: Image.file(
-                                                      File(
-                                                        selectedImages[3]
-                                                            .path,
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                    right: -5,
-                                                    top: -10,
-                                                    child: IconButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            selectedImages.removeAt(3);
-                                                          });
-                                                        },
-                                                        icon: Icon(
-                                                          Icons.cancel,
-                                                          color: Colors.white,
-                                                        )))
-                                              ],
-                                            )
-                                          : Container(),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      MyTextFormField2(
-                        l10n?.productName ?? '',
-                        null,
-                        _nameController,
-                        validator: (val) {
-                          if (val!.length < 3)
-                            return 'Name must be at least 3 characters';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      MyTextFormField2(
-                        l10n?.price ?? '',
-                        null,
-                        _costController,
-                        keyboardType: TextInputType.number,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            return 'Amount must be at least 1 characters';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      MyTextFormField2(
-                        l10n?.description ?? '',
-                        null,
-                        _aboutController,
-                        validator: (val) {
-                          if (val!.length < 10) {
-                            return 'it is must be at least 10 characters';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      BlocBuilder<CategoryBloc, CategoryState>(builder: (context,state){
-                        Future.delayed(Duration.zero,(){
-                          dropdownValueCategory = state.filteredProductCategoryList.first.name??'';
-                        });
-                        if(state.filteredProductCategoryList.isNotEmpty){
-                          categoryList = state.filteredProductCategoryList;
-                          return DropdownButtonFormField(
-                              value: state.filteredProductCategoryList[0].name,
-                              icon: const Icon(Icons.arrow_drop_down),
-                              elevation: 16,
-                              dropdownColor: helperColor,
-                              style: TextStyle(color: disableColor),
-                              decoration: AppHelpers.decoration(),
-                              items: state.filteredProductCategoryList.map<DropdownMenuItem<String>>((FilteredCategory value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.name,
-                                  child: Text(value.name),
-                                );
-                              }).toList(),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  dropdownValueCategory = value!;
-                                });
-                              });
-                        }
-                        else{
-                          return DropdownButtonFormField(
-                              value: dropdownValueCategory.isNotEmpty? dropdownValueCategory:null,
-                              icon: const Icon(Icons.arrow_drop_down),
-                              elevation: 16,
-                              dropdownColor: helperColor,
-                              style: TextStyle(color: disableColor),
-                              decoration: AppHelpers.decoration(),
-                              items: state.filteredProductCategoryList.map<DropdownMenuItem<String>>((FilteredCategory value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.name,
-                                  child: Text(value.name),
-                                );
-                              }).toList(),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  dropdownValueCategory = value!;
-                                });
-                              });
-                        }
-                      }),
-                      SizedBox(height: 20,),
-                      BlocBuilder<HomeBloc, HomeState>(builder: (context,state){
-                        Future.delayed(Duration.zero,(){
-                          dropdownValueRegion = state.regionList.first.name;
-                        });
-                        if(state.regionList.isNotEmpty){
-                          regionList = state.regionList;
-                          int l =  regionList.length;
-                          for(int i =0;i<l;i++){
-                            if(dropdownValueRegion == state.regionList[i].name){
-                              selectedRegionId = state.regionList[i].id;
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        MyTextFormField2(
+                          l10n?.productName ?? '',
+                          null,
+                          _nameController,
+                          validator: (val) {
+                            if (val!.length < 3)
+                              return 'Name must be at least 3 characters';
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        MyTextFormField2(
+                          l10n?.price ?? '',
+                          null,
+                          _costController,
+                          keyboardType: TextInputType.number,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'Amount must be at least 1 characters';
                             }
-                          }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        MyTextFormField2(
+                          l10n?.description ?? '',
+                          null,
+                          _aboutController,
+                          validator: (val) {
+                            if (val!.length < 10) {
+                              return 'it is must be at least 10 characters';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        BlocBuilder<CategoryBloc, CategoryState>(builder: (context,state){
                           return DropdownButtonFormField(
-                              value:state.regionList[0].name,
+                              value: dropdownValueCategory,
                               icon: const Icon(Icons.arrow_drop_down),
                               elevation: 16,
+                              isExpanded: true,
+                              isDense: true,
                               dropdownColor: helperColor,
                               style: TextStyle(color: disableColor),
-                              decoration: AppHelpers.decoration(),
+                              decoration: AppHelpers.decoration(
+                                  isHintText: true,
+                                  text:  l10n?.topCategory ?? '',
+                              ),
+                              items: state.categoryResponse?.categories.map<DropdownMenuItem<String>>((Category value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.name,
+                                  child: Text(value.name),
+                                );
+                              }).toList(),
+                              onChanged: (String? value) {
+                                subCategoryList = [];
+                                setState(() {
+                                  dropdownValueCategory = value!;
+                                  int length = state.categoryResponse?.categories.length??0;
+                                  for(int i = 0;i< length;i++){
+                                    if(dropdownValueCategory == state.categoryResponse?.categories[i].name){
+                                      setState(() {
+                                        subCategoryList.addAll(state.categoryResponse?.categories[i].subCategories??[]);
+                                        dropdownValueSubCategory = subCategoryList.first.name;
+                                        categoryId = subCategoryList.first.id;
+                                      });
+                                    }
+                                  }
+                                });
+                              });
+                        }),
+                        const SizedBox(height: 20,),
+                        DropdownButtonFormField(
+                            value:dropdownValueSubCategory,
+                            icon: const Icon(Icons.arrow_drop_down),
+                            elevation: 16,
+                            isExpanded: true,
+                            isDense: true,
+                            dropdownColor: helperColor,
+                            hint: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text( l10n?.subCategory ?? '', style: TextStyle(
+                                    color: disableColor,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16
+                                ),
+                                )),
+                            style: TextStyle(color: disableColor),
+                            decoration: AppHelpers.decoration(
+                                isHintText: true,
+                                text:  l10n?.color ?? '',
+                            ),
+                            items: subCategoryList.map<DropdownMenuItem<String>>((SubCategory value) {
+                              return DropdownMenuItem<String>(
+                                value: value.name,
+                                child: Text(value.name),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                dropdownValueSubCategory = value!;
+                                for (var element in subCategoryList) {
+                                  if(element.name == dropdownValueSubCategory){
+                                    categoryId = element.id;
+                                  }
+                                }
+                              });
+                            }),
+                        const SizedBox(height: 20,),
+                        BlocBuilder<HomeBloc, HomeState>(builder: (context,state){
+                          return DropdownButtonFormField(
+                              value:dropdownValueRegion,
+                              icon: const Icon(Icons.arrow_drop_down),
+                              elevation: 16,
+                              isExpanded: true,
+                              isDense: true,
+                              dropdownColor: helperColor,
+                              style: TextStyle(color: disableColor),
+                              decoration: AppHelpers.decoration(
+                                  isHintText: true,
+                                  text:  l10n?.region ?? '',
+                              ),
                               items: state.regionList.map<DropdownMenuItem<String>>((Region value) {
                                 return DropdownMenuItem<String>(
                                   value: value.name,
@@ -469,159 +369,168 @@ class _AddScreenFormState extends State<AddScreenForm> {
                                 );
                               }).toList(),
                               onChanged: (String? value) {
+                                districtList = [];
                                 setState(() {
                                   dropdownValueRegion = value!;
                                   int l =  state.regionList.length;
                                   for(int i =0;i<l;i++){
                                     if(dropdownValueRegion == state.regionList[i].name){
-                                      selectedRegionId = state.regionList[i].id;
+                                      setState(() {
+                                        districtList.addAll(state.regionList[i].districts);
+                                        dropdownValueDistrict = districtList.first.name;
+                                        selectedRegionId = state.regionList[i].id;
+                                        selectedDistrictId = districtList.first.id;
+                                      });
                                     }
                                   }
                                 });
                               });
-                        }else{
-                          return DropdownButtonFormField(
-                              value: dropdownValueRegion.isNotEmpty
-                                  ? dropdownValueRegion
-                                  : null,
-                              icon: const Icon(Icons.arrow_drop_down),
-                              elevation: 16,
-                              dropdownColor: helperColor,
-                              style: TextStyle(color: disableColor),
-                              decoration: AppHelpers.decoration(),
-                              items: state.regionList.map<DropdownMenuItem<String>>((Region value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.name,
-                                  child: Text(value.name),
-                                );
-                              }).toList(),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  dropdownValueRegion = value!;
-                                  int l =  state.regionList.length;
-                                  for(int i =0;i<l;i++){
-                                    if(dropdownValueRegion == state.regionList[i].name){
-                                      selectedRegionId = state.regionList[i].id;
-                                    }
+                        }),
+                        const SizedBox(height: 20,),
+                        DropdownButtonFormField(
+                            value:dropdownValueDistrict,
+                            icon: const Icon(Icons.arrow_drop_down),
+                            elevation: 16,
+                            isExpanded: true,
+                            isDense: true,
+                            dropdownColor: helperColor,
+                            hint: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text( l10n?.district ?? '', style: TextStyle(
+                                    color: disableColor,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16
+                                ),
+                                )),
+                            style: TextStyle(color: disableColor),
+                            decoration: AppHelpers.decoration(
+                                isHintText: true,
+                                text: 'District'
+                            ),
+                            items: districtList.map<DropdownMenuItem<String>>((District value) {
+                              return DropdownMenuItem<String>(
+                                value: value.name,
+                                child: Text(value.name),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                dropdownValueDistrict = value!;
+                                for (var element in districtList) {
+                                  if(element.name == dropdownValueDistrict){
+                                    selectedDistrictId = element.id;
                                   }
-                                });
+                                }
                               });
-                        }
-                      }),
-
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      MyTextFormField2(
-                        l10n?.color ?? '',
-                        null,
-                        _colorController,
-                        validator: (val) {
-                          if (val!.isEmpty)
-                            return 'it is must be at least 1 characters';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      MyTextFormField2(
-                        l10n?.compatibility ?? '',
-                        null,
-                        _compatibilityController,
-                        validator: (val) {
-                          if (val!.isEmpty)
-                            return 'it is must be at least 1 characters';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      CustomButton(
-                        widget.productDetail == null
-                            ? l10n?.publish ?? ''
-                            : l10n?.edit ?? '',
-                        isLoading:  widget.productDetail == null?state.isCreatingProduct: state.isUpdatingProduct,
-                        onTap:widget.productDetail == null? () {
-                          print('dropdownValueCategory : $dropdownValueCategory');
-                          int productCategoryId = 0;
-                          print('cat <$categoryList>');
-                          for(int i = 0;i< categoryList.length; i++){
-                            if(dropdownValueCategory == categoryList[i].name){
-                              productCategoryId = categoryList[i].id;
-                              print('category id $productCategoryId');
+                            }),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        MyTextFormField2(
+                          l10n?.color ?? '',
+                          null,
+                          _colorController,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'it is must be at least 1 characters';
                             }
-                          }
-                          print('isUploaded1 : ${state.isUploaded}');
-                          print('REgionID : $selectedRegionId');
-                          if (_nameController.text.isEmpty &&
-                              _costController.text.isEmpty &&
-                              _aboutController.text.isEmpty &&
-                              _compatibilityController.text.isEmpty &&
-                              _colorController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
-                          } else {
-                            _createBloc.add(CreateSuccessEvent(
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        MyTextFormField2(
+                          l10n?.compatibility ?? '',
+                          null,
+                          _compatibilityController,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'it is must be at least 1 characters';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          onTap: (){
+                            moveToSecondPage();
+                          },
+                          child: MyTextFormField2(
+                            l10n?.selectFromMap ?? '',
+                            null,
+                            locationController,
+                            isEnabled: false,
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return 'it is must be at least 1 characters';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        CustomButton(
+                          widget.productDetail == null
+                              ? l10n?.publish ?? ''
+                              : l10n?.edit ?? '',
+                          isLoading:  widget.productDetail == null?state.isCreatingProduct: state.isUpdatingProduct,
+                          onTap:widget.productDetail == null? () {
+                            if (isFieldsEmpty()) {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
+                            } else {
+                              _createBloc.add(CreateSuccessEvent(
+                                  context,
+                                  CreateRequest(
+                                    title: _nameController.text,
+                                    price: int.parse(_costController.text),
+                                    body: _aboutController.text,
+                                    categoryId: categoryId,
+                                    regionId: selectedRegionId,
+                                    districtId: selectedDistrictId,
+                                    latitude: coordinates?.latitude?? null,
+                                    longitude: coordinates?.longitude ??null,
+                                    color: _colorController.text,
+                                    compatibility: _compatibilityController.text,
+                                    photos: selectedImages,
+                                  )
+                              )
+                              );
+                            }
+                          }:(){
+                            if (isFieldsEmpty()
+                            ) {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
+                            }else {
+                              _createBloc.add(UpdateSuccessEvent(
                                 context,
                                 CreateRequest(
                                   title: _nameController.text,
-                                  categoryId: productCategoryId,
                                   price: int.parse(_costController.text),
                                   body: _aboutController.text,
-                                  compatibility: _compatibilityController.text,
-                                  color: _colorController.text,
-                                  photos: selectedImages,
+                                  categoryId: categoryId,
                                   regionId: selectedRegionId,
-                                )
-                            )
-                            );
-                          }
-                        }:(){
-                          print('dropdownValueCategory : $dropdownValueCategory');
-                          print('cat <$categoryList>');
-
-                          int productCategoryId = 0;
-                          for(int i = 0;i< categoryList.length; i++){
-                            if(dropdownValueCategory == categoryList[i].name){
-                              productCategoryId = categoryList[i].id;
-                              print('category id $productCategoryId');
+                                  districtId: selectedDistrictId,
+                                  latitude:coordinates?.latitude?? null,
+                                  longitude: coordinates?.longitude??null,
+                                  color: _colorController.text,
+                                  compatibility: _compatibilityController.text,
+                                  photos: selectedImages,
+                                ),
+                                widget.productDetail?.id??0
+                              ));
                             }
-                          }
-                          print('isUploaded1 : ${state.isUploaded}');
-                          if (_nameController.text.isEmpty &&
-                              _costController.text.isEmpty &&
-                              _aboutController.text.isEmpty &&
-                              _compatibilityController.text.isEmpty &&
-                              _colorController.text.isEmpty
-                          ) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Something went wrong')));
-                          }else {
-                            _createBloc.add(UpdateSuccessEvent(
-                              context,
-                              CreateRequest(
-                                title: _nameController.text,
-                                categoryId: productCategoryId,
-                                price: int.parse(_costController.text),
-                                body: _aboutController.text,
-                                compatibility: _compatibilityController.text,
-                                color: _colorController.text,
-                                photos: selectedImages,
-                                regionId: selectedRegionId,
-                              ),
-                              widget.productDetail?.id??0
-                            ));
-                          }
-                        },
-                      ),
-                      widget.productDetail == null? Container():CustomBorderButton(
-                        '${l10n?.delete}',
-                        onTap: () {
-                          _delete(context, widget.productDetail?.id??0);
-                        },
-                      ),
-                    ],
+                          },
+                        ),
+                        widget.productDetail == null? Container():CustomBorderButton(
+                          '${l10n?.delete}',
+                          onTap: () {
+                            _delete(context, widget.productDetail?.id??0);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }),
@@ -631,6 +540,62 @@ class _AddScreenFormState extends State<AddScreenForm> {
       );
     });
 
+  }
+
+  Widget customImageContainer(int index, int size) {
+    return Container(
+      width: MediaQuery.of(context).size.width / 5.5,
+      height: 100,
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.black12, width: 2),
+          borderRadius: BorderRadius.circular(8)),
+      child: (selectedImages.length >= size)
+          ? Stack(
+        children: [
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: (
+                    selectedImages[index].path.substring(
+                        selectedImages[index].path.lastIndexOf('.') + 1,
+                        selectedImages[index].path.length) == 'mp4' ||
+                        selectedImages[index].path.substring(
+                            selectedImages[index].path.lastIndexOf('.') + 1,
+                            selectedImages[index].path.length) == 'm4p' ||
+                        selectedImages[index].path.substring(
+                            selectedImages[index].path.lastIndexOf('.') + 1,
+                            selectedImages[index].path.length) == 'mov'
+                ) ?
+                VideoWidget(selectedImages[index]) : Image.file(
+                  File(
+                    selectedImages[index].path,
+                  ),
+                  fit: BoxFit.fill,
+                )),
+          ),
+          Positioned(
+              right: -5,
+              top: -10,
+              child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedImages.removeAt(index);
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.cancel,
+                    color: Colors.white,
+                  ))
+          )
+        ],
+      )
+          : Container(),
+    );
   }
 
   void _delete(BuildContext context, int id) {
@@ -662,19 +627,43 @@ class _AddScreenFormState extends State<AddScreenForm> {
   }
 
 
+  bool isFieldsEmpty() => (_nameController.text.isEmpty &&
+      _costController.text.isEmpty &&
+      _aboutController.text.isEmpty &&
+      _compatibilityController.text.isEmpty &&
+      _colorController.text.isEmpty
+  );
+
   Future getImages() async {
     final pickedFile = await picker.pickMultiImage(imageQuality: 100, maxHeight: 1000, maxWidth: 1000);
     List<File> filePick = pickedFile.map<File>((e) => File(e.path)).toList();
-    setState(
-      () {
-        if (filePick.isNotEmpty) {
-          for (var i = 0; i < filePick.length; i++) {
-            selectedImages.add(filePick[i]);
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Nothing is selected')));
+    setState(() {
+      if (filePick.isNotEmpty) {
+        for (var i = 0; i < filePick.length; i++) {
+          selectedImages.add(filePick[i]);
         }
-      },
+        Navigator.of(context).pop();
+      }
+      else {
+        AppHelpers.showSnackBar(context,'Nothing is selected');
+      }
+    },
     );
   }
+
+  Future getVideos() async {
+    final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
+    setState(() {
+      if (pickedVideo?.path.isNotEmpty ?? false) {
+        final myFile = File(pickedVideo?.path ?? '');
+        selectedImages.add(myFile);
+        Navigator.of(context).pop();
+      }
+      else {
+        AppHelpers.showSnackBar(context,'Nothing is selected');
+      }
+    },
+    );
+  }
+
 }

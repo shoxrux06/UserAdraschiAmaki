@@ -2,6 +2,8 @@
     package="com.goodafishamarket.afisha_market">
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="33" />
@@ -9,6 +11,12 @@
         <intent>
             <action android:name="android.intent.action.DIAL" />
             <data android:scheme="tel" />
+        </intent>
+    </queries>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
         </intent>
     </queries>
     <application
@@ -41,5 +49,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBWalHUi7NuBA8dS1hAYzfpSqxW03QM8E0"/>
     </application>
 </manifest>

@@ -10,6 +10,7 @@ abstract class AppRoutes{
   static const String newPassword = '/newPassword';
   static const String home = '/home';
   static const String main = '/main';
+  static const String selectFromMap = '/selectFromMap';
   static const String filterRegion = '/filterRegion';
   static const String filterCategory = '/filterCategory';
   static const String userProfile = '/userProfile';

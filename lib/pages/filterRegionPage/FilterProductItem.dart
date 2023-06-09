@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../core/data/source/remote/response/GetProfileResponse.dart';
 
 
@@ -17,7 +17,7 @@ class FilterProductItem extends StatelessWidget {
       child: Column(
         children: [
           AspectRatio(
-            aspectRatio: 1 / 1,
+            aspectRatio: 1.1 / 1,
             child: Container(
               decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.circular(11)),
               child: SizedBox(
@@ -35,27 +35,21 @@ class FilterProductItem extends StatelessWidget {
                       : Image.asset("assets/images/placeholder_image.png", fit: BoxFit.cover)),
             ),
           ),
-          Spacer(flex: 1),
+          const Spacer(flex: 1),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 5),
             child: Row(
               children: [
                 Expanded(child: Text(product.title.toUpperCase(), style: TextStyle(fontSize: 16, fontFamily: 'Inter', fontWeight: FontWeight.w500))),
-                // Icon(
-                //   /*product.isFavourite ? Icons.bookmark : */
-                //   Icons.bookmark_border,
-                //   color: /*product.isFavourite ? Colors.deepOrangeAccent :*/ Colors.grey,
-                // )
               ],
             ),
           ),
-          // Row(children: [Container(margin: const EdgeInsets.symmetric(horizontal: 5), width: 80, height: 1, color: Colors.black)]),
           SizedBox(height: 5),
           Container(
               margin: const EdgeInsets.symmetric(horizontal: 5),
               width: double.infinity,
               child: Text(
-                "${product.price} ${"productPrice".tr()}",
+                "${product.price} ${AppLocalizations.of(context)?.productPrice}",
                 textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               )),
@@ -67,7 +61,6 @@ class FilterProductItem extends StatelessWidget {
                 children: [
                   Icon(Icons.remove_red_eye, size: 16,),
                   SizedBox(width: 8,),
-                  // Text("${"views".tr()}", textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
                   Text("${product.views}", textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
                 ],
               )),

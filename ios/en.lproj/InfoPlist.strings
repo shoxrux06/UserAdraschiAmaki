@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by PRO on 07/06/23.
+  
+*/
+"NSPhotoLibraryUsageDescription" = "You must give gallery permission for changing your avatar image";
+"NSCameraUsageDescription" = "You must give camera permission for changing your avatar image";
+"NSMicrophoneUsageDescription" = "This is need for take a video for video description";
+"NSLocationWhenInUseUsageDescription" = "Your location is used to determine where you added the product from";
+"NSLocationAlwaysUsageDescription" = "Your location is used to determine where you added the product from";

@@ -208,7 +208,7 @@ class MyTextFormField2 extends StatefulWidget {
 
   const MyTextFormField2(this.labelText, this.prefixIcon, this.controller,
       {this.isPassword = false,
-      this.isEnabled = false,
+      this.isEnabled = true,
       this.validator,
       this.keyboardType = TextInputType.text,
       this.inputFormatters,
@@ -234,8 +234,13 @@ class _MyTextFormField2State extends State<MyTextFormField2> {
           hintText: widget.labelText,
           hintStyle: TextStyle(color: disableColor, fontWeight: FontWeight.normal),
           prefixIcon: widget.prefixIcon,
+          enabled: widget.isEnabled,
           fillColor: helperColor,
           filled: true,
+          disabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(16)),
+            borderSide: BorderSide(color: mainColor, width: 0.5),
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(16)),
             borderSide: BorderSide(color: mainColor, width: 0.5),
