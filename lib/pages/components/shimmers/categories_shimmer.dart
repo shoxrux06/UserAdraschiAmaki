@@ -24,7 +24,7 @@ class CategoriesShimmer extends StatelessWidget {
         itemBuilder: (context, index) {
           return MakeShimmer(
             child: Container(
-              width: MediaQuery.of(context).size.width-48,
+              width: MediaQuery.of(context).size.width-24,
               margin: const EdgeInsets.symmetric(vertical: 8),
               height: 48,
               decoration: BoxDecoration(

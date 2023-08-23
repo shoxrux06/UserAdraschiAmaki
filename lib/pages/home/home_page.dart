@@ -1,6 +1,7 @@
 import 'package:afisha_market/core/bloc/home/home_bloc.dart';
 import 'package:afisha_market/core/data/source/remote/response/RegionResponse.dart';
 import 'package:afisha_market/core/di/dependency_manager.dart';
+import 'package:afisha_market/core/utils/local_storage.dart';
 import 'package:afisha_market/pages/components/shimmers/product_grid_list_shimmer.dart';
 import 'package:afisha_market/pages/home/widget/app_bar.dart';
 import 'package:afisha_market/pages/home/widget/carousel_slider.dart';
@@ -27,19 +28,36 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final bloc = HomeBloc(homeRepository, filterRepository);
   final controller = RefreshController();
-  final districtList = <District>[];
 
   @override
   void initState() {
     bloc.add(HomeInitEvent());
+    bloc.add(HomeGetMaterialTypes());
+    _loadFavoriteProducts();
+    print('Home page');
     super.initState();
   }
 
-  int selectedRegionIndex = -1;
-  int selectedDistrictIndex = -1;
+  int selectedMaterialTypeIndex = -1;
 
-  int? regionId;
-  int? districtId;
+  List<String> _favoriteProducts = [];
+
+  void _loadFavoriteProducts() {
+    final favorites = LocalStorage.instance.getFavProductIds();
+    setState(() {
+      _favoriteProducts = favorites;
+    });
+  }
+
+  void _toggleFavorite(String productId) async {
+    if (_favoriteProducts.contains(productId)) {
+      await LocalStorage.instance.removeFavoriteProduct(productId);
+    } else {
+      await LocalStorage.instance.addFavoriteProduct(productId);
+    }
+    _loadFavoriteProducts();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +82,14 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.white,
               body: Builder(builder: (context) {
                 return Container(
-                  color: Colors.lightBlueAccent.withOpacity(0.2),
+                  color: Colors.white,
                   child: Column(
                     children: [
                       Column(
                         children: [
                           Row(
                             children: [
-                              Expanded(child: SearchBar(search: (searchText) {
+                              Expanded(child: CustomSearchBar(search: (searchText) {
                                 EasyDebounce.debounce("my_search_debounce", const Duration(seconds: 2), () {
                                   bloc.add(HomeSearchEvent(searchText));
                                 });
@@ -89,7 +107,6 @@ class _HomePageState extends State<HomePage> {
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(12),
                                         ),
-                                        // margin: const EdgeInsets.all(24),
                                         padding: const EdgeInsets.only(
                                             top: 12,
                                             right: 12,
@@ -100,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                                         child: Column(
                                           children: [
                                             Container(
-                                              height: customHeight / 2.5,
+                                              height: customHeight / 1.5,
                                               padding: const EdgeInsets.all(12),
                                               decoration: BoxDecoration(
                                                   border: Border.all(
@@ -109,141 +126,43 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                   borderRadius: BorderRadius.circular(12)
                                               ),
-                                              child:  SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(l10n?.byRegion ?? '', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),),
-                                                    SizedBox(height: customHeight * 0.01,),
-                                                    GridView.builder(
-                                                      physics: const ScrollPhysics(),
-                                                      shrinkWrap: true,
-                                                      itemCount: state.regionList.length,
-                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                          childAspectRatio: 3,
-                                                          crossAxisCount: 2,
-                                                          mainAxisSpacing: 10,
-                                                          crossAxisSpacing: 10
+                                              child: ListView.builder(
+                                                  itemCount: state.materialTypeResponse?.mahsulotTolasi.length,
+                                                  itemBuilder: (context, index){
+                                                return InkWell(
+                                                  onTap: (){
+                                                    setState((){
+                                                      selectedMaterialTypeIndex = index;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(12),
+                                                      margin: EdgeInsets.all(12),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                        color: (selectedMaterialTypeIndex == index)? mainColor: null,
+                                                        border: Border.all(
+                                                            color:(selectedMaterialTypeIndex == index)?blueColor: Colors.grey,
+                                                            width: 1
+                                                        ),
                                                       ),
-                                                      itemBuilder: (context, index) {
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            districtList.clear();
-                                                            regionId = state.regionList[index].id;
-                                                            setState(() {
-                                                              selectedRegionIndex = index;
-                                                              if(selectedRegionIndex == index){
-                                                                districtList.addAll(state.regionList[index].districts);
-                                                              }
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(12),
-                                                                color: (selectedRegionIndex == index)? mainColor: null,
-                                                                border: Border.all(
-                                                                    color: Colors.grey,
-                                                                    width: 1
-                                                                ),
-                                                              ),
-                                                              child: Column(
-                                                                children: [
-                                                                  const Spacer(),
-                                                                  Text(
-                                                                    state.regionList[index].name,
-                                                                    textAlign: TextAlign.center,
-                                                                    style: TextStyle(color:(selectedRegionIndex == index)? Colors.white: Colors.black),
-                                                                  ),
-                                                                  const Spacer(),
-                                                                ],
-                                                              )
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
+                                                      child: Text(
+                                                        state.materialTypeResponse?.mahsulotTolasi[index].name??"",
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(color:(selectedMaterialTypeIndex == index)? Colors.black: Colors.black),
+                                                      )
+                                                  ),
+                                                );
+                                              })
                                             ),
                                             SizedBox(height: customHeight * 0.01,),
-                                            Container(
-                                              height: customHeight / 2.5,
-                                              padding: EdgeInsets.all(12),
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 1
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(12)
-                                              ),
-                                              child:  SingleChildScrollView(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(l10n?.byDistrict ?? '', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),),
-                                                    SizedBox(height: customHeight * 0.01,),
-                                                    districtList.isEmpty?Container(child:  Center(child: Text(l10n?.noDistrict??'',
-                                                      style: TextStyle(color: Colors.black),),),): GridView.builder(
-                                                      physics: const ScrollPhysics(),
-                                                      shrinkWrap: true,
-                                                      itemCount: districtList.length,
-                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                          childAspectRatio: 3,
-                                                          crossAxisCount: 2,
-                                                          mainAxisSpacing: 10,
-                                                          crossAxisSpacing: 10
-                                                      ),
-                                                      itemBuilder: (context, index) {
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            setState((){
-                                                              selectedDistrictIndex = index;
-                                                              districtId = districtList[selectedDistrictIndex].id;
-                                                            });
-                                                          },
-                                                          child:Container(
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(12),
-                                                                border: Border.all(
-                                                                    color: Colors.grey,
-                                                                    width: 1
-                                                                ),
-                                                                color: selectedDistrictIndex == index? mainColor: null
-                                                              ),
-                                                              child: Column(
-                                                                children: [
-                                                                  const Spacer(),
-                                                                  Text(
-                                                                    districtList[index].name,
-                                                                    textAlign: TextAlign.center,
-                                                                    style: TextStyle(color:(selectedDistrictIndex == index)? Colors.white: Colors.black),
-                                                                  ),
-                                                                  const Spacer(),
-                                                                ],
-                                                              )
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            // SizedBox(height: customHeight * 0.005,),
+                                            Spacer(),
                                             CustomButtonTwo(l10n?.apply??'', onTap: (){
-                                              setState((){
-                                                selectedRegionIndex = -1;
-                                                selectedDistrictIndex = -1;
-                                              });
-                                              if(districtId != null){
-                                                bloc.add(HomeFilterByDistrictEvent(districtId??-1));
-                                              }else{
-                                                bloc.add(HomeFilterEvent(regionId??-1));
-                                              }
-                                              regionId = null;
-                                              districtId = null;
+                                              bloc.add(HomeFilterProductsByMaterialTypes(state.materialTypeResponse?.mahsulotTolasi[selectedMaterialTypeIndex].name??''));
+                                              // setState((){
+                                              //   selectedMaterialTypeIndex = -1;
+                                              // });
                                               Navigator.of(context).pop();
-                                              districtList.clear();
                                             },),
                                           ],
                                         )
@@ -257,7 +176,10 @@ class _HomePageState extends State<HomePage> {
                                     width: 50,
                                     height: 50,
                                     padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(15)),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                     child: SvgPicture.asset("assets/icons/filter_inside.svg")),
                               )
                             ],
@@ -308,8 +230,7 @@ class _HomePageState extends State<HomePage> {
                                   if (state.productList.isNotEmpty) {
                                     print('Product List --> ${state.productList}');
                                     return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                                       child: GridView.builder(
                                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 2,
@@ -322,11 +243,13 @@ class _HomePageState extends State<HomePage> {
                                         scrollDirection: Axis.vertical,
                                         physics: const NeverScrollableScrollPhysics(),
                                         itemBuilder: (context, i) {
+                                          int productId = state.productList[i].id;
+                                          bool isFav = _favoriteProducts.contains(productId.toString());
                                           return GestureDetector(
                                               onTap: () {
-                                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetailPage(product: state.productList[i],)));
+                                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetailPage(product: state.productList[i])));
                                               },
-                                              child: ProductItem(product: state.productList[i])
+                                              child: ProductItem(product: state.productList[i],isFav: isFav, toggle:()=> _toggleFavorite(productId.toString()),)
                                           );
                                         },
                                       ),

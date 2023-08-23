@@ -6,6 +6,17 @@ import '../../pages/utils/const.dart';
 class AppHelpers {
   const AppHelpers._();
 
+  static String? moneyFormat(String price) {
+    if (price.length > 2) {
+      var value = price;
+      value = value.replaceAll(RegExp(r'\D'), '');
+      value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ' ');
+      return value;
+    }else{
+      return price;
+    }
+  }
+
   static showSnackBar(BuildContext context,String message) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 
   static translate(BuildContext context) => AppLocalizations.of(context);

@@ -1,6 +1,7 @@
 import 'package:afisha_market/core/bloc/language/language_bloc.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
 import 'package:afisha_market/pages/utils/const.dart';
+import 'package:afisha_market/pages/utils/custom_button_two.dart';
 import 'package:afisha_market/pages/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,8 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
     return BlocBuilder<LanguageBloc, LanguageState>(builder: (context, state) {
       return Scaffold(
         body: Container(
-          color: Colors.lightBlueAccent.withOpacity(0.2),
+          padding: EdgeInsets.all(12),
+          color: Colors.white,
           child: Column(
             children: [
               const Spacer(),
@@ -31,7 +33,15 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
                 color: mainColor,
               ),
               const Spacer(),
-              MyButtonTwo(
+              CustomButtonTwo(
+                "English",
+                onTap: () async {
+                  context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'en'));
+                  await LocalStorage.instance.setLanguage('en');
+                  Navigator.of(context).pop();
+                },
+              ),
+              CustomButtonTwo(
                 "Русский",
                 onTap: () async {
                   context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'ru'));
@@ -39,7 +49,7 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
                   Navigator.of(context).pop();
                 },
               ),
-              MyButtonTwo(
+              CustomButtonTwo(
                 'O\'zbek',
                 onTap: () async{
                   context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'uz'));

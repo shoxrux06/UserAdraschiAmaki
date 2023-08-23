@@ -1,15 +1,13 @@
 import 'package:afisha_market/core/bloc/home/home_bloc.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
 import 'package:afisha_market/core/di/dependency_manager.dart';
+import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
-import 'package:afisha_market/pages/product_detail/hero_page.dart';
 import 'package:afisha_market/pages/product_detail/image_carousel.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/bloc/productDetail/product_detail_bloc.dart';
-import '../userProfile/UserProfilePage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -25,19 +23,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final bloc = ProductDetailBloc(productRepository);
   final userId = LocalStorage.instance.getUserId();
 
+  int discountPrice = 0;
   @override
   void initState() {
+    // TODO: implement initState
+    double discountPrice2 = 0.0;
+    if(widget.product?.discount.isNotEmpty??false){
+      discountPrice2 = int.parse(widget.product?.price??'') * int.parse(widget.product?.discount??'') / 100;
+      discountPrice = int.parse(widget.product?.price??'') - discountPrice2.toInt();
+    }
+    print('Discount ==> $discountPrice');
+    print('Product Discount ==> ${widget.product?.discount??''}');
     Future(() {
       bloc.add(ProductDetailDataEvent(widget.product?.id ?? 0));
     });
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(),
       body: BlocProvider.value(
         value: bloc,
         child: BlocConsumer<ProductDetailBloc, ProductDetailState>(
@@ -53,135 +60,76 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 }
                 return SingleChildScrollView(
                     child: Container(
-                  color: Colors.lightBlueAccent.withOpacity(0.2),
-                  child: Column(
+                    color: Colors.white, child: Column(
                     children: [
+                      ImageCarousel(imageList: state.product[0].photos, numberOfLikes: state.product[0].likes,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Container(
-                        padding: const EdgeInsets.only(
-                            left: 15, right: 15, bottom: 15),
-                        child:
-                            ImageCarousel(imageList: state.product[0].photos),
-                      ),
-                      Text(
-                        "${state.product[0].price} ${l10n?.productPrice ?? ''}",
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w800),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        state.product[0].title,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Card(
-                        color: Colors.white,
-                        elevation: 2,
-                        child: Container(
-                          width: 200,
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              Text(
-                                "${state.product[0].views} ${l10n?.people ?? ''}",
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                l10n?.seenProduct ?? '',
-                                style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey),
-                              )
-                            ],
-                          ),
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 4)
+                            ]
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            state.product[0].body,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 12),
-                          )),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        l10n?.options ?? '',
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        width: double.infinity,
                         child: Column(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                  l10n?.color ?? '',
-                                  textAlign: TextAlign.end,
-                                  style: const TextStyle(color: Colors.grey),
-                                )),
-                                const SizedBox(width: 20),
-                                Expanded(child: Text(state.product[0].color))
-                              ],
+                            Text(
+                              "${AppHelpers.moneyFormat(discountPrice == 0? state.product[0].price.toString():discountPrice.toString())} ${l10n?.productPrice ?? ''}",
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.w800),
                             ),
                             const SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                  l10n?.compatibility ?? '',
-                                  textAlign: TextAlign.end,
-                                  style: const TextStyle(color: Colors.grey),
-                                )),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                    child: Text(state.product[0].compatibility))
-                              ],
+                            Text(
+                              state.product[0].category,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 4)
+                            ]
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              l10n?.options ?? '',
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(
-                              height: 30,
+                              height: 10,
                             ),
                             Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1),
-                                  borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(horizontal: 24),
                               child: Column(
                                 children: [
                                   Row(
                                     children: [
-                                      Text(l10n?.seller ?? '',
-                                          style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.grey)),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      const Icon(
-                                        Icons.info_outline_rounded,
-                                        size: 18,
-                                        color: Colors.grey,
-                                      )
+                                      Expanded(
+                                          child: Text(
+                                            l10n?.color ?? '',
+                                            textAlign: TextAlign.end,
+                                            style: const TextStyle(color: Colors.grey),
+                                          )),
+                                      const SizedBox(width: 20),
+                                      Expanded(child: Text(state.product[0].color))
                                     ],
                                   ),
                                   const SizedBox(
@@ -189,146 +137,185 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ),
                                   Row(
                                     children: [
-                                      Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            border:
-                                                Border.all(color: Colors.grey)),
-                                        child: Builder(builder: (context) {
-                                          // print("profile avatar: ${state.product[0].owner.avatar}");
-                                          if (state.product[0].owner.avatar.isNotEmpty) {
-                                            return ClipRRect(
-                                                borderRadius: BorderRadius.circular(50),
-                                                child: FadeInImage.assetNetwork(
-                                                  placeholder:
-                                                      "assets/images/profile_placeholder.jpg",
-                                                  image: state
-                                                      .product[0].owner.avatar!,
-                                                  fit: BoxFit.cover,
-                                                )
-                                            );
-                                          } else {
-                                            return ClipRRect(
-                                                borderRadius: BorderRadius.circular(50),
-                                                child: Image.asset("assets/images/profile_placeholder.jpg")
-                                            );
-                                          }
-                                        }),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            state.product[0].owner.fullname,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 14
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                          Text(
-                                              "${l10n?.accountCreated ?? ''}${DateFormat("yyyy").format(state.product[0].owner.createdAt)}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 12,
-                                                  color: Colors.grey
-                                              )
-                                          ),
-                                        ],
+                                      Expanded(
+                                          child: Text(
+                                            l10n?.productionType ?? '',
+                                            textAlign: TextAlign.end,
+                                            style: const TextStyle(color: Colors.grey),
+                                          )),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                          child: Text(state.product[0].ishlabChiqarishTuri))
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            l10n?.width ?? '',
+                                            textAlign: TextAlign.end,
+                                            style: const TextStyle(color: Colors.grey),
+                                          )),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                          child: Text('${state.product[0].eni} ${l10n?.sm}'))
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            l10n?.height ?? '',
+                                            textAlign: TextAlign.end,
+                                            style: const TextStyle(color: Colors.grey),
+                                          )),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                          child: Text('${state.product[0].boyi} ${l10n?.metr}'))
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            l10n?.brand ?? '',
+                                            textAlign: TextAlign.end,
+                                            style: const TextStyle(color: Colors.grey),
+                                          )),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                          child: Text(state.product[0].brand))
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            l10n?.productFiber ?? '',
+                                            textAlign: TextAlign.end,
+                                            style: const TextStyle(color: Colors.grey),
+                                          )),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                          child: Text(state.product[0].mahsulotTola))
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            '${l10n?.discount}' ?? '',
+                                            textAlign: TextAlign.end,
+                                            style:
+                                            const TextStyle(color: Colors.grey),
+                                          )),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                          child: discountPrice == 0? Text('0 %'): Text('${state.product[0].discount} %',
+                                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
                                       )
                                     ],
                                   ),
                                   const SizedBox(
-                                    height: 20,
+                                    height: 10,
                                   ),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 50,
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      UserProfilePage(
-                                                          userId: state
-                                                              .product[0]
-                                                              .owner
-                                                              .id)));
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                Colors.orangeAccent,
-                                            shadowColor:
-                                                Colors.deepOrangeAccent,
-                                            elevation: 2,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12))),
-                                        child: Text(
-                                          l10n?.allProducts ?? '',
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        )),
-                                  ),
-                                  const SizedBox(height: 20)
                                 ],
                               ),
                             ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Text("${l10n?.address}:",
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w700)),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                                '${state.product[0].region} ${state.product[0].district}',
-                                style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w500)),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            (widget.product?.latitude == null || widget.product?.longitude == null)?Container():Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 300,
-                                child: GoogleMap(
-                                  initialCameraPosition: CameraPosition(
-                                    target: LatLng(
-                                      double.parse(widget.product?.latitude.toString()??''),
-                                      double.parse(widget.product?.longitude.toString()??'')
-                                    ),
-                                    zoom: 12
-                                  ),
-                                  markers: {
-                                    Marker(
-                                      markerId: const MarkerId("marker1"),
-                                      position: LatLng(
-                                          double.parse(widget.product?.latitude.toString()??''),
-                                          double.parse(widget.product?.longitude.toString()??'')
-                                      ),
-                                      draggable: true,
-                                      onDragEnd: (value) {
-                                        // value is the new position
-                                      },
-                                      // To do: custom marker icon
-                                    ),
-                                  },
-                                )),
                           ],
                         ),
                       ),
                       const SizedBox(
-                        height: 50,
-                      )
+                        height: 20,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 4)
+                            ]
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(l10n?.seller ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.grey)),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Icon(
+                                  Icons.info_outline_rounded,
+                                  size: 18,
+                                  color: Colors.grey,
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      state.product[0].owner.username,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14
+                                      ),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                    Text(
+                                        "${l10n?.accountCreated ?? ''}${DateFormat("yyyy").format(state.product[0].createdAt)}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 12,
+                                            color: Colors.grey
+                                        )
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                          "${l10n?.lastViewedProducts}:",
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                     ],
                   ),
                 ));

@@ -41,14 +41,14 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
           child: CarouselSlider.builder(
             itemCount: list.length,
             options: CarouselOptions(
-              height: 200,
+              height: 180,
               aspectRatio: 16 / 9,
               viewportFraction: 1,
               initialPage: 0,
               enableInfiniteScroll: true,
               reverse: false,
               autoPlay: true,
-              autoPlayInterval: const Duration(seconds: 10),
+              autoPlayInterval: const Duration(seconds: 3),
               autoPlayAnimationDuration: const Duration(milliseconds: 800),
               autoPlayCurve: Curves.fastOutSlowIn,
               enlargeCenterPage: true,
@@ -66,20 +66,15 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
               ){
                 return  Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey),
                   ),
                   width: MediaQuery.of(context).size.width - 24,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(
                       placeholder:(context,url) => Image.asset("assets/images/placeholder_image.png"),
                       imageUrl: list.isNotEmpty ? list[index] : '',
-                      imageBuilder: (context, imageProvider) => PhotoView(
-                        minScale: 0.4,
-                        maxScale: 2.0,
-                        imageProvider: imageProvider,
-                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -94,22 +89,6 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
               }else{
                 return SizedBox();
               }
-
-              // return Container(
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(15),
-              //     border: Border.all(color: Colors.grey),
-              //   ),
-              //   width: MediaQuery.of(context).size.width - 24,
-              //   child: ClipRRect(
-              //     borderRadius: BorderRadius.circular(11),
-              //     child: FadeInImage.assetNetwork(
-              //       placeholder: "assets/images/placeholder_image.png",
-              //       image: list.isNotEmpty ? list[index] : '',
-              //       fit: BoxFit.cover,
-              //     ),
-              //   ),
-              // );
             },
           ),
         ),

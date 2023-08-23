@@ -30,24 +30,20 @@ class AdvertisementResponse {
 
 class AdvItem {
   int id;
-  String category;
   List<String> images;
 
   AdvItem({
     required this.id,
-    required this.category,
     required this.images,
   });
 
   factory AdvItem.fromJson(Map<String, dynamic> json) => AdvItem(
     id: json["id"],
-    category: json["category"],
     images: List<String>.from(json["images"].map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "category": category,
     "images": List<dynamic>.from(images.map((x) => x)),
   };
 }

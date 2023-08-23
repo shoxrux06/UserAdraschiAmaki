@@ -1,3 +1,4 @@
+import 'package:afisha_market/pages/utils/const.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 
@@ -18,9 +19,9 @@ class _CarouselDotsIndicatorState extends State<CarouselDotsIndicator> {
       dotsCount: widget.dotsLength,
       position: widget.currentDot.toDouble(),
       decorator: DotsDecorator(
-        size: const Size.square(9.0),
-        activeSize: const Size(18.0, 9.0),
-        activeColor: Colors.deepOrangeAccent,
+        size: const Size.square(6.0),
+        activeSize: const Size(12.0, 6.0),
+        activeColor: blueColor,
         activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );

@@ -23,22 +23,25 @@ class _CustomButtonState extends State<CustomButton> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      child: SizedBox(
-        height: 60,
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: mainColor,
-              disabledBackgroundColor: disableColor,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-              ),
-              elevation: 2),
-          onPressed: widget.onTap,
-          child: widget.isLoading? const Center(child: SizedBox(width: 24,height: 24,child: CircularProgressIndicator(color: Colors.white,),),):
-          Text(
-            widget.buttonText,
-            style: const TextStyle(color: Colors.white),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Container(
+          width: double.infinity,
+          height: 60,
+          decoration: BoxDecoration(
+              color: mainColor,
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              border: Border.all(
+                width: 1,
+                color: blueColor,
+              )
+          ),
+          child: widget.isLoading? Center(child: SizedBox(width: 24,height: 24,child: CircularProgressIndicator(color: blueColor,),),):
+          Center(
+            child: Text(
+              widget.buttonText,
+              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 16),
+            ),
           ),
         ),
       ),

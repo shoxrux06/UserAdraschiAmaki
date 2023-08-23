@@ -1,19 +1,11 @@
 import 'package:afisha_market/core/utils/local_storage.dart';
-import 'package:afisha_market/pages/auth/noAccount/NoAccountScreen.dart';
 import 'package:afisha_market/pages/main_container.dart';
-import 'package:afisha_market/pages/profile/about_us_page.dart';
 import 'package:afisha_market/pages/profile/contact_with_us.dart';
-import 'package:afisha_market/pages/profile/delete_account_page.dart';
 import 'package:afisha_market/pages/profile/share_screen.dart';
 import 'package:afisha_market/pages/utils/const.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../core/bloc/auth/authBloc.dart';
-import '../../../core/bloc/auth/authEvent.dart';
-import '../payment_page.dart';
 
 class DrawerList extends StatefulWidget {
   const DrawerList({Key? key}) : super(key: key);
@@ -28,7 +20,7 @@ class _DrawerListState extends State<DrawerList> {
     final l10n = AppLocalizations.of(context);
 
     return Container(
-      color: Colors.lightBlueAccent.withOpacity(0.2),
+      color: Colors.white,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -40,45 +32,31 @@ class _DrawerListState extends State<DrawerList> {
             ),
           ),
           ListTile(
-            leading: Image.asset('assets/icons/settings.png', color: mainColor),
+            leading: Image.asset('assets/icons/settings.png', color: blueColor),
             title: Text(l10n?.settings ?? ''),
             onTap: () {
               Navigator.pushNamed(context, '/settingsScreen');
             },
           ),
           ListTile(
-            leading: Image.asset('assets/icons/call.png', color: mainColor),
+            leading: Image.asset('assets/icons/call.png', color: blueColor),
             title: Text(l10n?.contactWithUs ?? ''),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => ContactWithUs()));
             },
           ),
           ListTile(
-            leading: Image.asset('assets/icons/card.png', color: mainColor),
-            title: Text(l10n?.payment ?? ''),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> PaymentPage()));
-            },
-          ),
-          ListTile(
-            leading: Image.asset('assets/icons/share.png', color: mainColor),
+            leading: Image.asset('assets/icons/share.png', color: blueColor),
             title: Text(l10n?.share ?? ''),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => ShareScreen()));
             },
           ),
           ListTile(
-            leading: Image.asset('assets/icons/exit.png', color: mainColor),
+            leading: Image.asset('assets/icons/exit.png', color: blueColor),
             title: Text(l10n?.logOut ?? ''),
             onTap: () {
               _logout(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.delete, color: mainColor),
-            title: Text(l10n?.deleteAccount ?? ''),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const DeleteAccountPage()));
             },
           ),
         ],
@@ -104,7 +82,6 @@ class _DrawerListState extends State<DrawerList> {
                 LocalStorage.instance.deleteUserId();
                 LocalStorage.instance.deleteUsername();
                 LocalStorage.instance.deleteUserPhone();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => NoAccountScreen()));
               },
               child: Text('${l10n?.yes}'),
             ),

@@ -36,7 +36,7 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
           return const Center(child: CircularProgressIndicator());
         } else if (state is GetProfileState) {
           return Container(
-            color: Colors.lightBlueAccent.withOpacity(0.2),
+            color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.only(top: 24.0, bottom: 0),
               child: Column(

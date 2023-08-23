@@ -24,9 +24,9 @@ class HomeRepositoryImpl extends HomeRepository{
     }
   }
   @override
-  Future<ApiResult<AdvertisementResponse>> getAds() async{
+  Future<ApiResult<AdvertisementResponse>> getAds() async {
     try {
-      final client = inject<HttpService>().client(requireAuth: true);
+      final client = inject<HttpService>().client(requireAuth: false);
       final response = await client.get(
         '/reklama',
       );
@@ -50,20 +50,19 @@ class HomeRepositoryImpl extends HomeRepository{
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
-
-  @override
-  Future<ApiResult<RegionResponse>> getRegionList() async{
-    try {
-      final client = inject<HttpService>().client(requireAuth: true);
-      final response = await client.get(
-        '/regions',
-      );
-      return ApiResult.success(data: RegionResponse.fromJson(response.data));
-    } catch (e) {
-      print('==> regions failure: $e');
-      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-  }
+  // @override
+  // Future<ApiResult<RegionResponse>> getRegionList() async{
+  //   try {
+  //     final client = inject<HttpService>().client(requireAuth: true);
+  //     final response = await client.get(
+  //       '/regions',
+  //     );
+  //     return ApiResult.success(data: RegionResponse.fromJson(response.data));
+  //   } catch (e) {
+  //     print('==> regions failure: $e');
+  //     return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+  //   }
+  // }
 
   @override
   Future<ApiResult<List<ProductDetail>>> getProductByRegion(int id) {

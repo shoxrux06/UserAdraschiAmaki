@@ -1,6 +1,7 @@
 import 'package:afisha_market/core/data/repository/product_repository.dart';
 import 'package:afisha_market/core/data/source/remote/request/addRequest.dart';
 import 'package:afisha_market/core/data/source/remote/response/GetProfileResponse.dart';
+import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/addResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/status_and_message_response.dart';
 import 'package:afisha_market/core/di/inject.dart';
@@ -13,13 +14,13 @@ import 'package:flutter/cupertino.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
   @override
-  Future<ApiResult<ProductDetail>> getProduct(int id)async {
+  Future<ApiResult<Product>> getProduct(int id)async {
     try {
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.get(
         '/products/$id',
       );
-      return ApiResult.success(data: ProductDetail.fromJson(response.data['data']));
+      return ApiResult.success(data: Product.fromJson(response.data['data']));
     } catch (e) {
       print('==> products failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));

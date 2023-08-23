@@ -2,6 +2,7 @@ import 'package:afisha_market/core/data/repository/home_repository.dart';
 import 'package:afisha_market/core/data/source/remote/response/AdvertisementResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/RegionResponse.dart';
+import 'package:afisha_market/core/data/source/remote/response/material_type_response.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -28,7 +29,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final productResponse = await _homeRepository.getProductList();
         final adsResponse = await _homeRepository.getAds();
         final viewResponse = await _homeRepository.getViews();
-        var regionList = await _homeRepository.getRegionList();
 
         productResponse.when(
           success: (data) {
@@ -65,18 +65,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               );
             },
             failure: (failure) {});
-
-        regionList.when(
-          success: (data) {
-            emit(state.copyWith(
-              status: Status.success,
-              regionList: data.data,
-            ));
-          },
-          failure: (failure) {
-            emit(state.copyWith(isFetchingRegions: false));
-          },
-        );
       } catch (e) {
         emit(state.copyWith(isFetchingRegions: false));
       }
@@ -104,40 +92,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
-    on<HomeFilterEvent>((event, emit) async {
-      emit(state.copyWith(status: Status.loading, isFetchingFilteredProducts: true));
+    on<HomeGetMaterialTypes>((event, emit) async {
+      emit(state.copyWith(isFetchingFilteredProducts: true));
       try {
-        final response = await _filterRepository.getProductByRegion(event.regionId);
+        final response = await _filterRepository.getProductByMaterialType();
         response.when(success: (data) {
           emit(state.copyWith(
             status: Status.success,
             isFetchingFilteredProducts: false,
-            productList: data,
-            adList: state.adList,
-            currentPage: 0,
-            lastPage: 1,
-          ));
-        }, failure: (failure) {
-          emit(state.copyWith(status: Status.fail,isFetchingFilteredProducts: false,));
-        });
-      } catch (e) {
-        emit(state.copyWith(
-          status: Status.fail,
-          isFetchingFilteredProducts: false,
-        ));
-      }
-    });
-
-    on<HomeFilterByDistrictEvent>((event, emit) async {
-      emit(state.copyWith(status: Status.loading, isFetchingFilteredProducts: true));
-      try {
-        final response = await _filterRepository.getProductByDistrict(event.districtId);
-        response.when(success: (data) {
-          emit(state.copyWith(
-            status: Status.success,
-            isFetchingFilteredProducts: false,
-            productList: data,
-            adList: state.adList,
+            materialTypeResponse: data,
             currentPage: 0,
             lastPage: 1,
           ));
@@ -170,6 +133,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             },
             failure: (failure) {});
       } catch (e) {}
+    });
+
+    on<HomeFilterProductsByMaterialTypes>((event, emit) async {
+      emit(state.copyWith(status: Status.loading,));
+      try {
+        final productResponse = await _homeRepository.getProductList();
+        productResponse.when(
+            success: (data) {
+              List<Product>? newProductList = data.data.item.where((product) => product.mahsulotTola == event.materialType).toList();
+              emit(
+                state.copyWith(
+                  status: Status.success,
+                  productList: newProductList,
+                  adList: state.adList,
+                  currentPage: data.data.meta.currentPage,
+                  lastPage: data.data.meta.lastPage,
+                ),
+              );
+            },
+            failure: (failure) {
+            });
+      } catch (e) {
+
+      }
     });
   }
 }

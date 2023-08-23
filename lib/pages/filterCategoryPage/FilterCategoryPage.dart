@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/bloc/filterCategory/filter_category_bloc.dart';
 import '../../core/bloc/home/home_bloc.dart';
 import '../../core/data/source/remote/response/ProductCategoryResponse.dart';
+import '../../core/utils/local_storage.dart';
 import '../filterRegionPage/FilterProductItem.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,6 +21,24 @@ class FilterCategoryPage extends StatefulWidget {
 class _FilterCategoryPageState extends State<FilterCategoryPage> {
   final bloc = FilterCategoryBloc(filterRepository);
 
+  List<String> _favoriteProducts = [];
+
+  void _loadFavoriteProducts() {
+    final favorites = LocalStorage.instance.getFavProductIds();
+    setState(() {
+      _favoriteProducts = favorites;
+    });
+  }
+
+  void _toggleFavorite(String productId) async {
+    if (_favoriteProducts.contains(productId)) {
+      await LocalStorage.instance.removeFavoriteProduct(productId);
+    } else {
+      await LocalStorage.instance.addFavoriteProduct(productId);
+    }
+    _loadFavoriteProducts();
+  }
+
   @override
   void initState() {
     Future(() {
@@ -32,7 +51,9 @@ class _FilterCategoryPageState extends State<FilterCategoryPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 10,
+      ),
       body: BlocProvider.value(
         value: bloc,
         child: BlocBuilder<FilterCategoryBloc, FilterCategoryState>(
@@ -43,8 +64,8 @@ class _FilterCategoryPageState extends State<FilterCategoryPage> {
             }
             if (state.productList.isNotEmpty) {
               return Container(
-                color: Colors.lightBlueAccent.withOpacity(0.2),
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                color: Colors.white,
+                padding: const EdgeInsets.all(12),
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -54,27 +75,24 @@ class _FilterCategoryPageState extends State<FilterCategoryPage> {
                   itemCount: state.productList.length,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, i) {
+                    int productId = state.productList[i].id;
+                    bool isFav = _favoriteProducts.contains(productId.toString());
                     return GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(builder: (_) => FilterProductDetailPage(productDetail: state.productList[i],)));
                         },
-                        child: GestureDetector(child: FilterProductItem(product: state.productList[i])));
+                        child: GestureDetector(child: FilterProductItem(product: state.productList[i], isFav: isFav,toggle: () => _toggleFavorite(productId.toString()),)));
                   },
                 ),
               );
             } else {
               return Container(
-                color: Colors.lightBlueAccent.withOpacity(0.2),
+                color: Colors.white,
                 padding:  EdgeInsets.all(24),
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.asset(
-                        'assets/images/empty_product.jpg',
-                        width: MediaQuery.of(context).size.width - 96,
-                        height: MediaQuery.of(context).size.height / 2,
-                      ),
                       Text("${l10n?.noDataFound}"),
                     ],
                   ),

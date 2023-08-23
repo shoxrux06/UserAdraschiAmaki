@@ -10,7 +10,7 @@ class ProductGridListShimmer extends StatelessWidget {
   const ProductGridListShimmer({
     Key? key,
     this.itemCount = 6,
-    this.verticalPadding = 20,
+    this.verticalPadding = 10,
   }) : super(key: key);
 
   @override
@@ -20,11 +20,11 @@ class ProductGridListShimmer extends StatelessWidget {
       itemCount: itemCount,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 168 / 250,
-        mainAxisSpacing: 30,
-        crossAxisSpacing: 9,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
         crossAxisCount: 2,
       ),
-      padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: 24),
+      padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: 12),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         return MakeShimmer(

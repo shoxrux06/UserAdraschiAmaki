@@ -15,6 +15,7 @@ class HomeState {
   final bool isFetchingFilteredProducts;
   final bool isFetchingRegions;
   final bool isFetchingAds;
+  final MaterialTypeResponse? materialTypeResponse;
 
   HomeState({
     this.productList = const [],
@@ -30,6 +31,7 @@ class HomeState {
     this.isFetchingFilteredProducts = false,
     this.isFetchingRegions = false,
     this.isFetchingAds = false,
+    this.materialTypeResponse,
   });
 
   HomeState copyWith({
@@ -46,6 +48,7 @@ class HomeState {
     bool? isFetchingFilteredProducts,
     bool? isFetchingRegions,
     bool? isFetchingAds,
+    MaterialTypeResponse? materialTypeResponse,
   }) {
     return HomeState(
       status: status ?? this.status,
@@ -61,6 +64,7 @@ class HomeState {
       isFetchingFilteredProducts: isFetchingFilteredProducts??this.isFetchingFilteredProducts,
       isFetchingRegions: isFetchingRegions??this.isFetchingRegions,
       isFetchingAds: isFetchingAds??this.isFetchingAds,
+      materialTypeResponse: materialTypeResponse??this.materialTypeResponse,
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:afisha_market/core/constants/app_constants.dart';
@@ -7,6 +8,7 @@ import 'package:dio/dio.dart';
 
 
 class HttpService {
+
 
   Dio client({bool requireAuth = false}) => Dio(
     BaseOptions(

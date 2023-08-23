@@ -17,14 +17,12 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   final bloc = CategoryBloc(categoryRepository);
 
-  bool isFirst = true;
-  int selectedItemIndex = -1;
-
   List<bool> myList = [];
 
   @override
   void initState() {
-    context.read<CategoryBloc>().add(CategoryFilteredEvent());
+    print('Category page');
+    context.read<CategoryBloc>().add(CategoryInitEvent());
     super.initState();
   }
 
@@ -42,98 +40,37 @@ class _CategoryPageState extends State<CategoryPage> {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: Container(
-              color: Colors.lightBlueAccent.withOpacity(0.2),
+              color: Colors.white,
               child: ListView.builder(
                 itemCount: state.categoryResponse?.categories.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      setState(() {
-                        selectedItemIndex = index;
-                        isFirst = !isFirst;
-                      });
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => FilterCategoryPage(categoryId: state.categoryResponse?.categories[index].id,)));
                     },
-                    child: AnimatedCrossFade(
-                      firstChild: Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 8),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          children: [
-                            Expanded(child: Text(
-                              state.categoryResponse?.categories[index].name ?? '',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: false,
-                            )),
-                            IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedItemIndex = index;
-                                    isFirst = !isFirst;
-                                  });
-                                },
-                                icon: const Icon(Icons.arrow_drop_down))
-                          ],
-                        ),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(11),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 2
+                            )
+                          ]
                       ),
-                      secondChild: Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 8),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(child: Text(
-                                  state.categoryResponse?.categories[index].name ?? '',
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                )),
-                                IconButton(onPressed: () {
-                                  setState(() {
-                                    selectedItemIndex = index;
-                                    isFirst = !isFirst;
-                                  });
-                                },
-                                    icon: const Icon(Icons.arrow_drop_up))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            ...?state.categoryResponse?.categories[index]
-                                .subCategories
-                                .map((subCategory) => GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (_) => FilterCategoryPage(categoryId: subCategory.id)));
-                              },
-                              child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  margin: EdgeInsets.only(top: 8),
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: Colors.black26, width: 1)),
-                                  child: Text(subCategory.name)
-                              ),
-                            ))
-                          ],
-                        ),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(
+                            state.categoryResponse?.categories[index].name ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                          )),
+                        ],
                       ),
-                      crossFadeState: (isFirst || selectedItemIndex != index)
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      duration: const Duration(milliseconds: 300),
                     ),
                   );
                 },

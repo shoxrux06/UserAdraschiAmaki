@@ -10,46 +10,17 @@ import '../../source/remote/response/CategoryResponse.dart';
 import '../../source/remote/response/filtered_product_category_response.dart';
 
 class CategoryRepositoryImpl extends CategoryRepository{
-  // @override
-  // Future<ApiResult<ProductCategoryResponse>> getProductCategoryList()async {
-  //   try {
-  //     final client = inject<HttpService>().client(requireAuth: true);
-  //     final response = await client.get(
-  //       '/categories',
-  //     );
-  //     return ApiResult.success(data: ProductCategoryResponse.fromJson(response.data));
-  //   } catch (e) {
-  //     print('==> categories failure: $e');
-  //     return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-  //   }
-  // }
-  //
-  // @override
-  // Future<ApiResult<UserCategoryResponse>> getUserCategoryList() async{
-  //   try {
-  //     final client = inject<HttpService>().client(requireAuth: false);
-  //     final response = await client.get(
-  //       '/users-categories',
-  //     );
-  //     return ApiResult.success(data: UserCategoryResponse.fromJson(response.data));
-  //   } catch (e) {
-  //     print('==> users-categories failure: $e');
-  //     return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-  //   }
-  // }
-  //
   @override
-  Future<ApiResult<CategoryResponse>> getSelectedProductCategoryList() async{
+  Future<ApiResult<CategoryResponse>> getProductCategoryList()async {
     try {
-      final client = inject<HttpService>().client(requireAuth: false);
+      final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.get(
-        '/product-categories',
+        '/categories',
       );
       return ApiResult.success(data: CategoryResponse.fromJson(response.data));
     } catch (e) {
-      print('==> users-categories failure: $e');
+      print('==> categories failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
-
 }

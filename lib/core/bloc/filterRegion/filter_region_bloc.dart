@@ -1,4 +1,5 @@
 import 'package:afisha_market/core/data/repository/filter_repository.dart';
+import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 

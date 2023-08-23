@@ -9,7 +9,7 @@ abstract class HomeRepository{
   Future<ApiResult<ProductResponse>> getProductList({int page = 1, String search = ""});
   Future<ApiResult<AdvertisementResponse>> getAds();
   Future<ApiResult<int>> getViews();
-  Future<ApiResult<RegionResponse>> getRegionList();
+  // Future<ApiResult<RegionResponse>> getRegionList();
   Future<ApiResult<List<ProductDetail>>> getProductByRegion(int id);
 
 }

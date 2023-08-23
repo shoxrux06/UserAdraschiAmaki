@@ -16,7 +16,7 @@ class _HeroPageState extends State<HeroPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
-        elevation: 0,
+        elevation: 10,
         leading: Container(),
         leadingWidth: 0,
         actions: [

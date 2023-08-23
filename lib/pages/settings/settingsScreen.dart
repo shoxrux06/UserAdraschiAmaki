@@ -18,18 +18,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        elevation: 10,
         title: Text(
           l10n?.settings??'',
           style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
         ),
       ),
       body: Container(
-        color: Colors.lightBlueAccent.withOpacity(0.2),
+        color: Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             ListTile(
-              leading: Image.asset('assets/icons/person_i.png', color: mainColor),
+              leading: Image.asset('assets/icons/person_i.png', color: blueColor),
               title: Text(l10n?.profile??''),
               onTap: () {
                 Navigator.pushNamed(context, '/updateProfile');
@@ -39,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               height: 2,
             ),
             ListTile(
-              leading: Image.asset('assets/icons/network.png', color: mainColor),
+              leading: Image.asset('assets/icons/network.png', color: blueColor),
               title: Text(l10n?.language??'',),
               onTap: () {
                 Navigator.pushNamed(context, '/chooseLang');

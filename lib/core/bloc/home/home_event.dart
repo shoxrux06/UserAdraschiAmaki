@@ -13,15 +13,12 @@ class HomeSearchEvent extends HomeEvent {
   HomeSearchEvent(this.text);
 }
 
-class HomeFilterEvent extends HomeEvent {
-  final int regionId;
+class HomeGetMaterialTypes extends HomeEvent {}
 
-  HomeFilterEvent(this.regionId);
+class HomeFilterProductsByMaterialTypes extends HomeEvent {
+  final String materialType;
+
+  HomeFilterProductsByMaterialTypes(this.materialType);
 }
 
-class HomeFilterByDistrictEvent extends HomeEvent {
-  final int districtId;
-
-  HomeFilterByDistrictEvent(this.districtId);
-}
 

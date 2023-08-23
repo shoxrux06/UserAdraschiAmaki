@@ -28,6 +28,7 @@ class _ConfidentalityScreenState extends State<ConfidentalityScreen> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
+        elevation: 10,
         title: Text(l10n?.confidentiality??''),
       ),
       body: LayoutBuilder(

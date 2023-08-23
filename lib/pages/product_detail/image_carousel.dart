@@ -7,8 +7,10 @@ import '../home/widget/dots_indicator.dart';
 
 class ImageCarousel extends StatefulWidget {
   final List<String> imageList;
+  final int? numberOfLikes;
 
-  const ImageCarousel({Key? key, required this.imageList}) : super(key: key);
+  const ImageCarousel({Key? key, required this.imageList, this.numberOfLikes})
+      : super(key: key);
 
   @override
   State<ImageCarousel> createState() => _ImageCarouselState();
@@ -16,8 +18,9 @@ class ImageCarousel extends StatefulWidget {
 
 class _ImageCarouselState extends State<ImageCarousel> {
   int pageIndex = 0;
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     if (widget.imageList.isEmpty) {
       return Container(
         decoration: BoxDecoration(
@@ -29,23 +32,20 @@ class _ImageCarouselState extends State<ImageCarousel> {
     } else {
       return Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 1),
-                borderRadius: BorderRadius.circular(12)),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: CarouselSlider.builder(
+          Stack(
+            children: [
+              CarouselSlider.builder(
                 itemCount: widget.imageList.length,
                 options: CarouselOptions(
-                  viewportFraction: 1.4,
+                  viewportFraction: 1.0,
                   initialPage: 0,
-                  aspectRatio: 1 / 1,
+                  aspectRatio: 4/4.2,
                   enableInfiniteScroll: false,
                   reverse: false,
                   autoPlay: false,
-                  autoPlayInterval: const Duration(seconds: 10),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayAnimationDuration:
+                      const Duration(milliseconds: 800),
                   autoPlayCurve: Curves.fastOutSlowIn,
                   onPageChanged: (index, reason) {
                     pageIndex = index;
@@ -53,38 +53,97 @@ class _ImageCarouselState extends State<ImageCarousel> {
                   },
                   scrollDirection: Axis.horizontal,
                 ),
-                itemBuilder: (BuildContext context, int index, int realIndex) {
-                  if(widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'jpeg'
-                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'png'
-                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'jpg'
-                  ){
-                    return  SizedBox(
-                      width: double.infinity,
-                      child: CachedNetworkImage(
-                        placeholder:(context,url) => Image.asset("assets/images/placeholder_image.png"),
-                        imageUrl: widget.imageList[index],
-                        imageBuilder: (context, imageProvider) => PhotoView(
-                          minScale: 0.4,
-                          maxScale: 2.0,
-                          imageProvider: imageProvider,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
+                itemBuilder:
+                    (BuildContext context, int index, int realIndex) {
+                  if (widget.imageList[index].substring(
+                              widget.imageList[index].lastIndexOf('.') + 1,
+                              widget.imageList[index].length) ==
+                          'jpeg' ||
+                      widget.imageList[index].substring(
+                              widget.imageList[index].lastIndexOf('.') + 1,
+                              widget.imageList[index].length) ==
+                          'png' ||
+                      widget.imageList[index].substring(
+                              widget.imageList[index].lastIndexOf('.') + 1,
+                              widget.imageList[index].length) ==
+                          'jpg') {
+                    return CachedNetworkImage(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height/2,
+                      placeholder: (context, url) => Image.asset("assets/images/placeholder_image.png"),
+                      imageUrl: widget.imageList[index],
+                      // imageBuilder: (context, imageProvider) => PhotoView(
+                      //   minScale: 0.4,
+                      //   maxScale: 2.0,
+                      //   imageProvider: imageProvider,
+                      // ),
+                      fit: BoxFit.cover,
                     );
-                  }else if(
-                  widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'gif'||
-                   widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'mp4'
-                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'avi'
-                      || widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'mov'
-                  ){
+                  } else if (widget.imageList[index].substring(
+                              widget.imageList[index].lastIndexOf('.') + 1,
+                              widget.imageList[index].length) ==
+                          'gif' ||
+                      widget.imageList[index].substring(
+                              widget.imageList[index].lastIndexOf('.') + 1,
+                              widget.imageList[index].length) ==
+                          'mp4' ||
+                      widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'avi' ||
+                      widget.imageList[index].substring(widget.imageList[index].lastIndexOf('.') + 1, widget.imageList[index].length) == 'mov') {
                     return VideoPlayerNetworkImage(widget.imageList[index]);
-                  }else{
+                  } else {
                     return SizedBox();
                   }
-
                 },
               ),
-            ),
+              Positioned(
+                  top: 40,
+                  left: 10,
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(43),
+                          color: Colors.white54,
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  )),
+              Positioned(
+                  top: 40,
+                  right: 10,
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white38,
+                    ),
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: 32,
+                        ),
+                        Text(
+                          '${widget.numberOfLikes??0}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        )
+                      ],
+                    ),
+                  ))
+            ],
           ),
           Builder(
             builder: (BuildContext context) {

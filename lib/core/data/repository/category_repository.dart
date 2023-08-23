@@ -5,7 +5,7 @@ import 'package:afisha_market/core/data/source/remote/response/filtered_product_
 import 'package:afisha_market/core/handlers/api_result.dart';
 
 abstract class CategoryRepository{
-  // Future<ApiResult<ProductCategoryResponse>> getProductCategoryList();
+  Future<ApiResult<CategoryResponse>> getProductCategoryList();
   // Future<ApiResult<UserCategoryResponse>> getUserCategoryList();
-  Future<ApiResult<CategoryResponse>> getSelectedProductCategoryList();
+  // Future<ApiResult<CategoryResponse>> getSelectedProductCategoryList();
 }

@@ -70,17 +70,6 @@ class ProfileProductItem extends StatelessWidget {
           Container(
               margin: const EdgeInsets.symmetric(horizontal: 5),
               width: double.infinity,
-              child: Row(
-                children: [
-                  const Icon(Icons.remove_red_eye_sharp, size: 16,),
-                  const SizedBox(width: 4,),
-                  Text("${product.views}", textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                ],
-              )),
-          const SizedBox(height: 5),
-          Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              width: double.infinity,
               child: Text(
                   DateFormat('dd-MM-yyyy HH:mm').format(product.updatedAt),
                   textAlign: TextAlign.start,

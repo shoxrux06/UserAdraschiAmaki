@@ -6,6 +6,7 @@ class AppConstants{
   static const String keyUserId = 'keyUserId';
   static const String keyUserName = 'keyUserName';
   static const String keyUserPhone = 'keyUserPhone';
+  static const String keyProductId = 'keyProductId';
   ///api
-  static const String baseUrl = 'http://95.130.227.128/api/mobile';
+  static String baseUrl = 'https://adraschi-amaki.uz/api/mobile';
 }

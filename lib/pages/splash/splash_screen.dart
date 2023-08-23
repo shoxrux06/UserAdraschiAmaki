@@ -9,6 +9,7 @@ import '../../core/bloc/language/language_bloc.dart';
 import '../../core/bloc/language/language_event.dart';
 import '../../core/utils/local_storage.dart';
 import '../utils/const.dart';
+import '../utils/custom_button_two.dart';
 import '../utils/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -25,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
     return BlocBuilder<LanguageBloc, LanguageState>(builder: (context, state) {
       return Scaffold(
         body: Container(
-          color: Colors.lightBlueAccent.withOpacity(0.2),
+          padding: EdgeInsets.all(12),
+          color: Colors.white,
           child: Column(
             children: [
               const Spacer(),
@@ -36,7 +38,15 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: mainColor,
               ),
               const Spacer(),
-              MyButtonTwo(
+              CustomButtonTwo(
+                "English",
+                onTap: () async {
+                  context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'en'));
+                  await LocalStorage.instance.setLanguage('en');
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer()));
+                },
+              ),
+              CustomButtonTwo(
                 "Русский",
                 onTap: () async {
                   context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'ru'));
@@ -44,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer()));
                 },
               ),
-              MyButtonTwo(
+              CustomButtonTwo(
                 'O\'zbek',
                 onTap: () async{
                   context.read<LanguageBloc>().add(const ChangeLanguage(langCode: 'uz'));

@@ -17,9 +17,9 @@ class SliverProductGridListShimmer extends StatelessWidget {
     return SliverGrid(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 15,
-        crossAxisSpacing: 15,
-        childAspectRatio: 0.60,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 0.70,
       ),
       delegate: SliverChildBuilderDelegate((context, index) {
         return MakeShimmer(

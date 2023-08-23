@@ -22,7 +22,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         ),
       ),
       body: Container(
-        color: Colors.lightBlueAccent.withOpacity(0.2),
+        color: Colors.white,
         child: Column(
           children: const [
            Expanded(child: EditList())
