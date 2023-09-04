@@ -1,3 +1,4 @@
+import 'package:afisha_market/core/data/models/locale_product.dart';
 import 'package:afisha_market/core/data/repository/product_repository.dart';
 import 'package:afisha_market/core/data/source/remote/request/addRequest.dart';
 import 'package:afisha_market/core/data/source/remote/response/GetProfileResponse.dart';
@@ -11,10 +12,15 @@ import 'package:afisha_market/core/handlers/network_exceptions.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sqflite/sqflite.dart';
+
+import '../../../../db/db_provider.dart';
+import '../../models/cart_item.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
+
   @override
-  Future<ApiResult<Product>> getProduct(int id)async {
+  Future<ApiResult<Product>> getProduct(int id) async {
     try {
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.get(
@@ -28,7 +34,8 @@ class ProductRepositoryImpl extends ProductRepository {
   }
 
   @override
-  Future<ApiResult<CreateResponse>> createProduct(BuildContext context,CreateRequest request) async{
+  Future<ApiResult<CreateResponse>> createProduct(
+      BuildContext context, CreateRequest request) async {
     try {
       final formData = FormData.fromMap({
         'title': request.title,
@@ -63,43 +70,46 @@ class ProductRepositoryImpl extends ProductRepository {
         )
       });
       final client = inject<HttpService>().client(requireAuth: true);
-      final response = await client.post(
-        '/products',
-        data: (request.latitude ==  null || request.longitude == null)?formData: formData2
-      );
+      final response = await client.post('/products',
+          data: (request.latitude == null || request.longitude == null)
+              ? formData
+              : formData2);
       return ApiResult.success(data: CreateResponse.fromJson(response.data));
-    } on DioError catch(e){
+    } on DioError catch (e) {
       print(e.response);
-      AppHelpers.showCheckFlash(context, e.response?.data['message']??'No message');
+      AppHelpers.showCheckFlash(
+          context, e.response?.data['message'] ?? 'No message');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-    catch (e) {
+    } catch (e) {
       print('==>create products failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
 
   @override
-  Future<ApiResult<StatusAndMessageResponse>> deleteProduct(BuildContext context,int id) async{
+  Future<ApiResult<StatusAndMessageResponse>> deleteProduct(
+      BuildContext context, int id) async {
     try {
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.delete(
-          '/products/$id',
+        '/products/$id',
       );
-      return ApiResult.success(data: StatusAndMessageResponse.fromJson(response.data));
-    } on DioError catch(e){
+      return ApiResult.success(
+          data: StatusAndMessageResponse.fromJson(response.data));
+    } on DioError catch (e) {
       print(e.response);
-      AppHelpers.showCheckFlash(context, e.response?.data['message']??'No message');
+      AppHelpers.showCheckFlash(
+          context, e.response?.data['message'] ?? 'No message');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-    catch (e) {
+    } catch (e) {
       print('==>update products failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
 
   @override
-  Future<ApiResult<CreateResponse>> updateProduct(BuildContext context, CreateRequest request,int id)async {
+  Future<ApiResult<CreateResponse>> updateProduct(
+      BuildContext context, CreateRequest request, int id) async {
     try {
       final formData = FormData.fromMap({
         'title': request.title,
@@ -117,20 +127,18 @@ class ProductRepositoryImpl extends ProductRepository {
         )
       });
       final client = inject<HttpService>().client(requireAuth: true);
-      final response = await client.post(
-          '/products/$id',
-          data: formData
-      );
+      final response = await client.post('/products/$id', data: formData);
       return ApiResult.success(data: CreateResponse.fromJson(response.data));
-    } on DioError catch(e){
+    } on DioError catch (e) {
       print(e.response);
-      AppHelpers.showCheckFlash(context, e.response?.data['message']??'No message');
+      AppHelpers.showCheckFlash(
+          context, e.response?.data['message'] ?? 'No message');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-    catch (e) {
+    } catch (e) {
       print('==>update products failure: $e');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
+
 
 }

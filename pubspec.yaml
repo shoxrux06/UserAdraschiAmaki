@@ -17,6 +17,7 @@ dependencies:
   flutter_bloc: ^8.1.2
   dio: ^4.0.6
   hive: ^2.2.3
+  hive_flutter:
   get_it: ^7.2.0
   circle_nav_bar: ^2.0.1+1
   flutter_svg: ^2.0.2
@@ -49,6 +50,9 @@ dependencies:
   flutter_map: ^4.0.0
   sliding_up_panel: ^2.0.0+1
   video_player: ^2.6.1
+  top_snackbar_flutter: ^3.1.0
+  sqflite: ^2.3.0
+  path:
 
 
 
@@ -59,6 +63,7 @@ dev_dependencies:
 
   flutter_lints: ^2.0.0
   freezed: ^2.1.0+1
+  hive_generator:
   build_runner: ^2.4.6
   change_app_package_name: ^1.1.0
 

@@ -1,6 +1,9 @@
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../pages/utils/const.dart';
 
 class AppHelpers {
@@ -12,12 +15,25 @@ class AppHelpers {
       value = value.replaceAll(RegExp(r'\D'), '');
       value = value.replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), ' ');
       return value;
-    }else{
+    } else {
       return price;
     }
   }
 
-  static showSnackBar(BuildContext context,String message) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  static showSuccessSnackBar(BuildContext context,String message){
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.success(
+        message: message,
+      ),
+      dismissType: DismissType.onSwipe,
+      dismissDirection: [DismissDirection.endToStart],
+    );
+  }
+
+  static showSnackBar(BuildContext context, String message) =>
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
 
   static translate(BuildContext context) => AppLocalizations.of(context);
 
@@ -61,8 +77,9 @@ class AppHelpers {
   static decoration({bool isHintText = false, String? text}) => InputDecoration(
         fillColor: helperColor,
         filled: true,
-        hintText: isHintText?text: null,
-        hintStyle: TextStyle(color: disableColor, fontWeight: FontWeight.normal, fontSize: 16),
+        hintText: isHintText ? text : null,
+        hintStyle: TextStyle(
+            color: disableColor, fontWeight: FontWeight.normal, fontSize: 16),
         // prefixIcon: const Icon(Icons.not_listed_location_outlined),
         border: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(16)),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:afisha_market/pages/cart/cart_page.dart';
 import 'package:afisha_market/pages/profile/profile_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
@@ -59,6 +60,7 @@ class _MainContainerState extends State<MainContainer> {
     pages = [
       const HomePage(),
       const CategoryPage(),
+      const CartPage(),
       const ProfilePage()
     ];
     super.initState();
@@ -83,8 +85,8 @@ class _MainContainerState extends State<MainContainer> {
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/icons/home_i.svg',
-                  colorFilter: const ColorFilter.mode(
-                    Color(0xFF999999),
+                  colorFilter:  ColorFilter.mode(
+                    greyColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -101,8 +103,8 @@ class _MainContainerState extends State<MainContainer> {
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/icons/category_i.svg',
-                  colorFilter: const ColorFilter.mode(
-                    Color(0xFF999999),
+                  colorFilter: ColorFilter.mode(
+                    greyColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -117,6 +119,24 @@ class _MainContainerState extends State<MainContainer> {
                 ),
               ),
               BottomNavigationBarItem(
+                  icon: SvgPicture.asset(
+                    'assets/icons/cart_out.svg',
+                    colorFilter: ColorFilter.mode(
+                      greyColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: l10n?.cart??'Cart',
+                  backgroundColor: mainColor,
+                  activeIcon:SvgPicture.asset(
+                    'assets/icons/cart_fill.svg',
+                    colorFilter: ColorFilter.mode(
+                      blueColor,
+                      BlendMode.srcIn,
+                    ),
+                  )
+              ),
+              BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/icons/person_i.svg',
                   colorFilter: const ColorFilter.mode(
@@ -124,7 +144,7 @@ class _MainContainerState extends State<MainContainer> {
                     BlendMode.srcIn,
                   ),
                 ),
-                label: l10n?.settings?? 'Account',
+                label: l10n?.account?? 'Account',
                 backgroundColor: mainColor,
                 activeIcon: SvgPicture.asset(
                   'assets/icons/person.svg',

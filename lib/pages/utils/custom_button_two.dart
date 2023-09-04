@@ -29,7 +29,7 @@ class _CustomButtonState extends State<CustomButtonTwo> {
           width: double.infinity,
           height: 60,
           decoration: BoxDecoration(
-              color: mainColor,
+              color: blueColor,
               borderRadius: BorderRadius.all(Radius.circular(16)),
               border: Border.all(
                 width: 1,
@@ -40,7 +40,7 @@ class _CustomButtonState extends State<CustomButtonTwo> {
           Center(
             child: Text(
               widget.buttonText,
-              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 16),
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
             ),
           ),
         ),

@@ -1,12 +1,18 @@
 import 'package:afisha_market/core/bloc/like/like_bloc.dart';
 import 'package:afisha_market/core/bloc/like/like_event.dart';
 import 'package:afisha_market/core/bloc/like/like_state.dart';
+import 'package:afisha_market/core/bloc/productDetail/product_detail_bloc.dart';
+import 'package:afisha_market/core/data/models/locale_product.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
+import 'package:afisha_market/pages/utils/const.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../core/data/source/remote/response/ProductResponse.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -147,21 +153,21 @@ class _ProductItemState extends State<ProductItem> {
                       "${AppHelpers.moneyFormat(widget.product.price.toString())} ${l10n?.productPrice}",
                       textAlign: TextAlign.start,
                       style:
-                      TextStyle(fontSize: 14, fontWeight: FontWeight.normal,decoration: TextDecoration.lineThrough),
+                      const TextStyle(fontSize: 14, fontWeight: FontWeight.normal,decoration: TextDecoration.lineThrough),
                     )
                 ): Container(),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Container(
                     margin: const EdgeInsets.symmetric(horizontal: 5),
                     width: double.infinity,
                     child: Text(
-                        "${DateFormat('dd-MM-yyyy HH:mm').format(widget.product.updatedAt)}",
+                        DateFormat('dd-MM-yyyy HH:mm').format(widget.product.updatedAt),
                         textAlign: TextAlign.start,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF7F7F7F),
                             fontSize: 12))),
-                Spacer(flex: 3),
+                const Spacer(flex: 3),
               ],
             ),
           ),
@@ -190,6 +196,31 @@ class _ProductItemState extends State<ProductItem> {
                           ? Icons.favorite
                           : Icons.favorite_border,
                       color: Colors.red,
+                    ),
+                  ),
+                ),
+              )
+          ),
+          Positioned(
+              bottom: 10,
+              right: 10,
+              child: InkWell(
+                onTap:() async {
+                  context.read<ProductDetailBloc>().add(AddToCartEvent(LocaleProduct(productId:  widget.product.id, image: widget.product.photos[0], price: widget.product.price, productName: widget.product.category, quantity: 1, totalSum: 0)));
+                  AppHelpers.showSuccessSnackBar(context,'Product Added to cart');
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white54,
+                      borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                        color: greyColor
+                    )
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: SvgPicture.asset('assets/icons/cart_add.svg', width: 24,height: 24,color: greyColor,)
                     ),
                   ),
                 ),

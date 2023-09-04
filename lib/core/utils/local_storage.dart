@@ -1,5 +1,10 @@
 import 'package:afisha_market/core/constants/app_constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
+import 'app_helpers.dart';
 
 class LocalStorage {
   static SharedPreferences? _preferences;
@@ -36,6 +41,12 @@ class LocalStorage {
     }
   }
 
+  Future<void> setIncDecValue(int? counter) async {
+    if (_preferences != null) {
+      await _preferences!.setInt(AppConstants.counter, counter ?? 0);
+    }
+  }
+
   Future<void> setUserName(String? username) async {
     if (_preferences != null) {
       await _preferences!.setString(AppConstants.keyUserName, username ?? '');
@@ -49,6 +60,7 @@ class LocalStorage {
   }
 
   int getUserId() => _preferences?.getInt(AppConstants.keyUserId) ?? 0;
+  int getCounterValue() => _preferences?.getInt(AppConstants.counter) ?? -1;
 
   String getUserName() =>
       _preferences?.getString(AppConstants.keyUserName) ?? '';
@@ -72,20 +84,19 @@ class LocalStorage {
 
   String getLanguage() => _preferences?.getString(AppConstants.keyLang) ?? '';
 
-  setFavProductIds(List<int> intProductIdList) async {
-    List<String> stringProductIdList =
-        intProductIdList.map((item) => item.toString()).toList();
-    if (_preferences != null) {
-      await _preferences?.setStringList(
-          AppConstants.keyProductId, stringProductIdList);
-    }
-  }
-
   Future<void> addFavoriteProduct(String productId) async {
     final favoriteProducts = getFavProductIds();
     if (!favoriteProducts.contains(productId)) {
       favoriteProducts.add(productId);
       _preferences?.setStringList(AppConstants.keyProductId, favoriteProducts);
+    }
+  }
+
+  Future<void> addCartProduct(String productId, BuildContext context) async {
+    final cartProducts = getCartProductIds();
+    if (!cartProducts.contains(productId)) {
+      cartProducts.add(productId);
+      _preferences?.setStringList(AppConstants.keyCartProductId, cartProducts);
     }
   }
 
@@ -97,5 +108,16 @@ class LocalStorage {
     }
   }
 
+  Future<void> removeCartProduct(String productId) async {
+    final cartProducts = getCartProductIds();
+    if (cartProducts.contains(productId)) {
+      cartProducts.remove(productId);
+      _preferences?.setStringList(AppConstants.keyCartProductId, cartProducts);
+    }
+  }
+
   List<String> getFavProductIds() => _preferences?.getStringList(AppConstants.keyProductId)??[];
+
+  List<String> getCartProductIds() => _preferences?.getStringList(AppConstants.keyCartProductId)??[];
+
 }

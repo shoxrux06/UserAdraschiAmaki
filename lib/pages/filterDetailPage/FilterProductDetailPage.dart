@@ -142,8 +142,7 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                                   )),
                                   const SizedBox(width: 20),
                                   Expanded(
-                                      child: Text(
-                                          state.product[0].ishlabChiqarishTuri))
+                                      child: Text(state.product[0].ishlabChiqarishTuri))
                                 ],
                               ),
                               const SizedBox(
@@ -161,10 +160,10 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                                   Expanded(child: Text(state.product[0].eni))
                                 ],
                               ),
-                              const SizedBox(
-                                height: 10,
+                              SizedBox(
+                                height: state.product[0].boyi.isEmpty?0: 10,
                               ),
-                              Row(
+                              state.product[0].boyi.isEmpty? Container(): Row(
                                 children: [
                                   Expanded(
                                       child: Text(

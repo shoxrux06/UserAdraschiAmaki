@@ -1,3 +1,4 @@
+import 'package:afisha_market/core/data/models/locale_product.dart';
 import 'package:afisha_market/core/data/source/remote/request/addRequest.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/addResponse.dart';

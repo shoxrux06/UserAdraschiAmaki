@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 Color blueColor = const Color(0xff273476);
+Color greyColor = const Color(0xFF999999);
 Color mainColor = const Color(0xFFFFFFFF);
 Color textFieldColor = const Color(0xFF999999);
 Color disableColor = const Color(0xff070707);

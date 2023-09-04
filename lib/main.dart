@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:afisha_market/core/bloc/auth/authBloc.dart';
+import 'package:afisha_market/core/bloc/cart/cart_bloc.dart';
 import 'package:afisha_market/core/bloc/category/category_bloc.dart';
 import 'package:afisha_market/core/bloc/gallery/gallery_bloc.dart';
 import 'package:afisha_market/core/bloc/language/language_bloc.dart';
@@ -91,6 +92,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeBloc>(create: (context) => HomeBloc(homeRepository, filterRepository)),
+        BlocProvider<CartBloc>(create: (context) => CartBloc()),
         BlocProvider<PaymentBloc>(create: (context) => PaymentBloc(paymentRepository)),
         BlocProvider<GalleryBloc>(create: (context) => GalleryBloc()),
         BlocProvider<AuthBloc>(create: (context) => AuthBloc(authRepository)),
