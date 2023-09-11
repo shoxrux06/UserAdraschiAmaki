@@ -10,8 +10,8 @@ String getProfileResponseToJson(GetProfileResponse data) => json.encode(data.toJ
 
 class GetProfileResponse {
   bool status;
-  User user;
-  List<ProductDetail> products;
+  UserClass user;
+  List<ProductProfile> products;
 
   GetProfileResponse({
     required this.status,
@@ -21,8 +21,8 @@ class GetProfileResponse {
 
   factory GetProfileResponse.fromJson(Map<String, dynamic> json) => GetProfileResponse(
     status: json["status"],
-    user: User.fromJson(json["user"]),
-    products: List<ProductDetail>.from(json["products"].map((x) => ProductDetail.fromJson(x))),
+    user: UserClass.fromJson(json["user"]),
+    products: List<ProductProfile>.from(json["products"].map((x) => ProductProfile.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -32,79 +32,83 @@ class GetProfileResponse {
   };
 }
 
-class ProductDetail {
+class ProductProfile {
   int id;
-  String title;
-  int price;
-  String body;
-  String category;
-  String region;
-  String district;
+  Category category;
+  String price;
+  String? discount;
+  String? eni;
+  String? boyi;
+  String gramm;
   String color;
-  String compatibility;
-  String user;
+  IshlabChiqarishTuri ishlabChiqarishTuri;
+  String mahsulotTola;
+  String brand;
+  UsernameEnum user;
+  int likes;
   int views;
-  dynamic longitude;
-  dynamic latitude;
   DateTime createdAt;
   DateTime updatedAt;
   List<String> photos;
-  User owner;
+  UserClass owner;
 
-  ProductDetail({
+  ProductProfile({
     required this.id,
-    required this.title,
-    required this.price,
-    required this.body,
     required this.category,
-    required this.region,
-    required this.district,
+    required this.price,
+    required this.discount,
+    required this.eni,
+    required this.boyi,
+    required this.gramm,
     required this.color,
-    required this.compatibility,
+    required this.ishlabChiqarishTuri,
+    required this.mahsulotTola,
+    required this.brand,
     required this.user,
+    required this.likes,
     required this.views,
-    this.longitude,
-    this.latitude,
     required this.createdAt,
     required this.updatedAt,
     required this.photos,
     required this.owner,
   });
 
-  factory ProductDetail.fromJson(Map<String, dynamic> json) => ProductDetail(
-    id: json["id"]??0,
-    title: json["title"]??'',
-    price: json["price"]??0,
-    body: json["body"]??'',
-    category: json["category"]??'',
-    region: json["region"]??'',
-    district: json["district"]??'',
-    color: json["color"]??'',
-    compatibility: json["compatibility"]??'',
-    user: json["user"]??'',
-    views: json["views"]??0,
-    longitude: json["longitude"],
-    latitude: json["latitude"],
-    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
-    updatedAt:json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
+  factory ProductProfile.fromJson(Map<String, dynamic> json) => ProductProfile(
+    id: json["id"],
+    category: categoryValues.map[json["category"]]!,
+    price: json["price"],
+    discount: json["discount"],
+    eni: json["eni"],
+    boyi: json["boyi"],
+    gramm: json["gramm"],
+    color: json["color"],
+    ishlabChiqarishTuri: ishlabChiqarishTuriValues.map[json["ishlab_chiqarish_turi"]]!,
+    mahsulotTola: json["mahsulot_tola"],
+    brand: json["brand"],
+    user: usernameEnumValues.map[json["user"]]!,
+    likes: json["likes"],
+    views: json["views"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
     photos: List<String>.from(json["photos"].map((x) => x)),
-    owner: User.fromJson(json["owner"]),
+    owner: UserClass.fromJson(json["owner"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "title": title,
+    "category": categoryValues.reverse[category],
     "price": price,
-    "body": body,
-    "category": category,
-    "region": region,
-    "district": district,
+    "discount": discount,
+    "eni": eni,
+    "boyi": boyi,
+    "gramm": gramm,
     "color": color,
-    "compatibility": compatibility,
-    "user": user,
+    "ishlab_chiqarish_turi": ishlabChiqarishTuriValues.reverse[ishlabChiqarishTuri],
+    "mahsulot_tola": mahsulotTola,
+    "brand": brand,
+    "user": usernameEnumValues.reverse[user],
+    "likes": likes,
     "views": views,
-    "longitude": longitude,
-    "latitude": latitude,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
     "photos": List<dynamic>.from(photos.map((x) => x)),
@@ -112,66 +116,78 @@ class ProductDetail {
   };
 }
 
-class User {
-  int id;
-  String fullname;
-  String username;
-  String phone;
-  String status;
-  int productNumber;
-  DateTime phoneVerifiedAt;
-  int role;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String avatar;
-  int views;
-  String blocked;
+enum Category {
+  ADRAS,
+  ATLAS,
+  CHO_PON
+}
 
-  User({
+final categoryValues = EnumValues({
+  "Adras": Category.ADRAS,
+  "Atlas": Category.ATLAS,
+  "Cho'pon": Category.CHO_PON
+});
+
+enum IshlabChiqarishTuri {
+  AVTOMAT,
+  QO_L_MEHNATI,
+  YARIM_TAYYOR
+}
+
+final ishlabChiqarishTuriValues = EnumValues({
+  "Avtomat": IshlabChiqarishTuri.AVTOMAT,
+  "Qo'l Mehnati": IshlabChiqarishTuri.QO_L_MEHNATI,
+  "Yarim Tayyor": IshlabChiqarishTuri.YARIM_TAYYOR
+});
+
+class UserClass {
+  int id;
+  String firstName;
+  String lastName;
+  String phone;
+  UsernameEnum username;
+
+  UserClass({
     required this.id,
-    required this.fullname,
-    required this.username,
+    required this.firstName,
+    required this.lastName,
     required this.phone,
-    required this.status,
-    required this.productNumber,
-    required this.phoneVerifiedAt,
-    required this.role,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.avatar,
-    required this.views,
-    required this.blocked,
+    required this.username,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"]??0,
-    fullname: json["fullname"]??'',
-    username: json["username"]??'',
-    phone: json["phone"]??'',
-    status: json["status"]??'',
-    productNumber: json["product_number"]??0,
-    phoneVerifiedAt:json["phone_verified_at"] != null? DateTime.parse(json["phone_verified_at"]): DateTime.now(),
-    role: json["role"]??0,
-    createdAt:json["created_at"] != null? DateTime.parse(json["created_at"]): DateTime.now(),
-    updatedAt:json["updated_at"] != null? DateTime.parse(json["updated_at"]): DateTime.now(),
-    avatar: json["avatar"]??'',
-    views: json["views"]??0,
-    blocked: json["blocked"]??'',
+  factory UserClass.fromJson(Map<String, dynamic> json) => UserClass(
+    id: json["id"],
+    firstName: json["first_name"],
+    lastName: json["last_name"],
+    phone: json["phone"],
+    username: usernameEnumValues.map[json["username"]]!,
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "fullname": fullname,
-    "username": username,
+    "first_name": firstName,
+    "last_name": lastName,
     "phone": phone,
-    "status": status,
-    "product_number": productNumber,
-    "phone_verified_at": phoneVerifiedAt.toIso8601String(),
-    "role": role,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
-    "avatar": avatar,
-    "views": views,
-    "blocked": blocked,
+    "username": usernameEnumValues.reverse[username],
   };
+}
+
+enum UsernameEnum {
+  ELYOR737373
+}
+
+final usernameEnumValues = EnumValues({
+  "elyor737373": UsernameEnum.ELYOR737373
+});
+
+class EnumValues<T> {
+  Map<String, T> map;
+  late Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    reverseMap = map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
+  }
 }

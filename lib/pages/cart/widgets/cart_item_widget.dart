@@ -1,6 +1,8 @@
+import 'package:afisha_market/core/bloc/cart/cart_state.dart';
 import 'package:afisha_market/core/data/models/cart_item.dart';
 import 'package:afisha_market/core/data/source/remote/request/cart_product.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
+import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
 import 'package:afisha_market/pages/cart/widgets/plus_minus_button.dart';
 import 'package:afisha_market/pages/utils/const.dart';
@@ -16,31 +18,44 @@ class CartItemWidget extends StatefulWidget {
   final LocaleProduct cartItem;
   final int index;
 
-  const CartItemWidget({required this.cartItem, required this.index,super.key});
+  const CartItemWidget(
+      {required this.cartItem, required this.index, super.key});
 
   @override
   State<CartItemWidget> createState() => _CartItemWidgetState();
 }
 
 class _CartItemWidgetState extends State<CartItemWidget> {
-
-  int? counter;
   @override
   void initState() {
-    counter = LocalStorage.instance.getCounterValue();
+    print('widget.cartItem ${widget.cartItem}');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context).size;
+    double height = media.height;
+    double width = media.width;
     return Column(
       children: [
+        const SizedBox(
+          height: 8,
+        ),
         Row(
           children: [
             SizedBox(
-              width: 100,
-              height: 150,
-              child: CachedNetworkImage(imageUrl: widget.cartItem.image??''),
+              width: height/6,
+              height: width/3,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  width: height/6,
+                  height: width/3,
+                  imageUrl: widget.cartItem.image ?? '',
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
             const SizedBox(
               width: 12,
@@ -51,33 +66,56 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 children: [
                   Row(
                     children: [
-                      Text(widget.cartItem.productName??'', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                      Expanded(
+                          flex: 3,
+                          child: Text(
+                            widget.cartItem.productName ?? '',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          )),
                       const Spacer(),
-                      IconButton(
-                        onPressed: () async {
-                          context.read<CartBloc>().add(CartProductDeleteEvent(widget.index));
-                        },
-                        icon: const Icon(Icons.delete),
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                          onPressed: () async {
+                            context
+                                .read<CartBloc>()
+                                .add(CartProductDeleteEvent(widget.cartItem));
+                          },
+                          icon: const Icon(Icons.delete),
+                        ),
                       ),
                     ],
                   ),
                   Row(
                     children: [
-                      Text('${widget.cartItem.price} som'),
-                      const SizedBox(width: 24,),
-                      const Spacer(),
-                      PlusMinusButton(
-                        addQuantity: () {
-                          context.read<CartBloc>().add(CartProductIncreaseEvent(productId: widget.cartItem.productId, isIcnDec: true, index: widget.index));
-                      },
-                        deleteQuantity: () {
-                          context.read<CartBloc>().add(CartProductIncreaseEvent(productId: widget.cartItem.productId, isIcnDec: false,index: widget.index));
-                        },
-                        text: widget.cartItem.quantity.toString(),
+                      Text('${AppHelpers.moneyFormat(widget.cartItem.price)} som'),
+                      const SizedBox(
+                        width: 24,
                       ),
+                      const Spacer(),
+                      BlocBuilder<CartBloc, CartState>(
+                          builder: (context, state) {
+                        return PlusMinusButton(
+                          addQuantity: () {
+                            context.read<CartBloc>().add(
+                                CartProductIncreaseDecreaseEvent(
+                                    productId: widget.cartItem.productId,
+                                    isIcnDec: true,
+                                    index: widget.index));
+                          },
+                          deleteQuantity: () {
+                            context.read<CartBloc>().add(
+                                CartProductIncreaseDecreaseEvent(
+                                    productId: widget.cartItem.productId,
+                                    isIcnDec: false,
+                                    index: widget.index));
+                          },
+                          text: widget.cartItem.quantity.toString(),
+                        );
+                      }),
                     ],
                   ),
-                  Text('${widget.cartItem.totalSum} som'),
+                  // Text('${widget.cartItem.totalSum} som'),
                 ],
               ),
             )

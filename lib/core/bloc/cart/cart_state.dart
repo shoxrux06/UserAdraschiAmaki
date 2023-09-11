@@ -1,25 +1,26 @@
-import 'package:afisha_market/core/data/models/cart.dart';
 import 'package:afisha_market/core/data/models/locale_product.dart';
-import 'package:afisha_market/core/data/source/remote/request/cart_product.dart';
-
-import '../../data/source/remote/response/ProductResponse.dart';
+import 'package:equatable/equatable.dart';
 
 class CartState {
-  List<LocaleProduct>? productList;
-  LocaleProduct? product;
+  final List<LocaleProduct> productList;
+  final int totalSum;
+  final bool isChanged;
 
-  CartState({
-    List<LocaleProduct>? productList,
-    LocaleProduct? product,
-  }) : productList = productList ?? [];
+  const CartState({
+    this.productList = const [],
+    this.totalSum = 0,
+    this.isChanged = false
+  });
 
   CartState copyWith({
     List<LocaleProduct>? productList,
-    LocaleProduct? product,
+    int? totalSum,
+    bool? isChanged,
   }) {
     return CartState(
       productList: productList ?? this.productList,
-      product: product ?? this.product,
+      totalSum: totalSum?? this.totalSum,
+      isChanged: isChanged?? this.isChanged,
     );
   }
 }

@@ -4,16 +4,17 @@ import 'package:afisha_market/core/data/source/remote/request/cart_product.dart'
 abstract class CartEvent{}
 
 class CartInitEvent extends CartEvent{}
+class CartClearEvent extends CartEvent{}
 class CartProductDeleteEvent extends CartEvent{
-  final int productId;
+  final LocaleProduct localeProduct;
 
-  CartProductDeleteEvent(this.productId);
+  CartProductDeleteEvent(this.localeProduct);
 }
-class CartProductIncreaseEvent extends CartEvent{
+class CartProductIncreaseDecreaseEvent extends CartEvent{
   final int productId;
   final bool isIcnDec;
   final int index;
 
-  CartProductIncreaseEvent({required this.productId, required this.isIcnDec, required this.index});
+  CartProductIncreaseDecreaseEvent({required this.productId, required this.isIcnDec, required this.index});
 }
 class CartProductDecreaseEvent extends CartEvent  {}

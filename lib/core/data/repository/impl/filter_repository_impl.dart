@@ -4,8 +4,6 @@ import 'package:afisha_market/core/di/inject.dart';
 import 'package:afisha_market/core/handlers/api_result.dart';
 import 'package:afisha_market/core/handlers/http_service.dart';
 import 'package:afisha_market/core/handlers/network_exceptions.dart';
-
-import '../../source/remote/response/GetProfileResponse.dart';
 import '../../source/remote/response/material_type_response.dart';
 
 class FilterRepositoryImpl extends FilterRepository{

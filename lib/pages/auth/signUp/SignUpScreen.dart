@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({Key? key, this.isFromCart = false}) : super(key: key);
+  final bool isFromCart;
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
@@ -23,8 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
       body: Container(
-        color: Colors.lightBlueAccent.withOpacity(0.2),
-        child: const SignUpContainer(),
+        child: SignUpContainer(isFromCart: widget.isFromCart),
       ),
     );
   }

@@ -228,7 +228,6 @@ class _HomePageState extends State<HomePage> {
                                     return const ProductGridListShimmer();
                                   }
                                   if (state.productList.isNotEmpty) {
-                                    print('Product List --> ${state.productList}');
                                     return Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                                       child: GridView.builder(

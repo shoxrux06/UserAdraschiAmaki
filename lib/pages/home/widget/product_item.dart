@@ -5,6 +5,7 @@ import 'package:afisha_market/core/bloc/productDetail/product_detail_bloc.dart';
 import 'package:afisha_market/core/data/models/locale_product.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
+import 'package:afisha_market/db/db_helper.dart';
 import 'package:afisha_market/pages/utils/const.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -29,18 +30,15 @@ class ProductItem extends StatefulWidget {
 }
 
 class _ProductItemState extends State<ProductItem> {
-
+  bool isAddedToCart = false;
   int discountPrice = 0;
   @override
   void initState() {
-    // TODO: implement initState
     double discountPrice2 = 0.0;
     if(widget.product.discount.isNotEmpty){
       discountPrice2 = int.parse(widget.product.price) * int.parse(widget.product.discount) / 100;
       discountPrice = int.parse(widget.product.price) - discountPrice2.toInt();
     }
-    print('Discount ==> $discountPrice');
-    print('Product Discount ==> ${widget.product.discount}');
     super.initState();
   }
 
@@ -206,8 +204,21 @@ class _ProductItemState extends State<ProductItem> {
               right: 10,
               child: InkWell(
                 onTap:() async {
-                  context.read<ProductDetailBloc>().add(AddToCartEvent(LocaleProduct(productId:  widget.product.id, image: widget.product.photos[0], price: widget.product.price, productName: widget.product.category, quantity: 1, totalSum: 0)));
-                  AppHelpers.showSuccessSnackBar(context,'Product Added to cart');
+                  final productList =await DbManager().getDataList();
+                  for (var localProduct in productList) {
+                    if(widget.product.id == localProduct.productId){
+                      setState(() {
+                        isAddedToCart = true;
+                      });
+                    }
+                  }
+                  if(isAddedToCart){
+                    AppHelpers.showErrorSnackBar(context,'Product Already added');
+                  }else{
+                    context.read<ProductDetailBloc>().add(AddToCartEvent(LocaleProduct(productId:  widget.product.id, image: widget.product.photos[0], price: widget.product.price, productName: widget.product.category, quantity: 1, totalSum: 0)));
+                    AppHelpers.showSuccessSnackBar(context,'Product Added to cart');
+                  }
+
                 },
                 child: Container(
                   decoration: BoxDecoration(

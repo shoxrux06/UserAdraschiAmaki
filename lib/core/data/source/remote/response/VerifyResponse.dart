@@ -38,64 +38,32 @@ class VerifyResponse {
 
 class User {
   int id;
-  String fullname;
-  String username;
+  String firstName;
+  String lastName;
   String phone;
-  String status;
-  int productNumber;
-  DateTime phoneVerifiedAt;
-  int role;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String avatar;
-  int views;
-  String blocked;
+  String username;
 
   User({
     required this.id,
-    required this.fullname,
-    required this.username,
+    required this.firstName,
+    required this.lastName,
     required this.phone,
-    required this.status,
-    required this.productNumber,
-    required this.phoneVerifiedAt,
-    required this.role,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.avatar,
-    required this.views,
-    required this.blocked,
+    required this.username,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json["id"],
-    fullname: json["fullname"],
-    username: json["username"],
+    firstName: json["first_name"],
+    lastName: json["last_name"],
     phone: json["phone"],
-    status: json["status"],
-    productNumber: json["product_number"],
-    phoneVerifiedAt: DateTime.parse(json["phone_verified_at"]),
-    role: json["role"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    avatar: json["avatar"],
-    views: json["views"],
-    blocked: json["blocked"],
+    username: json["username"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "fullname": fullname,
-    "username": username,
+    "first_name": firstName,
+    "last_name": lastName,
     "phone": phone,
-    "status": status,
-    "product_number": productNumber,
-    "phone_verified_at": phoneVerifiedAt.toIso8601String(),
-    "role": role,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
-    "avatar": avatar,
-    "views": views,
-    "blocked": blocked,
+    "username": username,
   };
 }

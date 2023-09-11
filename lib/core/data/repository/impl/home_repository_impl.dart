@@ -1,8 +1,6 @@
 import 'package:afisha_market/core/data/repository/home_repository.dart';
 import 'package:afisha_market/core/data/source/remote/response/AdvertisementResponse.dart';
-import 'package:afisha_market/core/data/source/remote/response/GetProfileResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
-import 'package:afisha_market/core/data/source/remote/response/RegionResponse.dart';
 import 'package:afisha_market/core/di/inject.dart';
 import 'package:afisha_market/core/handlers/api_result.dart';
 import 'package:afisha_market/core/handlers/http_service.dart';
@@ -11,7 +9,7 @@ import 'package:afisha_market/core/handlers/network_exceptions.dart';
 class HomeRepositoryImpl extends HomeRepository{
   @override
   Future<ApiResult<ProductResponse>> getProductList({int page = 1, String search = ""}) async {
-    Future.delayed(Duration(seconds: 10));
+    Future.delayed(const Duration(seconds: 10));
     try {
       final client = inject<HttpService>().client(requireAuth: true);
       final response = await client.get(
@@ -64,10 +62,10 @@ class HomeRepositoryImpl extends HomeRepository{
   //   }
   // }
 
-  @override
-  Future<ApiResult<List<ProductDetail>>> getProductByRegion(int id) {
-    // TODO: implement getProductByRegion
-    throw UnimplementedError();
-  }
+  // @override
+  // Future<ApiResult<List<ProductDetail>>> getProductByRegion(int id) {
+  //   // TODO: implement getProductByRegion
+  //   throw UnimplementedError();
+  // }
 
 }

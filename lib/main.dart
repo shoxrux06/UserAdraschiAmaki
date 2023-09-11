@@ -93,18 +93,18 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<HomeBloc>(create: (context) => HomeBloc(homeRepository, filterRepository)),
         BlocProvider<CartBloc>(create: (context) => CartBloc()),
-        BlocProvider<PaymentBloc>(create: (context) => PaymentBloc(paymentRepository)),
+        BlocProvider<PaymentBloc>(create: (context) => PaymentBloc(orderRepo)),
         BlocProvider<GalleryBloc>(create: (context) => GalleryBloc()),
         BlocProvider<AuthBloc>(create: (context) => AuthBloc(authRepository)),
         BlocProvider<ProfileBloc>(create: (context) => ProfileBloc(profileRepository)),
-        BlocProvider<FilterRegionBloc>(
-            create: (context) => FilterRegionBloc(filterRepository)),
-        BlocProvider<FilterRegionBloc>(
-            create: (context) => FilterRegionBloc(filterRepository)),
-        BlocProvider<UserProfileBloc>(
-            create: (context) => UserProfileBloc(profileRepository)),
-        BlocProvider<UserProfileBloc>(
-            create: (context) => UserProfileBloc(profileRepository)),
+        // BlocProvider<FilterRegionBloc>(
+        //     create: (context) => FilterRegionBloc(filterRepository)),
+        // BlocProvider<FilterRegionBloc>(
+        //     create: (context) => FilterRegionBloc(filterRepository)),
+        // BlocProvider<UserProfileBloc>(
+        //     create: (context) => UserProfileBloc(profileRepository)),
+        // BlocProvider<UserProfileBloc>(
+        //     create: (context) => UserProfileBloc(profileRepository)),
         BlocProvider<ProductDetailBloc>(
             create: (context) => ProductDetailBloc(productRepository)),
         BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(categoryRepository)),

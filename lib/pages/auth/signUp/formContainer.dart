@@ -8,6 +8,7 @@ import 'package:afisha_market/core/handlers/network_exceptions.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:afisha_market/core/utils/my_extensions.dart';
 import 'package:afisha_market/pages/auth/otp/OTPScreen.dart';
+import 'package:afisha_market/pages/auth/signIn/SignInScreen.dart';
 import 'package:afisha_market/pages/auth/signUp/widgets/country_text_form_field.dart';
 import 'package:afisha_market/pages/auth/signUp/widgets/masked_text_controller.dart';
 import 'package:afisha_market/pages/utils/const.dart';
@@ -27,16 +28,18 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 
 class SignUpContainer extends StatefulWidget {
-  const SignUpContainer({Key? key,})
+  const SignUpContainer({Key? key,this.isFromCart = false})
       : super(key: key);
 
+  final bool isFromCart;
   @override
   State<SignUpContainer> createState() => _SignUpContainerState();
 }
 
 class _SignUpContainerState extends State<SignUpContainer> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _userNameController = TextEditingController();
   final _pass1Controller = TextEditingController();
   final _pass2Controller = TextEditingController();
@@ -56,7 +59,8 @@ class _SignUpContainerState extends State<SignUpContainer> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _userNameController.dispose();
     _phoneController.dispose();
     _pass1Controller.dispose();
@@ -137,12 +141,7 @@ class _SignUpContainerState extends State<SignUpContainer> {
                                               width: 120,
                                               height: 120,
                                             )
-                                          : Image.asset(
-                                              'assets/images/afisha_logo.png',
-                                              fit: BoxFit.cover,
-                                              width: 120,
-                                              height: 120,
-                                            ),
+                                          : Image.asset('assets/icons/logo.png', fit: BoxFit.cover,width: 120,height: 120,),
                                     ),
                                   ),
                                 ),
@@ -189,9 +188,9 @@ class _SignUpContainerState extends State<SignUpContainer> {
                         }, //gallerydan rasm tanlashga otishi kere
                       ),
                       MyTextFormField2(
-                        l10n?.fullName2 ?? '',
+                        l10n?.firstName ?? '',
                         const Icon(CupertinoIcons.person),
-                        _nameController,
+                        _firstNameController,
                         validator: (val) {
                           if (val!.length < 3)
                             return 'Name must be at least 3 characters';
@@ -200,6 +199,16 @@ class _SignUpContainerState extends State<SignUpContainer> {
                       ),
                       const SizedBox(
                         height: 20,
+                      ),
+                      MyTextFormField2(
+                        l10n?.lastName ?? '',
+                        const Icon(CupertinoIcons.person),
+                        _lastNameController,
+                        validator: (val) {
+                          if (val!.length < 3)
+                            return 'Name must be at least 3 characters';
+                          return null;
+                        },
                       ),
                       MyTextFormField2(
                         l10n?.username ?? '',
@@ -265,7 +274,8 @@ class _SignUpContainerState extends State<SignUpContainer> {
                           .replaceAll('-', '');
                       print('MyPHOne --> $phone');
 
-                      var fullName = _nameController.text;
+                      var firstName = _firstNameController.text;
+                      var lastName = _lastNameController.text;
                       var userName = _userNameController.text;
 
                       var pass1 = _pass1Controller.text;
@@ -279,17 +289,32 @@ class _SignUpContainerState extends State<SignUpContainer> {
                         _bloc.add(
                           SignUpEvent(
                               SignUpRequest(
-                                fullname: fullName,
+                                firstName: firstName,
+                                lastName: lastName,
                                 username: userName,
                                 phone: phone,
                                 password: pass1,
                                 passwordConfirmation: pass2,
-                                avatar: avatarFile ?? await getImageFileFromAssets('images/afisha_logo.png'),
+                                // avatar: avatarFile ?? await getImageFileFromAssets('images/afisha_logo.png'),
                               ),
                               context),
                         );
                       }
                     },
+                  ),
+                  SizedBox(height: 24,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('${l10n?.alreadyHaveAccount}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),),
+                      const SizedBox(width: 4,),
+                      GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => SignInScreen(isFromCart: widget.isFromCart)));
+                          },
+                          child: Text('${l10n?.signIn}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: blueColor),)
+                      ),
+                    ],
                   )
                 ],
               ),
@@ -305,8 +330,7 @@ class _SignUpContainerState extends State<SignUpContainer> {
 
     final file = File('${(await getTemporaryDirectory()).path}/$path');
     await file.create(recursive: true);
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+    await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
     return file;
   }

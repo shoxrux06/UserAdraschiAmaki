@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:afisha_market/core/bloc/payment/payment_state.dart';
+import 'package:afisha_market/core/data/repository/order_repository.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -13,25 +14,25 @@ import '../../data/repository/payment_repository.dart';
 part 'payment_event.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
-  final PaymentRepository paymentRepository;
+  final OrderRepo orderRepo;
 
-  PaymentBloc(this.paymentRepository) : super(const PaymentState()) {
-    on<CreateTransactionEvent>((event, emit) async {
-      emit(state.copyWith(isPaying: true));
+  PaymentBloc(this.orderRepo) : super(PaymentState()) {
+    on<CreateOrderEvent>((event, emit) async {
+      emit(state.copyWith(isCreatingOrder: true));
       try {
-        final createTransactionResponse = await paymentRepository.createTransaction(event.context, event.amount, event.secretCode);
+        final createTransactionResponse = await orderRepo.createOrder(event.context, event.paymentType);
         createTransactionResponse.when(
           success: (data) {
-            emit(state.copyWith(isPayed: true, message: data.message, isPaying:false));
+            emit(state.copyWith(ordersResponse: data,isCreatingOrder: false, isCreatedOrder: true));
           },
           failure: (failure) {
-            emit(state.copyWith(isErrorOccurred: true,isPaying:false,isPayed: false));
+            emit(state.copyWith(isCreatingOrder: false));
           },
         );
       } on DioError {
-        emit(state.copyWith(isErrorOccurred: true, isPaying:false,isPayed: false));
+        emit(state.copyWith(isCreatingOrder: false));
       } catch (e) {
-        emit(state.copyWith(isErrorOccurred: true, isPaying:false, isPayed: false));
+        emit(state.copyWith(isCreatingOrder: false));
       }
     });
   }

@@ -29,20 +29,20 @@ class ProfileRepositoryImpl extends ProfileRepository {
     }
   }
 
-  @override
-  Future<ApiResult<ProductOwnerResponse>> openOwnerProfile(int id) async {
-    try {
-      final client = inject<HttpService>().client(requireAuth: true);
-      final response = await client.get(
-        '/profile/$id',
-      );
-      return ApiResult.success(
-          data: ProductOwnerResponse.fromJson(response.data));
-    } catch (e) {
-      print('==> profile id failure: $e');
-      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-  }
+  // @override
+  // Future<ApiResult<ProductOwnerResponse>> openOwnerProfile(int id) async {
+  //   try {
+  //     final client = inject<HttpService>().client(requireAuth: true);
+  //     final response = await client.get(
+  //       '/profile/$id',
+  //     );
+  //     return ApiResult.success(
+  //         data: ProductOwnerResponse.fromJson(response.data));
+  //   } catch (e) {
+  //     print('==> profile id failure: $e');
+  //     return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+  //   }
+  // }
 
   @override
   Future<ApiResult<UpdateProfileResponse>> updateProfile(

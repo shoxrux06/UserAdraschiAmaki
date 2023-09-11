@@ -1,3 +1,6 @@
+import 'package:afisha_market/pages/auth/forgotPassword/ForgotPasswordScreen.dart';
+import 'package:afisha_market/pages/auth/signIn/SignInScreen.dart';
+import 'package:afisha_market/pages/auth/signUp/SignUpScreen.dart';
 import 'package:afisha_market/pages/filterCategoryPage/FilterCategoryPage.dart';
 import 'package:afisha_market/pages/home/home_page.dart';
 import 'package:afisha_market/pages/introduction/languageScreen.dart';
@@ -16,6 +19,18 @@ abstract class AppPages {
       case AppRoutes.splash:
         return MaterialPageRoute(
           builder: (_) => const SplashScreen(),
+        );
+      case AppRoutes.signIn:
+        return MaterialPageRoute(
+          builder: (_) => const SignInScreen(),
+        );
+      case AppRoutes.forgotPassword:
+        return MaterialPageRoute(
+          builder: (_) => const ForgotPasswordScreen(),
+        );
+      case AppRoutes.signUp:
+        return MaterialPageRoute(
+          builder: (_) => const SignUpScreen(),
         );
       case AppRoutes.chooseLang:
         return MaterialPageRoute(

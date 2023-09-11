@@ -17,3 +17,11 @@ class ProductDetailDataEvent extends ProductDetailEvent{
   ProductDetailDataEvent(this.id);
 
 }
+
+class ProductIncDecEvent extends ProductDetailEvent {
+  final int productId;
+  final int index;
+  final bool isInc;
+
+  ProductIncDecEvent(this.productId,this.index, this.isInc);
+}

@@ -31,6 +31,17 @@ class AppHelpers {
     );
   }
 
+  static showErrorSnackBar(BuildContext context,String message){
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.error(
+        message: message,
+      ),
+      dismissType: DismissType.onSwipe,
+      dismissDirection: [DismissDirection.endToStart],
+    );
+  }
+
   static showSnackBar(BuildContext context, String message) =>
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));

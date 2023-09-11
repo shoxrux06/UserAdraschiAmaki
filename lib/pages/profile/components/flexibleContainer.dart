@@ -49,7 +49,7 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                       child: ClipOval(
                         child: FadeInImage(
                           placeholder: const AssetImage('assets/images/afisha_logo.png'),
-                          image: NetworkImage(state.profileResponse.user.avatar),
+                          image: NetworkImage(state.profileResponse.user.lastName),
                           imageErrorBuilder: (context, error, stackTrace) {
                             return Image.asset('assets/images/afisha_logo.png', fit: BoxFit.fitWidth);
                           },
@@ -64,7 +64,7 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                     height: 8,
                   ),
                   MyText(
-                    state.profileResponse.user.fullname.toString(),
+                    '${state.profileResponse.user.firstName} ${state.profileResponse.user.lastName}',
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
                     fontSize: 18,
@@ -85,23 +85,23 @@ class _FlexibleContainerState extends State<FlexibleContainer> {
                           color: Colors.black,
                           fontSize: 14,
                         ),
-                        MyText(
-                          state.profileResponse.user.status.toString(),
-                          color: Colors.green,
-                          fontSize: 14,
-                        ),
+                        // MyText(
+                        //   state.profileResponse.user..toString(),
+                        //   color: Colors.green,
+                        //   fontSize: 14,
+                        // ),
                       ],
                     ),
                   ),
                   const SizedBox(
                     height: 8,
                   ),
-                  MyText(
-                    "${l10n?.profileViews} ${state.profileResponse.user.views.toString()} ${l10n?.people}",
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                  ),
+                  // MyText(
+                  //   "${l10n?.profileViews} ${state.profileResponse.user.views.toString()} ${l10n?.people}",
+                  //   color: Colors.grey,
+                  //   fontWeight: FontWeight.w400,
+                  //   fontSize: 14,
+                  // ),
                   Container(
                     child: isButton
                         ? MyBigButton(

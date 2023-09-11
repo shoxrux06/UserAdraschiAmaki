@@ -2,11 +2,10 @@ import 'package:afisha_market/core/bloc/home/home_bloc.dart';
 import 'package:afisha_market/core/data/models/locale_product.dart';
 import 'package:afisha_market/core/data/repository/product_repository.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
+import 'package:afisha_market/db/db_helper.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../../db/db_provider.dart';
-import '../../di/dependency_manager.dart';
 
 part 'product_detail_event.dart';
 
@@ -16,7 +15,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   final ProductRepository _productRepository;
 
   ProductDetailBloc(this._productRepository)
-      : super(const ProductDetailState()) {
+      : super(ProductDetailState()) {
     on<AddToCartEvent>((event, emit) async {
       try {
         final newProduct = LocaleProduct(
@@ -27,7 +26,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
           totalSum: event.productModel.totalSum,
           price: event.productModel.price,
         );
-        await localProductSource.saveProduct(newProduct: newProduct);
+        await DbManager().insertData(newProduct);
       } catch (e) {
         print(e);
       }
@@ -47,5 +46,6 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
         );
       } catch (e) {}
     });
+
   }
 }

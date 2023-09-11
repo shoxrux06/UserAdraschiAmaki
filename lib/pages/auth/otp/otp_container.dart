@@ -44,9 +44,8 @@ class _OTPContainerState extends State<OTPContainer> {
     decoration: BoxDecoration(
       color: helperColor,
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: Colors.transparent),
-    ),
-  );
+      border: Border.all(color: blueColor)),
+    );
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +69,6 @@ class _OTPContainerState extends State<OTPContainer> {
       builder: (context, state) {
         return Material(
           child: Container(
-            color: Colors.lightBlueAccent.withOpacity(0.2),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
@@ -90,7 +88,7 @@ class _OTPContainerState extends State<OTPContainer> {
                           height: 68,
                           width: 64,
                           decoration: defaultPinTheme.decoration!.copyWith(
-                            border: Border.all(color: mainColor),
+                            border: Border.all(color: blueColor),
                           ),
                         ),
                         errorPinTheme: defaultPinTheme.copyWith(
@@ -107,7 +105,7 @@ class _OTPContainerState extends State<OTPContainer> {
                   ),
                   MyText(
                     l10n?.enterConfirmationCodeText ?? '',
-                    color: mainColor,
+                    color: Colors.black,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(
@@ -116,14 +114,16 @@ class _OTPContainerState extends State<OTPContainer> {
                   Row(
                     children: [
                       Text('${l10n?.didNotReceiveCode}'),
-                      TextButton(
-                          onPressed: () {
-                            context.read<AuthBloc>().add(ResendCodeEvent(context, AppConst.pHONENUMBER));
-                          },
-                          child: Text(
-                            '${l10n?.resendCode}',
-                            style: TextStyle(color: Colors.blue),
-                          )),
+                      Expanded(
+                        child: TextButton(
+                            onPressed: () {
+                              context.read<AuthBloc>().add(ResendCodeEvent(context, AppConst.pHONENUMBER));
+                            },
+                            child: Text(
+                              '${l10n?.resendCode}',
+                              style: TextStyle(color: Colors.blue),
+                            )),
+                      ),
                     ],
                   ),
                   const Spacer(),

@@ -41,9 +41,9 @@ class LocalStorage {
     }
   }
 
-  Future<void> setIncDecValue(int? counter) async {
+  Future<void> setCartProductIndex(int? counter) async {
     if (_preferences != null) {
-      await _preferences!.setInt(AppConstants.counter, counter ?? 0);
+      await _preferences!.setInt(AppConstants.cartProductIndex, counter ?? 0);
     }
   }
 
@@ -60,7 +60,7 @@ class LocalStorage {
   }
 
   int getUserId() => _preferences?.getInt(AppConstants.keyUserId) ?? 0;
-  int getCounterValue() => _preferences?.getInt(AppConstants.counter) ?? -1;
+  int getCartProductIndex() => _preferences?.getInt(AppConstants.cartProductIndex) ?? -1;
 
   String getUserName() =>
       _preferences?.getString(AppConstants.keyUserName) ?? '';

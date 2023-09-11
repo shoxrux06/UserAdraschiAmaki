@@ -3,10 +3,9 @@ part of 'payment_bloc.dart';
 @immutable
 abstract class PaymentEvent {}
 
-class CreateTransactionEvent extends PaymentEvent {
-  final String amount;
-  final String secretCode;
+class CreateOrderEvent extends PaymentEvent{
   final BuildContext context;
+  final String paymentType;
 
-  CreateTransactionEvent(this.amount, this.secretCode,this.context);
+  CreateOrderEvent(this.context, this.paymentType);
 }

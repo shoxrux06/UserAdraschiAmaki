@@ -1,7 +1,5 @@
-import 'package:afisha_market/core/data/models/locale_product.dart';
 import 'package:afisha_market/core/data/repository/product_repository.dart';
 import 'package:afisha_market/core/data/source/remote/request/addRequest.dart';
-import 'package:afisha_market/core/data/source/remote/response/GetProfileResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/addResponse.dart';
 import 'package:afisha_market/core/data/source/remote/response/status_and_message_response.dart';
@@ -12,10 +10,6 @@ import 'package:afisha_market/core/handlers/network_exceptions.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:sqflite/sqflite.dart';
-
-import '../../../../db/db_provider.dart';
-import '../../models/cart_item.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
 

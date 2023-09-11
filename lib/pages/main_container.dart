@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:afisha_market/pages/auth/noAccount/NoAccountScreen.dart';
 import 'package:afisha_market/pages/cart/cart_page.dart';
+import 'package:afisha_market/pages/profile/profileScreen.dart';
 import 'package:afisha_market/pages/profile/profile_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
@@ -14,15 +16,17 @@ import 'package:flutter_svg/svg.dart';
 
 class MainContainer extends StatefulWidget {
   final bool? isFromProfile;
+  final bool? isFromProductDetail;
+  final bool? isFromCartPage;
 
-  const MainContainer({Key? key, this.isFromProfile}) : super(key: key);
+
+  const MainContainer({Key? key, this.isFromProfile, this.isFromProductDetail, this.isFromCartPage}) : super(key: key);
 
   @override
   State<MainContainer> createState() => _MainContainerState();
 }
 
 class _MainContainerState extends State<MainContainer> {
-  late String token = LocalStorage.instance.getToken();
 
   late int _selectedIndex = widget.isFromProfile ?? false ? 3 : 0;
 
@@ -56,7 +60,12 @@ class _MainContainerState extends State<MainContainer> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    if(widget.isFromProductDetail?? false){
+      _selectedIndex = 2;
+    }
+    if(widget.isFromCartPage?? false){
+      _selectedIndex = 2;
+    }
     pages = [
       const HomePage(),
       const CategoryPage(),
@@ -68,7 +77,6 @@ class _MainContainerState extends State<MainContainer> {
 
   @override
   Widget build(BuildContext context) {
-
     final l10n = AppLocalizations.of(context);
     return WillPopScope(
       onWillPop: _onWillPop,

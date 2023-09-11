@@ -7,8 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../core/bloc/like/like_event.dart';
-import '../../core/data/source/remote/response/GetProfileResponse.dart';
+import '../../core/bloc/productDetail/product_detail_bloc.dart';
+import '../../core/data/models/locale_product.dart';
+import '../../db/db_helper.dart';
+import '../utils/const.dart';
 
 
 class FilterProductItem extends StatefulWidget {
@@ -24,6 +28,7 @@ class FilterProductItem extends StatefulWidget {
 
 class _FilterProductItemState extends State<FilterProductItem> {
 
+  bool isAddedToCart = false;
   int discountPrice = 0;
   @override
   void initState() {
@@ -33,8 +38,6 @@ class _FilterProductItemState extends State<FilterProductItem> {
       discountPrice2 = int.parse(widget.product.price) * int.parse(widget.product.discount) / 100;
       discountPrice = int.parse(widget.product.price) - discountPrice2.toInt();
     }
-    print('Discount ==> $discountPrice');
-    print('Product Discount ==> ${widget.product.discount}');
     super.initState();
   }
 
@@ -176,6 +179,43 @@ class _FilterProductItemState extends State<FilterProductItem> {
                           ? Icons.favorite
                           : Icons.favorite_border,
                       color: Colors.red,
+                    ),
+                  ),
+                ),
+              )
+          ),
+          Positioned(
+              bottom: 10,
+              right: 10,
+              child: InkWell(
+                onTap:() async {
+                  final productList =await DbManager().getDataList();
+                  for (var localProduct in productList) {
+                    if(widget.product.id == localProduct.productId){
+                      setState(() {
+                        isAddedToCart = true;
+                      });
+                    }
+                  }
+                  if(isAddedToCart){
+                    AppHelpers.showErrorSnackBar(context,'Product Already added');
+                  }else{
+                    context.read<ProductDetailBloc>().add(AddToCartEvent(LocaleProduct(productId:  widget.product.id, image: widget.product.photos[0], price: widget.product.price, productName: widget.product.category, quantity: 1, totalSum: 0)));
+                    AppHelpers.showSuccessSnackBar(context,'Product Added to cart');
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white54,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                          color: greyColor
+                      )
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                        child: SvgPicture.asset('assets/icons/cart_add.svg', width: 24,height: 24,color: greyColor,)
                     ),
                   ),
                 ),

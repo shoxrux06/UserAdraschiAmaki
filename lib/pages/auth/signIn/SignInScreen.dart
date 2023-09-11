@@ -1,5 +1,6 @@
 import 'package:afisha_market/core/bloc/auth/authBloc.dart';
 import 'package:afisha_market/core/bloc/auth/authState.dart';
+import 'package:afisha_market/core/constants/app_routes.dart';
 import 'package:afisha_market/pages/main_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,9 @@ import '../../utils/custom_button.dart';
 import '../../utils/utils.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+  const SignInScreen({Key? key, this.isFromCart = false}) : super(key: key);
 
+  final bool isFromCart;
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
@@ -38,7 +40,7 @@ class _SignInScreenState extends State<SignInScreen> {
         body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state.isAuthenticated && (state.isErrorOccurred == false)) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainContainer(isFromCartPage: widget.isFromCart,)));
             }
           },
           builder: (context, state) {
@@ -48,7 +50,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: IntrinsicHeight(
                     child: Container(
-                      color: Colors.lightBlueAccent.withOpacity(0.2),
                       child: Form(
                         key: _formKey,
                         child: Padding(
@@ -85,11 +86,11 @@ class _SignInScreenState extends State<SignInScreen> {
                               Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(context, '/forgotPassword');
+                                    Navigator.pushNamed(context, AppRoutes.forgotPassword);
                                   },
                                   child: MyText(
                                     l10n?.forgotPassword ?? '',
-                                    color: mainColor,
+                                    color: blueColor,
                                   ),
                                 ),
                               ),

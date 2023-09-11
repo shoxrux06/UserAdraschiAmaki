@@ -1,9 +1,11 @@
-import 'package:hive/hive.dart';
-
-part 'locale_product.g.dart';
-
-@HiveType(typeId: 0)
 class LocaleProduct {
+  int productId;
+  String image;
+  int quantity;
+  int totalSum;
+  String price;
+  String productName;
+
   LocaleProduct({
     required this.productId,
     required this.image,
@@ -13,37 +15,42 @@ class LocaleProduct {
     required this.price,
   });
 
-  @HiveField(0)
-  int productId;
+  LocaleProduct fromJson(json) {
+    return LocaleProduct(
+      productId: json['productId'],
+      image: json['image'],
+      quantity: json['quantity'],
+      productName: json['productName'],
+      totalSum: json['totalSum'],
+      price: json['price'],
+    );
+  }
 
-  @HiveField(1)
-  String image;
-
-  @HiveField(2)
-  int quantity;
-
-  @HiveField(3)
-  int totalSum;
-
-  @HiveField(4)
-  String price;
-
-  @HiveField(5)
-  String productName;
-
+  Map<String, dynamic> toJson(){
+    return {
+      'productId': productId,
+      'image': image,
+      'quantity': quantity,
+      'productName': productName,
+      'totalSum': totalSum,
+      'price': price,
+    };
+  }
   @override
   String toString() {
     return 'LocaleProduct{productId: $productId, image: $image, quantity: $quantity, totalSum: $totalSum, price: $price, productName: $productName}';
   }
 
-  incQuantity(){
+  incQuantity() {
     quantity++;
   }
 
-  decQuantity(){
-    if(quantity> 1){
+  int get totalSumCalc {
+    return quantity * int.parse(price);
+  }
+  decQuantity() {
+    if (quantity > 1) {
       quantity--;
     }
-
   }
 }

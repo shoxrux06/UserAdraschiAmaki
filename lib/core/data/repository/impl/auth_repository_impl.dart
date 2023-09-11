@@ -38,8 +38,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<ApiResult<VerifyResponse>> verify(
-      BuildContext context, VerifyRequest request) async {
+  Future<ApiResult<VerifyResponse>> verify(BuildContext context, VerifyRequest request) async {
     try {
       final client = inject<HttpService>().client(requireAuth: false);
       final response = await client.post('/verify', data: request.toJson());
