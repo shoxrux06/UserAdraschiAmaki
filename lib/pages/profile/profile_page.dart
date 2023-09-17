@@ -5,6 +5,7 @@ import 'package:afisha_market/pages/profile/share_screen.dart';
 import 'package:afisha_market/pages/utils/const.dart';
 import 'package:afisha_market/pages/utils/custom_button_two.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -119,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         height: 12,
                       ),
                       CustomButtonTwo(
-                        token.isNotEmpty? l10n?.logOut ?? '':l10n?.login ?? '',
+                        token.isNotEmpty? l10n?.logOut ?? '':l10n?.signInAccount ?? '',
                         onTap: token.isNotEmpty? (){
                           _logout(context);
                         }:() {
@@ -129,21 +130,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(
                         height: 12,
                       ),
-                      token.isNotEmpty? Container():Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('You dont have an acoount '),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, AppRoutes.signUp);
-                            },
-                            child: Text(
-                              'Sign up',
-                              style: TextStyle(color: blueColor),
-                            ),
-                          )
-                        ],
-                      )
+                      token.isNotEmpty? Container():RichText(
+                        text: TextSpan(
+                            text: '${l10n?.youDontHaveAccount} ',
+                            style: TextStyle(fontSize: 14, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text:'${l10n?.signUpText}',
+                                recognizer: TapGestureRecognizer()..onTap = (){
+                                  Navigator.pushNamed(context, AppRoutes.signUp);
+                                },
+                                style: TextStyle(color: blueColor),
+                              ),
+                            ]
+                        ),
+                      ),
                     ],
                   ),
                 )

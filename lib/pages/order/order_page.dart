@@ -5,7 +5,7 @@ import 'package:afisha_market/pages/cart/widgets/cart_item_widget.dart';
 import 'package:afisha_market/pages/main_container.dart';
 import 'package:afisha_market/pages/order/widgets/my_radio_list_tile.dart';
 import 'package:afisha_market/pages/order/widgets/order_products_item.dart';
-import 'package:afisha_market/pages/utils/const.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:afisha_market/pages/utils/custom_button_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,9 +51,11 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buyurtmani rasmiylashtirish'),
+        title: Text('${l10n?.checkout}'),
       ),
       body: Column(
         children: [
@@ -76,18 +78,18 @@ class _OrderPageState extends State<OrderPage> {
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     child: Column(
                       children: [
-                        Text('Buyurtmangiz', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                        Text('${l10n?.yourOrder}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                         Row(children: [
-                          Expanded(child: Text('Mahsulotlar ($quantity):')),
-                          Text('$totalSum som'),
+                          Expanded(child: Text('${l10n?.products} ($quantity):')),
+                          Text('$totalSum ${l10n?.sum}'),
                         ],),
                         SizedBox(height: 8,),
                         Row(children: [
-                          Expanded(child: Text('Jami:')),
-                          Text('$totalSum som',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                          Expanded(child: Text('${l10n?.totalSum}:')),
+                          Text('$totalSum ${l10n?.sum}',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                         ],),
                         SizedBox(height: 8,),
-                        Text('Tolov turi',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                        Text('${l10n?.paymentMethod}',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                       ],
                     ),
                   ),
@@ -141,13 +143,13 @@ class _OrderPageState extends State<OrderPage> {
               children: [
                 SizedBox(height: 8,),
                 Row(children: [
-                  Expanded(child: Text('Jami:')),
-                  Text('$totalSum som',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                  Expanded(child: Text('${l10n?.totalSum}:')),
+                  Text('$totalSum ${l10n?.sum}',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                 ],),
                 SizedBox(height: 8,),
                 BlocConsumer<PaymentBloc,PaymentState>(builder: (context,state){
                   return CustomButtonTwo(
-                    isPaymentTypeSelected?'Karta orqali tolash':'Buyurtmani rasmiylashtirish',
+                    isPaymentTypeSelected?'${l10n?.byCardOnline}':'${l10n?.checkout}',
                     isActive: isPaymentTypeSelected,
                     isLoading: state.isCreatingOrder??false,
                     onTap: () {

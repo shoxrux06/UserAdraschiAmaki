@@ -1,17 +1,16 @@
 import 'package:afisha_market/core/bloc/cart/cart_bloc.dart';
 import 'package:afisha_market/core/bloc/cart/cart_event.dart';
 import 'package:afisha_market/core/bloc/cart/cart_state.dart';
+import 'package:afisha_market/core/utils/app_helpers.dart';
 import 'package:afisha_market/core/utils/local_storage.dart';
-import 'package:afisha_market/db/db_helper.dart';
-import 'package:afisha_market/pages/auth/signIn/SignInScreen.dart';
 import 'package:afisha_market/pages/auth/signUp/SignUpScreen.dart';
 import 'package:afisha_market/pages/cart/widgets/cart_item_widget.dart';
 import 'package:afisha_market/pages/order/order_page.dart';
 import 'package:afisha_market/pages/utils/custom_button_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../core/data/models/locale_product.dart';
 
 
 class CartPage extends StatefulWidget {
@@ -33,6 +32,8 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
@@ -42,9 +43,9 @@ class _CartPageState extends State<CartPage> {
               child: CircularProgressIndicator(),
             );
           }
-          if(state.productList.isEmpty?? false){
-            return const Center(
-              child: Text('Cart is empty'),
+          if(state.productList.isEmpty){
+            return Center(
+              child: Text('${l10n?.cartIsEmpty}'),
             );
           }
           return Padding(
@@ -61,13 +62,13 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Row(
                   children: [
-                    const Text('Total sum'),
+                    Text('${l10n?.totalSum}'),
                     const Spacer(),
-                    Text('${state.totalSum} sum'),
+                    Text('${AppHelpers.moneyFormat(state.totalSum.toString())} ${l10n?.sum}'),
                   ],
                 ),
                 const SizedBox(height: 20,),
-                CustomButtonTwo('Rasmiylashtirish', onTap: (){
+                CustomButtonTwo('${l10n?.checkout}', onTap: (){
                   final token = LocalStorage.instance.getToken();
                   if(token.isEmpty){
                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => SignUpScreen(isFromCart: true,)));

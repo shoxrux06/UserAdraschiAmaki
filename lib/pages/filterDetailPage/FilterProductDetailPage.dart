@@ -370,11 +370,11 @@ class _FilterProductDetailPageState extends State<FilterProductDetailPage> {
                                 text: counter.toString(),
                               ),
                               const Spacer(),
-                              Text('${int.parse(widget.productDetail?.price??'') * counter} som')
+                              Text('${AppHelpers.moneyFormat('${int.parse(widget.productDetail?.price??'') * counter}')} ${l10n?.sum}')
                             ],
                           ),
                           CustomButtonTwo(
-                            isAddedToCart ?'To Cart':'Add',
+                            isAddedToCart ?'${l10n?.toCart}':'${l10n?.add}',
                             onTap: () {
                               DbManager().updateData(LocaleProduct(productId: widget.productDetail?.id??0, image: widget.productDetail?.photos[0]??'', quantity: counter, productName: widget.productDetail?.category??'', totalSum: 1, price: widget.productDetail?.price??''));
                               if(!isAddedToCart){

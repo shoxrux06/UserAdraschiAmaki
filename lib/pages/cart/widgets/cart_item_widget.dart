@@ -1,9 +1,6 @@
 import 'package:afisha_market/core/bloc/cart/cart_state.dart';
-import 'package:afisha_market/core/data/models/cart_item.dart';
-import 'package:afisha_market/core/data/source/remote/request/cart_product.dart';
-import 'package:afisha_market/core/data/source/remote/response/ProductResponse.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:afisha_market/core/utils/app_helpers.dart';
-import 'package:afisha_market/core/utils/local_storage.dart';
 import 'package:afisha_market/pages/cart/widgets/plus_minus_button.dart';
 import 'package:afisha_market/pages/utils/const.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -34,6 +31,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     final media = MediaQuery.of(context).size;
     double height = media.height;
     double width = media.width;
@@ -88,31 +87,33 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   ),
                   Row(
                     children: [
-                      Text('${AppHelpers.moneyFormat(widget.cartItem.price)} som'),
+                      Text('${AppHelpers.moneyFormat(widget.cartItem.price)} ${l10n?.sum}'),
                       const SizedBox(
-                        width: 24,
+                        width: 12,
                       ),
-                      const Spacer(),
-                      BlocBuilder<CartBloc, CartState>(
-                          builder: (context, state) {
-                        return PlusMinusButton(
-                          addQuantity: () {
-                            context.read<CartBloc>().add(
-                                CartProductIncreaseDecreaseEvent(
-                                    productId: widget.cartItem.productId,
-                                    isIcnDec: true,
-                                    index: widget.index));
-                          },
-                          deleteQuantity: () {
-                            context.read<CartBloc>().add(
-                                CartProductIncreaseDecreaseEvent(
-                                    productId: widget.cartItem.productId,
-                                    isIcnDec: false,
-                                    index: widget.index));
-                          },
-                          text: widget.cartItem.quantity.toString(),
-                        );
-                      }),
+                      // const Spacer(),
+                      Expanded(
+                        child: BlocBuilder<CartBloc, CartState>(
+                            builder: (context, state) {
+                          return PlusMinusButton(
+                            addQuantity: () {
+                              context.read<CartBloc>().add(
+                                  CartProductIncreaseDecreaseEvent(
+                                      productId: widget.cartItem.productId,
+                                      isIcnDec: true,
+                                      index: widget.index));
+                            },
+                            deleteQuantity: () {
+                              context.read<CartBloc>().add(
+                                  CartProductIncreaseDecreaseEvent(
+                                      productId: widget.cartItem.productId,
+                                      isIcnDec: false,
+                                      index: widget.index));
+                            },
+                            text: widget.cartItem.quantity.toString(),
+                          );
+                        }),
+                      ),
                     ],
                   ),
                   // Text('${widget.cartItem.totalSum} som'),

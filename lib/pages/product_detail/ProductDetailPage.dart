@@ -385,11 +385,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               text: counter.toString(),
                             ),
                             const Spacer(),
-                            Text('${int.parse(widget.product?.price??'') * counter} som')
+                            Text('${AppHelpers.moneyFormat('${int.parse(widget.product?.price??'') * counter}')} ${l10n?.sum}')
                           ],
                         ),
                         CustomButtonTwo(
-                          isAddedToCart ?'To Cart':'Add',
+                          isAddedToCart ?'${l10n?.toCart}':'${l10n?.add}',
                           onTap: () {
                             DbManager().updateData(LocaleProduct(productId: widget.product?.id??0, image: widget.product?.photos[0]??'', quantity: counter, productName: widget.product?.category??'', totalSum: 1, price: widget.product?.price??''));
                             if(!isAddedToCart){

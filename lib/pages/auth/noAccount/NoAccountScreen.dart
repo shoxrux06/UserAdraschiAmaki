@@ -1,13 +1,8 @@
-import 'package:afisha_market/core/bloc/add/create_state.dart';
 import 'package:afisha_market/pages/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import '../signUp/SignUpScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../core/bloc/category/category_bloc.dart';
-import '../../../core/data/source/remote/response/ProductCategoryResponse.dart';
-import '../signUp/SignUpScreen.dart';
 
 class NoAccountScreen extends StatefulWidget {
   const NoAccountScreen({Key? key}) : super(key: key);
